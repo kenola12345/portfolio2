@@ -7,6 +7,7 @@ import Projects from './components/Projects/Projects';
 import Skills from './components/Skills/Skills';
 import PageLayout from './components/Layouts/PageLayout';
 import { LanguageProvider, useLanguage } from './i18n/LanguageContext';
+import { Analytics } from '@vercel/analytics/react';
 
 
 
@@ -31,6 +32,7 @@ function App() {
   return (
     <LanguageProvider>
       <Content/>
+      <Analytics />
     </LanguageProvider>
   );
 }
