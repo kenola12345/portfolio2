@@ -1,10 +1,6 @@
 import './FlowerSvg.scss';
 
 
-type Props = {
-   
-}
-
 function Footer() {
    
   return (
