@@ -1,10 +1,6 @@
 import './Footer.scss';
 
 
-type Props = {
-   
-}
-
 const iconList = [
     {
         name: 'github',

@@ -3,12 +3,9 @@ import ScrollTrigger from 'gsap/ScrollTrigger';
 import { useEffect, useRef, useState } from 'react';
 import { useLanguage } from '../../../i18n/LanguageContext';
 
-type Props = {
-}
 function Header() {
     const { lang, setLang, t } = useLanguage();
     const [rotation, setRotation] = useState(0);
-    const [scrolling, setScrolling] = useState(false);
     const flowerRef = useRef<HTMLImageElement>(null)
     const navRef = useRef<HTMLDivElement>(null)
     const [scrollTop, setScrollTop] = useState(0);
@@ -17,7 +14,6 @@ function Header() {
     useEffect(() => {
         const onScroll = (e : any)=> {
           setScrollTop(e.target.documentElement.scrollTop);
-          setScrolling(e.target.documentElement.scrollTop > scrollTop);
         };
 
         window.addEventListener("scroll", onScroll);
