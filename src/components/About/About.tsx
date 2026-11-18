@@ -1,3 +1,4 @@
+import { Fragment } from 'react';
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import ScrollTrigger from 'gsap/ScrollTrigger';
@@ -6,15 +7,11 @@ import './About.scss'
 
 import SectionLayout from '../Layouts/SectionLayout';
 import MaskText from '../common/MaskText/MaskText';
-
-const texts = {
-    title: 'ABOUT ME',
-    txt: "Born and raised in America,\nnow living in Tokyo, Japan.\n\nI love creative hobbies like dancing, and drawing.\nI also love playing video games on my pc =)!\n\nCurrently working at a Japanese startup company.",
-    nameja: '押本健太郎'
-}
-
+import { useLanguage } from '../../i18n/LanguageContext';
 
 function About() {
+  const { t, lang } = useLanguage();
+  const texts = t.about;
  
   gsap.registerPlugin(ScrollTrigger as gsap.GSAPConfig)
   useGSAP(()=>{
@@ -54,15 +51,15 @@ function About() {
           <h2>
           <MaskText seperate={true} heading={texts.title} className='pc:text-9xl text-3xl font-bold'/>
           </h2>
-          <p className='pc:text-8xl text-2xl  mt-7 '>
-            <span className='opacity-40'>Born and raised in </span>
-            <MaskText heading='America,' className='pc:text-8xl text-2xl font-semibold'/>
-            <span className='opacity-40'> now living in </span>
-            <MaskText heading='Tokyo, Japan.' className='pc:text-8xl text-2xl font-semibold'/><br/>
-            <span className='opacity-40'> Currently working as a </span>
-            <MaskText heading='Front-end Developer' className='pc:text-8xl text-2xl font-semibold'/> 
-            <span className='opacity-40'> at a Japanese </span>
-            <MaskText heading='startup company.' className='pc:text-8xl text-2xl font-semibold'/> 
+          <p className={'pc:text-8xl text-2xl  mt-7 ' + (lang === 'ja' ? '[word-break:keep-all] [overflow-wrap:anywhere]' : '')}>
+            {texts.segments.map((seg, i) => (
+              seg === 'br' ? <br key={i}/> : <Fragment key={i}>
+              {lang === 'ja' && <wbr/>}
+              {seg.bold
+                ? <MaskText heading={seg.text} className='pc:text-8xl text-2xl font-semibold'/>
+                : seg.text && <span className='opacity-40'>{seg.text}</span>}
+              </Fragment>
+            ))}
           </p>
         </div>
     </SectionLayout>

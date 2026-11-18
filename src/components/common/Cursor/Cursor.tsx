@@ -24,13 +24,13 @@ function Cursor({className, ...props} : Props) {
 
         const hoverHandler = (e: MouseEvent) => {
             const target = e.target as HTMLElement;
-            const isHoveringOverAnchor = target.closest('a') !== null;
+            const isHoveringOverAnchor = target.closest('a, button') !== null;
             setHovered(isHoveringOverAnchor);
         };
         
         const unhoverHandler = (e: MouseEvent) => {
             const target = e.target as HTMLElement;
-            const isHoveringOverAnchor = target.closest('a') !== null;
+            const isHoveringOverAnchor = target.closest('a, button') !== null;
             setHovered(isHoveringOverAnchor);
         };
 
