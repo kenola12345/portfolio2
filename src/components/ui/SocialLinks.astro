@@ -1,0 +1,37 @@
+---
+/**
+ * GitHub / LinkedIn / Email のクリスタルのピルボタン。
+ * アーティストページとホームのフッターで共通して使う。
+ */
+import { artist } from '../../data/artist';
+import { useT } from '../../lib/i18n';
+import FlipText from './FlipText.astro';
+
+/** SNS アイコンのファイル（public/icons）。白で表示するため反転して使う */
+const iconFor = { github: '/icons/github.svg', linkedin: '/icons/linkedIn.svg', email: '/icons/gmail.svg' } as const;
+
+interface Props {
+  class?: string;
+}
+const { class: className = '' } = Astro.props;
+const t = useT(Astro.url);
+---
+
+<ul class:list={['flex flex-wrap gap-2.5', className]}>
+  {
+    artist.socials.map((s) => (
+      <li>
+        <a
+          class="crystal menu-text inline-flex items-center gap-2 px-4 py-2 text-sm"
+          style="--crystal-radius: 999px"
+          href={s.href}
+          target={s.href.startsWith('http') ? '_blank' : undefined}
+          rel="noreferrer"
+        >
+          <img class="size-4 invert" src={iconFor[s.kind]} alt="" width="16" height="16" />
+          <FlipText>{t(s.label)}</FlipText>
+        </a>
+      </li>
+    ))
+  }
+</ul>

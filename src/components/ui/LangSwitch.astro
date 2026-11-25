@@ -1,0 +1,39 @@
+---
+/**
+ * 言語の切り替え（EN / 日本語）。いま見ているページの、もう一方の言語版へ移動する。
+ * 3D ステージは遷移しても残るので、切り替えてもレコードは動かない。
+ */
+import { alternatePath, getLang, useT } from '../../lib/i18n';
+import { ui } from '../../data/ui';
+
+interface Props {
+  class?: string;
+}
+const { class: className = '' } = Astro.props;
+
+const t = useT(Astro.url);
+const lang = getLang(Astro.url);
+const alt = alternatePath(Astro.url);
+
+const options = [
+  { code: 'en', label: 'EN', name: 'English' },
+  { code: 'ja', label: '日本語', name: '日本語' },
+] as const;
+---
+
+<nav aria-label={t(ui.langNav)} class:list={['lang-switch', className]}>
+  {
+    options.map((o) => {
+      const active = o.code === lang;
+      return active ? (
+        <span class="lang-switch__item lang-switch__item--active" lang={o.code} aria-current="true">
+          {o.label}
+        </span>
+      ) : (
+        <a class="lang-switch__item" href={alt.href} lang={o.code} hreflang={o.code} aria-label={o.name}>
+          {o.label}
+        </a>
+      );
+    })
+  }
+</nav>

@@ -1,0 +1,72 @@
+---
+/**
+ * ホーム用のナビ。画面の上端にカーソルを持っていくと、上からすっと降りてくる
+ * （タッチ端末では、上端中央の小さなつまみをタップ）。ほかのページへの移動と、言語の切り替えができる。
+ * キーボードでフォーカスしたときも出る。
+ */
+import PageNav from './PageNav.astro';
+import LangSwitch from './LangSwitch.astro';
+import MobileMenu from './MobileMenu.astro';
+import { ui } from '../../data/ui';
+import { useT } from '../../lib/i18n';
+
+const t = useT(Astro.url);
+---
+
+<!-- スマホ：右上に固定したハンバーガー。下の「上端に降りてくるナビ」と「つまみ」は md 以上だけで使う -->
+<MobileMenu fixed />
+
+<header class="home-nav" data-home-nav>
+  <div class="home-nav__bar crystal" style="--crystal-radius: 999px">
+    <PageNav current="" bleed={false} />
+    <LangSwitch />
+  </div>
+</header>
+
+<!-- つまみ：タッチ端末や、上端にカーソルを持っていくことに気づかない人向けの目印 -->
+<button type="button" class="home-nav__handle crystal menu-text" data-home-nav-toggle aria-expanded="false" aria-label={t(ui.menuHandleLabel)} style="--crystal-radius: 0 0 14px 14px">
+  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="m6 9 6 6 6-6" />
+  </svg>
+  <span>{t(ui.menuHandle)}</span>
+</button>
+
+<script>
+  /** 上端にカーソルが来たら開き、十分に離れたら閉じる（出入りで点滅しないよう、開く位置と閉じる位置をずらす） */
+  const OPEN_Y = 56;
+  const CLOSE_Y = 150;
+
+  const bar = () => document.querySelector<HTMLElement>('[data-home-nav]');
+  const handle = () => document.querySelector<HTMLElement>('[data-home-nav-toggle]');
+  const setOpen = (open: boolean) => {
+    const b = bar();
+    if (!b) return;
+    b.toggleAttribute('data-open', open);
+    handle()?.setAttribute('aria-expanded', String(open));
+  };
+
+  document.addEventListener(
+    'pointermove',
+    (e) => {
+      if (e.pointerType !== 'mouse') return;
+      if (e.clientY <= OPEN_Y) setOpen(true);
+      else if (e.clientY > CLOSE_Y && !bar()?.matches(':focus-within')) setOpen(false);
+    },
+    { passive: true },
+  );
+  // カーソルがウィンドウの上へ出ていったときも開く
+  document.addEventListener('mouseleave', (e) => {
+    if (e.clientY <= 0) setOpen(true);
+  });
+  // つまみのタップで開閉。メニューの外をタップしたら閉じる
+  document.addEventListener('click', (e) => {
+    const target = e.target as Element;
+    if (target.closest('[data-home-nav-toggle]')) {
+      setOpen(!bar()?.hasAttribute('data-open'));
+    } else if (!target.closest('[data-home-nav]') && bar()?.hasAttribute('data-open') && !bar()?.matches(':focus-within')) {
+      setOpen(false);
+    }
+  });
+  // ページ遷移のあとは閉じた状態から始める
+  document.addEventListener('astro:after-swap', () => setOpen(false));
+</script>

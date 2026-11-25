@@ -1,0 +1,12 @@
+---
+import AlbumView from '../../../views/AlbumView.astro';
+import { albums } from '../../../data/albums';
+
+export function getStaticPaths() {
+  return albums.map((album) => ({ params: { slug: album.slug }, props: { album } }));
+}
+
+const { album } = Astro.props;
+---
+
+<AlbumView album={album} />

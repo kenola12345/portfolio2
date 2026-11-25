@@ -1,0 +1,54 @@
+---
+/**
+ * サイト共通のフッター：名前（®）、連絡先、メッセージへのリンク、著作権と 3D モデルのクレジット。
+ * ホーム・自己紹介・各アルバムのすべてのページの一番下に置く。
+ * 「Record player」は CC BY 4.0 なので、作者表示（このフッターのクレジット）は外さない
+ */
+import SocialLinks from './SocialLinks.astro';
+import { artist } from '../../data/artist';
+import { ui } from '../../data/ui';
+import { getLang, useT } from '../../lib/i18n';
+
+const t = useT(Astro.url);
+const lang = getLang(Astro.url);
+const year = new Date().getFullYear();
+---
+
+<!-- フッター：® 付きの名前と連絡先 -->
+<!-- relative z-10：固定された 3D キャンバスより手前に出す。pointer-events-auto：ホームでは親の main がクリックを通す設定のため -->
+<footer class="pointer-events-auto relative z-10 wrap pb-14 pt-16 md:pb-20 md:pt-24">
+  <!-- 名前は 1 行。画面幅に合わせて小さくなり、スマホでも折り返さない -->
+  <p
+    class="menu-text whitespace-nowrap text-[clamp(1.5rem,4.2vw,3rem)] uppercase leading-none tracking-tight"
+    aria-label={`${t(artist.name)} ®`}
+  >
+    <span aria-hidden="true"
+      >{t(artist.name)}<sup class="ml-[0.1em] align-top text-[0.4em] font-bold leading-none">®</sup></span
+    >
+  </p>
+
+  <div class="mt-8 md:mt-10">
+    <p class="menu-text text-lg md:text-2xl">{t(ui.contactMe)}</p>
+    <SocialLinks class="mt-4" />
+  </div>
+
+  <p class="mt-12 text-xs text-muted md:mt-16">© {year} {t(artist.name)}. {t(artist.tagline)}.</p>
+  <!-- 3D モデルのクレジット。「Record player」は CC-BY 4.0 なので作者表示が必要 -->
+  {
+    lang === 'ja' ? (
+      <p class="mt-2 max-w-2xl text-xs leading-relaxed text-muted/80">
+        3D モデル：
+        <a class="underline underline-offset-2" href="https://sketchfab.com/3d-models/record-player-65200511d04f4b4dba0742186ee754b5" target="_blank" rel="noreferrer">「Record player」</a>
+        （Temmie_Dola 作、Sketchfab より、
+        <a class="underline underline-offset-2" href="http://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noreferrer">CC BY 4.0</a>
+        ／名前の追加と不要な部品の削除を行いました）。
+      </p>
+    ) : (
+      <p class="mt-2 max-w-2xl text-xs leading-relaxed text-muted/80">
+        3D model:{' '}
+        <a class="underline underline-offset-2" href="https://sketchfab.com/3d-models/record-player-65200511d04f4b4dba0742186ee754b5" target="_blank" rel="noreferrer">“Record player”</a>{' '}
+        by Temmie_Dola via Sketchfab (<a class="underline underline-offset-2" href="http://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noreferrer">CC BY 4.0</a>, modified: name added, extra parts removed).
+      </p>
+    )
+  }
+</footer>

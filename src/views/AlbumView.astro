@@ -1,0 +1,63 @@
+---
+/**
+ * アルバムページ（Spotify のアルバム画面風）。
+ * 左上にレコードが回り、その下にトラックリストが並ぶ。
+ */
+import AppLayout from '../layouts/AppLayout.astro';
+import PageHeader from '../components/album/PageHeader.astro';
+import SiteFooter from '../components/ui/SiteFooter.astro';
+import Tracklist from '../components/album/Tracklist.astro';
+import type { Album } from '../data/types';
+import { artist } from '../data/artist';
+import { ui } from '../data/ui';
+import { albumTypeLabels, getLang, localePath, trackCount, useT } from '../lib/i18n';
+
+interface Props {
+  album: Album;
+}
+const { album } = Astro.props;
+const t = useT(Astro.url);
+const lang = getLang(Astro.url);
+const countLabel = trackCount(album.tracks.length, lang);
+---
+
+<AppLayout title={`${t(album.title)} — ${t(artist.name)}`} accent={album.accent} glow>
+  <main class="relative z-10 wrap pb-8">
+    <PageHeader slug={album.slug} cover={album.cover} label={t(albumTypeLabels[album.type])} title={t(album.title)}>
+      <p class="mt-3 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm md:mt-5">
+        <img class="size-6 rounded-full object-cover" src={artist.portrait} alt="" width="24" height="24" />
+        <a href={localePath("/artist", lang)} class="menu-text hover:underline">{t(artist.name)}</a>
+        <!-- 年が未確定のアルバムは年を出さない。区切りの「·」は、折り返しで行頭に来ないよう PC 幅だけ出す -->
+        {album.year && <span class="text-muted"><span class="hidden md:inline">· </span>{lang === 'ja' ? `${album.year}年` : album.year}</span>}
+        <span class="text-muted whitespace-nowrap"><span class="hidden md:inline">· </span>{countLabel}</span>
+      </p>
+    </PageHeader>
+
+    <div class="enter mt-8 flex items-center gap-4" style="--i:2">
+      <!-- 再生ボタン：最初のトラックを開く。開いている状態で押すと次のトラックへ進む（最後まで行ったら最初に戻る） -->
+      <button
+        type="button"
+        data-play
+        aria-label={t(ui.play)}
+        class="crystal grid size-14 cursor-pointer place-items-center text-white"
+        style="--crystal-radius: 999px"
+      >
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor" aria-hidden="true">
+          <path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5z" />
+        </svg>
+      </button>
+    </div>
+
+    <Tracklist tracks={album.tracks} discs={album.discs} />
+
+    {
+      album.linerNotes && (
+        <section class="enter mt-12 max-w-2xl" style="--i:8">
+          <h2 class="menu-text text-lg">{t(ui.linerNotes)}</h2>
+          <p class="mt-2 text-muted">{t(album.linerNotes)}</p>
+        </section>
+      )
+    }
+  </main>
+  <SiteFooter />
+</AppLayout>
