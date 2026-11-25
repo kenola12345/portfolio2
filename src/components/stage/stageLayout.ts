@@ -69,8 +69,6 @@ function restoreDragged() {
   }
 }
 
-const prefersReducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
 /** ページの DOM を読み直す。ページ遷移のたびに呼ぶ */
 export function refreshLayout() {
   const slotEl = document.querySelector<HTMLElement>('[data-record-slot]');
@@ -109,8 +107,7 @@ export function activate(slug: string, href: string) {
   const go = () => {
     void navigate(href);
   };
-  if (prefersReducedMotion()) go();
-  else window.setTimeout(go, layout.fast ? STAGE.pullMsFast : STAGE.pullMs);
+  window.setTimeout(go, layout.fast ? STAGE.pullMsFast : STAGE.pullMs);
 }
 
 /**

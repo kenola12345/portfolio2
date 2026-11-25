@@ -136,8 +136,8 @@ function StageRecord({ slug, cover, href }: RecordDef) {
     const dt = Math.min(rawDelta, 0.05);
     const s = cur.current;
     const t = target.current;
-    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const lambda = reduce ? 60 : STAGE.damp * (layout.fast ? STAGE.fastFactor : 1);
+    // 「視差効果を減らす」の設定に関係なく、アニメーションは常に動かす
+    const lambda = STAGE.damp * (layout.fast ? STAGE.fastFactor : 1);
 
     const pulled = layout.pulled === slug;
 
