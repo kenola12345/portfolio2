@@ -214,10 +214,8 @@ function StageRecord({ slug, cover, href }: RecordDef) {
     } else {
       s.scale = MathUtils.damp(s.scale, 0, lambda * 1.8, dt);
     }
-    // 「視差効果を減らす」がオンの端末（iOS で多い）でも、アルバムページのスロットの盤は回す。
-    // ホームの盤（ホバー・引き出し中）だけは、設定どおり回さない
-    const allowSpin = !reduce || layout.mode === 'page';
-    spin.current = MathUtils.damp(spin.current, allowSpin ? t.spin : 0, 5, dt);
+    // 回転は「視差効果を減らす」の設定に関係なく、常に回す
+    spin.current = MathUtils.damp(spin.current, t.spin, 5, dt);
 
     g.visible = s.scale > 1e-3;
     g.position.copy(s.pos);
