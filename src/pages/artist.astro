@@ -5,13 +5,12 @@
  */
 import AppLayout from '../layouts/AppLayout.astro';
 import PageHeader from '../components/album/PageHeader.astro';
+import SocialLinks from '../components/ui/SocialLinks.astro';
 import { albums } from '../data/albums';
 import { artist } from '../data/artist';
 import { ui } from '../data/ui';
 import { t } from '../lib/i18n';
 
-/** SNS アイコンのファイル（既存の public/icons を使う） */
-const iconFor = { github: '/icons/github.svg', linkedin: '/icons/linkedIn.svg', email: '/icons/gmail.svg' } as const;
 ---
 
 <AppLayout title={`${t(artist.name)} — Artist`} accent={artist.accent} glow>
@@ -46,24 +45,7 @@ const iconFor = { github: '/icons/github.svg', linkedin: '/icons/linkedIn.svg', 
               ))
             }
           </dl>
-          <ul class="mt-6 flex flex-wrap gap-2.5">
-            {
-              artist.socials.map((s) => (
-                <li>
-                  <a
-                    class="crystal menu-text inline-flex items-center gap-2 px-4 py-2 text-sm"
-                    style="--crystal-radius: 999px"
-                    href={s.href}
-                    target={s.href.startsWith('http') ? '_blank' : undefined}
-                    rel="noreferrer"
-                  >
-                    <img class="size-4 invert" src={iconFor[s.kind]} alt="" width="16" height="16" />
-                    {s.label}
-                  </a>
-                </li>
-              ))
-            }
-          </ul>
+          <SocialLinks class="mt-6" />
         </div>
       </div>
     </section>

@@ -16,8 +16,8 @@ export const RECORD_MODEL_RADIUS = 0.949;
 export const RECORD_RIM = {
   inner: 0.925,
   outer: 0.955,
-  color: '#8fb8ff',
-  opacity: 0.55,
+  color: '#d9dde6',
+  opacity: 0.32,
   envIntensity: 2.2,
 } as const;
 

@@ -1,10 +1,13 @@
 ---
 /**
- * ホーム（棚）。ジャケット（カード）の裏にレコードが隠れていて、
- * ホバーで少し顔を出し、クリックで引き出されてアルバムページへ飛んでいく。
+ * ホーム（棚）。1 画面（100svh）に、ジャケット（カード）だけを並べる。
+ * ジャケットの裏にレコードが隠れていて、ホバーで少し顔を出し、
+ * クリックで引き出されてアルバムページへ飛んでいく。
+ * スクロールすると、® 付きの名前と連絡先のフッターが出てくる。
  * レコード本体は永続化した 3D ステージが描く（RecordStage）。
  */
 import AppLayout from '../layouts/AppLayout.astro';
+import SocialLinks from '../components/ui/SocialLinks.astro';
 import { albums } from '../data/albums';
 import { artist } from '../data/artist';
 import { ui } from '../data/ui';
@@ -20,46 +23,71 @@ const shelf = [
     label: `${album.type} · ${album.tracks.length} ${t(album.tracks.length === 1 ? ui.track : ui.tracks)}`,
   })),
 ];
+
+const year = new Date().getFullYear();
 ---
 
 <AppLayout>
-  <main class="relative z-10 wrap pt-14 pb-28 md:pt-20">
-    <header class="enter">
-      <p class="menu-text text-sm tracking-[0.25em] opacity-70">DISCOGRAPHY</p>
-      <h1 class="menu-text mt-2 text-4xl uppercase md:text-7xl">{t(artist.name)}</h1>
-      <p class="mt-3 text-muted">{t(artist.tagline)}</p>
-    </header>
+  <main class="relative z-10">
+    <!-- 画面の文字は出さない。見出しはスクリーンリーダーと検索エンジン用 -->
+    <h1 class="sr-only">{t(artist.name)} — Discography</h1>
 
-    <!-- ジャケットの上にレコードがはみ出す分の余白を確保している -->
-    <nav aria-label={t(ui.albumsNav)}>
-      <ul class="mt-[150px] grid grid-cols-2 gap-x-4 gap-y-[130px] md:mt-[190px] md:grid-cols-5 md:gap-x-6">
-        {
-          shelf.map((item, i) => (
-            <li class="enter-slide" style={`--i:${i}`}>
-              <a data-card={item.slug} href={item.href} class="group block">
-                <img
-                  class="crystal aspect-square w-full object-cover"
-                  style="--crystal-radius: 14px"
-                  src={item.cover}
-                  alt=""
-                  width="768"
-                  height="768"
-                />
-                <span class="menu-text mt-4 block text-base md:text-lg">{item.title}</span>
-                <span class="mt-0.5 block text-xs tracking-wide text-muted md:text-sm">{item.label}</span>
-              </a>
-            </li>
-          ))
-        }
-      </ul>
-    </nav>
+    <!-- 1 画面ぶん。ジャケットの上にレコードがはみ出す余白（pt）を含めて縦中央に置く -->
+    <section class="flex min-h-svh items-center pt-24 pb-10 md:pt-32">
+      <nav aria-label={t(ui.albumsNav)} class="mx-auto w-full max-w-[1400px] md:px-[var(--gutter-pc)]">
+        <!-- SP は 1 行の横スワイプ（1 画面に収めるため）、PC は 5 列 -->
+        <ul
+          class="flex snap-x snap-mandatory gap-4 overflow-x-auto px-[var(--gutter-sp)] pb-6 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden md:grid md:grid-cols-5 md:gap-6 md:overflow-visible md:px-0 md:pb-0"
+          style="scroll-padding-inline: var(--gutter-sp)"
+        >
+          {
+            shelf.map((item, i) => (
+              <li class="enter-slide w-[58vw] max-w-[260px] shrink-0 snap-start md:w-auto md:max-w-none" style={`--i:${i}`}>
+                <a data-card={item.slug} href={item.href} class="group block">
+                  <img
+                    class="crystal aspect-square w-full object-cover"
+                    style="--crystal-radius: 14px"
+                    src={item.cover}
+                    alt=""
+                    width="768"
+                    height="768"
+                  />
+                  <span class="menu-text mt-4 block text-base md:text-lg">{item.title}</span>
+                  <span class="mt-0.5 block text-xs tracking-wide text-muted md:text-sm">{item.label}</span>
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+    </section>
 
-    <p class="menu-text enter mt-24 text-center text-lg md:text-2xl" style="--i:8">
-      <span class="opacity-60">···</span> Menu Selection
-    </p>
-    <p class="enter mt-2 text-center text-xs text-muted md:text-sm" style="--i:9">
-      <span class="hidden md:inline">{t(ui.hintKeys)}</span>
-      <span class="md:hidden">{t(ui.hintTouch)}</span>
-    </p>
+    <!-- フッター：® 付きの名前と連絡先 -->
+    <footer class="wrap pb-14 pt-16 md:pb-20 md:pt-24">
+      <p
+        class="menu-text text-[clamp(1.75rem,6.5vw,4.5rem)] uppercase leading-[0.95] tracking-tight"
+        aria-label={`${t(artist.name)} ®`}
+      >
+        <span aria-hidden="true">
+          Kentaro<br />Oshimoto<sup class="ml-[0.1em] align-top text-[0.34em] font-bold leading-none">®</sup>
+        </span>
+      </p>
+
+      <div class="mt-8 md:mt-10">
+        <p class="menu-text text-lg md:text-2xl">Contact me</p>
+        <SocialLinks class="mt-4" />
+        <p class="mt-4">
+          <a
+            href="/albums/contact#direct-mail"
+            class="crystal menu-text inline-block px-5 py-2.5 text-sm"
+            style="--crystal-radius: 999px"
+          >
+            Send a message →
+          </a>
+        </p>
+      </div>
+
+      <p class="mt-12 text-xs text-muted md:mt-16">© {year} {t(artist.name)}. {t(artist.tagline)}.</p>
+    </footer>
   </main>
 </AppLayout>
