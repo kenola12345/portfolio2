@@ -37,9 +37,6 @@ const isExternal = (href: string) => /^https?:\/\//.test(href);
             </span>
             <span class="min-w-0">
               <span class="menu-text block truncate text-base md:text-lg">{t(track.title)}</span>
-              {track.tags && (
-                <span class="block truncate text-xs text-muted md:text-sm">{track.tags.join(' · ')}</span>
-              )}
             </span>
             <span class="text-xs text-muted md:text-sm">{track.meta ? t(track.meta) : ''}</span>
             <svg
