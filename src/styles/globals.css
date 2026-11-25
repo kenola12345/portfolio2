@@ -167,6 +167,60 @@ html[data-dragging] .stage-root canvas {
   cursor: grabbing !important;
 }
 
+/* ---------- 2D 表示（3D が使えないとき）----------
+   AppLayout の先頭のスクリプトが、WebGL がない・?view=2d のときに html へ data-3d="off" を付ける */
+
+.home-fallback {
+  display: none;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 6.5rem var(--gutter-sp) 2.5rem;
+  gap: 1.75rem 1rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  list-style: none;
+}
+@media (width >= 48rem) {
+  .home-fallback {
+    padding-inline: var(--gutter-pc);
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 1.5rem;
+  }
+}
+html[data-3d='off'] .home-fallback {
+  display: grid;
+}
+html[data-3d='off'] [data-stage-home] {
+  display: flex;
+  align-items: center;
+}
+/* 3D のためのものは隠す */
+html[data-3d='off'] .stage-root,
+html[data-3d='off'] .drag-hint,
+html[data-3d='off'] .home-sr-nav {
+  display: none;
+}
+/* アルバム／アーティストページのスロット：丸いカバーがゆっくり回る */
+.slot-fallback {
+  display: none;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 8px rgb(10 10 12),
+    0 0 0 9px rgb(255 255 255 / 0.22);
+  animation: slot-spin 18s linear infinite;
+}
+html[data-3d='off'] .slot-fallback {
+  display: block;
+}
+@keyframes slot-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 /* ---------- スマホのハンバーガーメニュー ---------- */
 
 .mobile-menu {

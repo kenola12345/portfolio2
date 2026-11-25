@@ -1,4 +1,4 @@
-import { Suspense, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { Component, Suspense, useEffect, useLayoutEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { Environment, Lightformer, useProgress } from '@react-three/drei';
 import { Euler, MathUtils, Quaternion, Vector3, type Group } from 'three';
@@ -478,7 +478,7 @@ function LoadingBridge() {
  * サイト全体で 1 つだけの 3D キャンバス。DOM の背後に固定され、ページ遷移しても残る（transition:persist）。
  * ホームではプレーヤーとジャケットの 3D 棚、アルバムページでは左上のスロットで回るレコードを描く。
  */
-export default function RecordStage({ records }: { records: RecordDef[] }) {
+function Stage3D({ records }: { records: RecordDef[] }) {
   useEffect(() => bindStageEvents(), []);
 
   return (
@@ -522,5 +522,49 @@ export default function RecordStage({ records }: { records: RecordDef[] }) {
         </Canvas>
       </div>
     </>
+  );
+}
+
+type WindowWith3D = Window & { __no3d?: boolean };
+
+/** 2D 表示に切り替える（html の data-3d="off"）。ホームはジャケット一覧、アルバムページは丸いカバー画像になる */
+function enable2d() {
+  (window as WindowWith3D).__no3d = true;
+  document.documentElement.setAttribute('data-3d', 'off');
+  document.getElementById('loading-screen')?.setAttribute('data-done', '');
+  layout.ready = true;
+}
+
+/** 3D の描画で例外（WebGL の失敗、モデルの読み込み失敗など）が起きたら、真っ白にせず 2D 表示へ切り替える */
+class StageBoundary extends Component<{ children: ReactNode }, { failed: boolean }> {
+  state = { failed: false };
+  static getDerivedStateFromError() {
+    return { failed: true };
+  }
+  componentDidCatch() {
+    enable2d();
+  }
+  render() {
+    return this.state.failed ? null : this.props.children;
+  }
+}
+
+/** 3D を使わない環境（WebGL なし、?view=2d）。何も描かず、2D 表示への切り替えだけ行う */
+function NoStage() {
+  useEffect(() => enable2d(), []);
+  return null;
+}
+
+/**
+ * 3D ステージの入口。3D が使えるなら Stage3D、使えない（または失敗した）なら 2D 表示にする。
+ * 使えるかどうかは、AppLayout の先頭のスクリプトが html の data-3d / window.__no3d に記録している。
+ */
+export default function RecordStage({ records }: { records: RecordDef[] }) {
+  const [no3d] = useState(() => (window as WindowWith3D).__no3d === true);
+  if (no3d) return <NoStage />;
+  return (
+    <StageBoundary>
+      <Stage3D records={records} />
+    </StageBoundary>
   );
 }

@@ -18,9 +18,11 @@ interface Props {
   /** タイトルの上の小さい種別ラベル（ALBUM / EP / SINGLE / ARTIST） */
   label: string;
   title: string;
+  /** 3D が使えないときにスロットへ出す、丸いカバー画像 */
+  cover?: string;
 }
 
-const { slug, label, title } = Astro.props;
+const { slug, label, title, cover } = Astro.props;
 const t = useT(Astro.url);
 const lang = getLang(Astro.url);
 ---
@@ -46,7 +48,10 @@ const lang = getLang(Astro.url);
 
   <div class="mt-8 grid grid-cols-[112px_1fr] items-end gap-4 md:mt-10 md:grid-cols-[232px_1fr] md:gap-8">
     <!-- レコードの置き場所。ここは空のまま、3D ステージがこの矩形に合わせてレコードを置く -->
-    <div data-record-slot={slug} class="aspect-square w-full" aria-hidden="true"></div>
+    <div data-record-slot={slug} class="aspect-square w-full" aria-hidden="true">
+      <!-- 3D が使えないときだけ表示される、ゆっくり回る丸いカバー -->
+      {cover && <img class="slot-fallback" src={cover} alt="" width="464" height="464" />}
+    </div>
 
     <div class="enter min-w-0" style="--i:1">
       <p class="menu-text text-xs tracking-[0.2em] opacity-80 md:text-sm">{label}</p>

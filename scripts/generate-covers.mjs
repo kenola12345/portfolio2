@@ -3,14 +3,12 @@
  *   node scripts/generate-covers.mjs
  *  - projects.webp : 制作した seta-tei.jp のスクリーンショットを正方形に切り出したもの
  *  - skills.webp   : 技術のアイコン（HTML / CSS / JS / TS / React / Next.js）を並べたもの
- *  - contact.webp  : メールのアイコン（public/icons/gmail.svg の形）
- * work.webp（アニメのパソコンの絵）と artist.webp（写真）は用意した画像をそのまま使う。
+ * work.webp（アニメのパソコンの絵）、artist.webp（写真）、contact.webp（ニュースクーのイラスト）は、用意した画像をそのまま使う。
  *
  * レコードの中央ラベルは正方形のカバーを丸く切り抜いて貼るので、
  * 大事な絵は正方形の中心の円（直径 = 辺の長さ）に収めている。
  */
 import sharp from 'sharp';
-import { readFileSync } from 'node:fs';
 
 const OUT = 'public/covers';
 const SIZE = 1024;
@@ -54,15 +52,4 @@ const skillsSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="${SIZE}" heigh
 </svg>`;
 await sharp(Buffer.from(skillsSvg)).webp({ quality: 90 }).toFile(`${OUT}/skills.webp`);
 
-// ---- Contact：メールのアイコン（public/icons/gmail.svg と同じ形を白で） ----
-const mailPath = readFileSync('public/icons/gmail.svg', 'utf8').match(/ d="([^"]+)"/)?.[1];
-if (!mailPath) throw new Error('gmail.svg の path が読み取れません');
-const scale = 4.4; // 元は 134 x 102
-const contactSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="${SIZE}" height="${SIZE}" viewBox="0 0 ${SIZE} ${SIZE}">
-  <defs><radialGradient id="g" cx="35%" cy="28%" r="90%"><stop offset="0" stop-color="#f1c957"/><stop offset="1" stop-color="#8f6a14"/></radialGradient></defs>
-  <rect width="${SIZE}" height="${SIZE}" fill="url(#g)"/>
-  <g transform="translate(${(SIZE - 134 * scale) / 2} ${(SIZE - 102 * scale) / 2}) scale(${scale})"><path d="${mailPath}" fill="#ffffff"/></g>
-</svg>`;
-await sharp(Buffer.from(contactSvg)).webp({ quality: 90 }).toFile(`${OUT}/contact.webp`);
-
-console.log('generated projects / skills / contact covers');
+console.log('generated projects / skills covers');

@@ -10,7 +10,7 @@ import RecordStage from '../components/stage/RecordStage';
 import { albums } from '../data/albums';
 import { artist } from '../data/artist';
 import { ui } from '../data/ui';
-import { albumTypeLabels, getLang, localePath, trackCount, useT } from '../lib/i18n';
+import { albumTypeLabels, alternatePath, getLang, localePath, trackCount, useT } from '../lib/i18n';
 
 interface Props {
   title?: string;
@@ -30,6 +30,15 @@ const {
   accent = '#0b0b0d',
   glow = false,
 } = Astro.props;
+
+// 共有・検索エンジン向けの URL（公開 URL = astro.config の site が決まっているときだけ絶対 URL にできる）
+const site = Astro.site;
+const abs = (path: string) => (site ? new URL(path, site).href : path);
+const ogImage = abs('/og.png');
+const alt = alternatePath(Astro.url);
+const canonical = site ? abs(Astro.url.pathname) : undefined;
+const hrefEn = lang === 'en' ? canonical : site ? abs(alt.href) : undefined;
+const hrefJa = lang === 'ja' ? canonical : site ? abs(alt.href) : undefined;
 
 // ステージに渡すレコード一覧（Artist が先頭、あとはアルバム順）。ホバーカードの文字・リンク先もここで言語に合わせる。
 // 3D ステージはページ遷移しても残る（transition:persist）が、props は遷移のたびに新しいページの値に更新される
@@ -66,6 +75,19 @@ const records = [
     <meta property="og:type" content="website" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={`${t(artist.name)} — ${t(artist.tagline)}`} />
+    <meta property="og:locale" content={lang === 'ja' ? 'ja_JP' : 'en_US'} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+    {canonical && <link rel="canonical" href={canonical} />}
+    {canonical && <meta property="og:url" content={canonical} />}
+    {hrefEn && hrefJa && <link rel="alternate" hreflang="en" href={hrefEn} />}
+    {hrefEn && hrefJa && <link rel="alternate" hreflang="ja" href={hrefJa} />}
 
     <!-- フォントは表示をブロックしないように読み込む -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -91,6 +113,32 @@ const records = [
     </div>
     <noscript><style>#loading-screen{display:none}.enter,.enter-slide{animation-play-state:running!important}</style></noscript>
     <script is:inline>
+      // 3D が使えない環境（WebGL がない）や、URL に ?view=2d があるときは、2D 表示に切り替える（html の data-3d="off"）。
+      // ページ遷移のたびに html の属性は入れ替わるので、遷移のあとに付け直す
+      (function () {
+        function webglOk() {
+          try {
+            var c = document.createElement('canvas');
+            return !!(window.WebGLRenderingContext && (c.getContext('webgl2') || c.getContext('webgl')));
+          } catch (e) {
+            return false;
+          }
+        }
+        if (!window.__no3d && (!webglOk() || /[?&]view=2d\b/.test(location.search))) window.__no3d = true;
+        function apply() {
+          if (window.__no3d) document.documentElement.setAttribute('data-3d', 'off');
+        }
+        apply();
+        if (window.__no3d) {
+          // 3D を読み込まないので、ローディング画面はすぐ閉じる
+          var ls = document.getElementById('loading-screen');
+          if (ls) ls.setAttribute('data-done', '');
+        }
+        if (!window.__no3dInit) {
+          window.__no3dInit = true;
+          document.addEventListener('astro:after-swap', apply);
+        }
+      })();
       // 読み込みに失敗しても画面が隠れたままにならないよう、20 秒で必ず閉じる
       if (!window.__loadGuard) {
         window.__loadGuard = setTimeout(function () {
