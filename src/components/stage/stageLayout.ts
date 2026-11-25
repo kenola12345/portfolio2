@@ -82,6 +82,8 @@ export function refreshLayout() {
 export function activate(slug: string, href: string) {
   if (layout.pulled) return;
   layout.pulled = slug;
+  // 引き抜いている間は、ホバーカードを出さない
+  setHover(null);
   const go = () => {
     void navigate(href);
   };

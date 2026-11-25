@@ -130,7 +130,10 @@ function StageRecord({ slug, cover, href }: RecordDef) {
     const pulled = layout.pulled === slug;
     const wantPeek = pulled ? HOME.peek.pulled : layout.hover === slug ? HOME.peek.hover : HOME.peek.rest;
     s.peek = MathUtils.damp(s.peek, wantPeek, lambda, dt);
-    s.lift = MathUtils.damp(s.lift, pulled ? HOME.lift : 0, lambda, dt);
+    // 順番：①ジャケットから真横に完全に抜ける → ②持ち上がる → ③（ページ遷移後）行き先へ飛ぶ。
+    // 抜けきる前に持ち上げたり飛ばしたりすると、ジャケットを突き抜けて見える
+    const clear = pulled && s.peek >= HOME.peek.pulled * HOME.liftAfterPeek;
+    s.lift = MathUtils.damp(s.lift, clear ? HOME.lift : 0, lambda, dt);
 
     if (!computeTarget(slug, t, canvas, s)) return; // DOM が入れ替わっている最中は前の状態を保つ
 
