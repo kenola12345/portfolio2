@@ -19,6 +19,7 @@ export const ui = {
   albumsNav: { en: 'Albums', ja: 'アルバム' },
   dragHint: { en: 'Drag to rotate', ja: 'ドラッグで回転' },
   clickHint: { en: 'Click a record to open it', ja: 'レコードをクリックで開く' },
+  formHoneypot: { en: 'Leave this empty', ja: 'ここは空のままにしてください' },
   contactMe: { en: 'Contact me', ja: 'お問い合わせ' },
   sendMessage: { en: 'Send a message →', ja: 'メッセージを送る →' },
   play: { en: 'Play', ja: '再生' },

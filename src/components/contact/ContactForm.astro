@@ -54,7 +54,7 @@ const siteKey = import.meta.env.PUBLIC_RECAPTCHA_SITE_KEY || (import.meta.env.DE
 
   <!-- スパム対策のおとり欄。人間には見えず、入力されていたら送信しない -->
   <div class="absolute -left-[9999px]" aria-hidden="true">
-    <label>Leave this empty <input type="text" name="website" tabindex="-1" autocomplete="off" /></label>
+    <label>{t(ui.formHoneypot)} <input type="text" name="website" tabindex="-1" autocomplete="off" /></label>
   </div>
 
   <!-- reCAPTCHA の置き場所。サイトキーがあるときだけ、フォームに触れたときに読み込んで表示する -->

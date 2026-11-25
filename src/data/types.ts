@@ -59,7 +59,7 @@ export interface Artist {
   /** ホームの「Artist」レコードのラベル画像 */
   portrait: string;
   accent: string;
-  socials: { kind: SocialKind; label: string; href: string }[];
+  socials: { kind: SocialKind; label: L10n; href: string }[];
   /** 「人気の曲」に出すトラック */
   popular: { album: AlbumSlug; track: string }[];
 }

@@ -37,9 +37,9 @@ export const artist: Artist = {
   portrait: '/covers/artist.webp',
   accent: '#8b5cf6',
   socials: [
-    { kind: 'github', label: 'GitHub', href: 'https://github.com/kenola12345' },
-    { kind: 'linkedin', label: 'LinkedIn', href: 'https://www.linkedin.com/in/kentaro-oshimoto/' },
-    { kind: 'email', label: 'Email', href: 'mailto:ken.oshimoto@gmail.com' },
+    { kind: 'github', label: { en: 'GitHub', ja: 'GitHub' }, href: 'https://github.com/kenola12345' },
+    { kind: 'linkedin', label: { en: 'LinkedIn', ja: 'LinkedIn' }, href: 'https://www.linkedin.com/in/kentaro-oshimoto/' },
+    { kind: 'email', label: { en: 'Email', ja: 'メール' }, href: 'mailto:ken.oshimoto@gmail.com' },
   ],
   popular: [
     { album: 'projects', track: 'oshimoto-net' },

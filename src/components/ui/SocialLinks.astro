@@ -4,6 +4,7 @@
  * アーティストページとホームのフッターで共通して使う。
  */
 import { artist } from '../../data/artist';
+import { useT } from '../../lib/i18n';
 import FlipText from './FlipText.astro';
 
 /** SNS アイコンのファイル（public/icons）。白で表示するため反転して使う */
@@ -13,6 +14,7 @@ interface Props {
   class?: string;
 }
 const { class: className = '' } = Astro.props;
+const t = useT(Astro.url);
 ---
 
 <ul class:list={['flex flex-wrap gap-2.5', className]}>
@@ -27,7 +29,7 @@ const { class: className = '' } = Astro.props;
           rel="noreferrer"
         >
           <img class="size-4 invert" src={iconFor[s.kind]} alt="" width="16" height="16" />
-          <FlipText>{s.label}</FlipText>
+          <FlipText>{t(s.label)}</FlipText>
         </a>
       </li>
     ))
