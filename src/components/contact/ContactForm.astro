@@ -5,8 +5,10 @@
  * 環境変数が未設定のときは、入力内容を入れた mailto: をメールアプリで開く。
  */
 import { ui } from '../../data/ui';
-import { t } from '../../lib/i18n';
+import { useT } from '../../lib/i18n';
 import FlipText from '../ui/FlipText.astro';
+
+const t = useT(Astro.url);
 
 // 環境変数は公開される値（PUBLIC_）。実際の値は .env に入れる（.env.example を参照）
 const config = {

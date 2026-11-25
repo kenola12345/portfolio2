@@ -20,7 +20,12 @@ export const albums: Album[] = [
       {
         slug: 'oshimoto-net',
         title: { en: 'oshimoto.net', ja: 'oshimoto.net' },
-        // TODO(owner): 年・説明・使用技術
+        // TODO(owner): 公開年。説明と使用技術は履歴書と制作したサイトの構成をもとにしたもの
+        tags: ['Astro', 'React', 'Tailwind CSS', 'GSAP'],
+        description: {
+          en: 'Portfolio website for Ryuichi Oshimoto, a professional photographer. I designed and built a responsive, easy-to-browse site with themed photo galleries, an about page and a contact form, using smooth scrolling and GSAP animations to let the photographs take centre stage.',
+          ja: 'プロカメラマン・押本隆一さんのポートフォリオサイト。デザインから開発までを担当し、テーマ別のフォトギャラリー、プロフィールページ、お問い合わせフォームを備えたレスポンシブなサイトに仕上げました。スムーズなスクロールと GSAP のアニメーションで、写真が主役になるように見せています。',
+        },
         images: [
           {
             src: '/projects/oshimotonet.png',
@@ -29,12 +34,17 @@ export const albums: Album[] = [
             alt: { en: 'Screenshot of oshimoto.net', ja: 'oshimoto.net のスクリーンショット' },
           },
         ],
-        links: [{ label: 'Visit site', href: 'https://www.oshimoto.net/' }],
+        links: [{ label: { en: 'Visit site', ja: 'サイトを見る' }, href: 'https://www.oshimoto.net/' }],
       },
       {
         slug: 'seta-tei',
         title: { en: 'seta-tei.jp', ja: 'seta-tei.jp' },
-        // TODO(owner): 年・説明・使用技術
+        // TODO(owner): 公開年。説明と使用技術は履歴書をもとにしたもの
+        tags: ['React', 'Tailwind CSS'],
+        description: {
+          en: 'Official website for HAYAMA Setatei, a French restaurant in Hayama, Japan. I designed and built the site in Japanese and English, and added an email system for reservation inquiries, which increased the number of reservations.',
+          ja: '葉山のフレンチレストラン「HAYAMA せた亭」の公式サイト。日本語・英語の 2 言語でデザインから開発までを担当し、予約のお問い合わせをメールで受け付ける仕組みを導入して、予約数の増加につなげました。',
+        },
         images: [
           {
             src: '/projects/seta-tei.png',
@@ -43,7 +53,7 @@ export const albums: Album[] = [
             alt: { en: 'Screenshot of seta-tei.jp', ja: 'seta-tei.jp のスクリーンショット' },
           },
         ],
-        links: [{ label: 'Visit site', href: 'https://www.seta-tei.jp/' }],
+        links: [{ label: { en: 'Visit site', ja: 'サイトを見る' }, href: 'https://www.seta-tei.jp/' }],
       },
       {
         slug: 'initia',
@@ -62,7 +72,7 @@ export const albums: Album[] = [
             alt: { en: 'Screenshot of the INITIA website', ja: 'INITIA サイトのスクリーンショット' },
           },
         ],
-        links: [{ label: 'Visit site', href: 'https://www.cigr.co.jp/pj/contents/' }],
+        links: [{ label: { en: 'Visit site', ja: 'サイトを見る' }, href: 'https://www.cigr.co.jp/pj/contents/' }],
       },
       {
         slug: 'infinito-hotel',
@@ -81,7 +91,7 @@ export const albums: Album[] = [
             alt: { en: 'Screenshot of the INFINITO HOTEL & SPA website', ja: 'INFINITO HOTEL & SPA サイトのスクリーンショット' },
           },
         ],
-        links: [{ label: 'Visit site', href: 'https://hotel-infinito.co.jp/' }],
+        links: [{ label: { en: 'Visit site', ja: 'サイトを見る' }, href: 'https://hotel-infinito.co.jp/' }],
       },
       {
         slug: 'initia-lounge-mita',
@@ -100,7 +110,7 @@ export const albums: Album[] = [
             alt: { en: 'Screenshot of the INITIA LOUNGE Mita website', ja: 'イニシアラウンジ三田 サイトのスクリーンショット' },
           },
         ],
-        links: [{ label: 'Visit site', href: 'https://www.cigr.co.jp/pj/contents/product/stance/gallery-mita/' }],
+        links: [{ label: { en: 'Visit site', ja: 'サイトを見る' }, href: 'https://www.cigr.co.jp/pj/contents/product/stance/gallery-mita/' }],
       },
       {
         slug: 'one-roof',
@@ -119,7 +129,7 @@ export const albums: Album[] = [
             alt: { en: 'Screenshot of the ONE ROOF website', ja: 'ONE ROOF サイトのスクリーンショット' },
           },
         ],
-        links: [{ label: 'Visit site', href: 'https://one-roof.co.jp/' }],
+        links: [{ label: { en: 'Visit site', ja: 'サイトを見る' }, href: 'https://one-roof.co.jp/' }],
       },
     ],
   },
@@ -264,7 +274,7 @@ export const albums: Album[] = [
           en: 'Write to me from your own mail app.',
           ja: 'お使いのメールアプリから直接ご連絡ください。',
         },
-        links: [{ label: 'Email', href: 'mailto:ken.oshimoto@gmail.com' }],
+        links: [{ label: { en: 'Email', ja: 'メール' }, href: 'mailto:ken.oshimoto@gmail.com' }],
       },
       {
         slug: 'github',
@@ -274,7 +284,7 @@ export const albums: Album[] = [
           en: 'My code and side projects.',
           ja: 'コードや個人開発のプロジェクトはこちら。',
         },
-        links: [{ label: 'GitHub', href: 'https://github.com/kenola12345' }],
+        links: [{ label: { en: 'GitHub', ja: 'GitHub' }, href: 'https://github.com/kenola12345' }],
       },
       {
         slug: 'linkedin',
@@ -284,7 +294,7 @@ export const albums: Album[] = [
           en: 'My professional profile and work history.',
           ja: '職務経歴などのプロフィールはこちら。',
         },
-        links: [{ label: 'LinkedIn', href: 'https://www.linkedin.com/in/kentaro-oshimoto/' }],
+        links: [{ label: { en: 'LinkedIn', ja: 'LinkedIn' }, href: 'https://www.linkedin.com/in/kentaro-oshimoto/' }],
       },
       {
         slug: 'direct-mail',

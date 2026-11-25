@@ -50,6 +50,12 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* 日本語は文節の途中で折り返さない（auto-phrase に対応していないブラウザは、通常の禁則処理のまま） */
+:lang(ja) {
+  word-break: auto-phrase;
+  line-break: strict;
+}
+
 /* 全ページ共通の左右余白。SP のテキストが画面端に付かないよう必ずこのコンテナに入れる */
 @utility wrap {
   width: 100%;
@@ -159,6 +165,95 @@ html[data-stage='home'] .stage-root canvas {
 }
 html[data-dragging] .stage-root canvas {
   cursor: grabbing !important;
+}
+
+/* ---------- 言語の切り替えとホームのナビ ---------- */
+
+/* display は Tailwind の hidden / md:hidden で上書きできるよう、components レイヤーに置く */
+@layer components {
+  .lang-switch {
+    display: inline-flex;
+  }
+}
+.lang-switch {
+  flex-shrink: 0;
+  padding: 2px;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.1);
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.15);
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  font-weight: 800;
+  white-space: nowrap;
+}
+.lang-switch__item {
+  padding: 0.35rem 0.8rem;
+  border-radius: 999px;
+  color: #fff;
+  text-decoration: none;
+  transition: background-color 0.3s var(--ease-out);
+}
+a.lang-switch__item:hover,
+a.lang-switch__item:focus-visible {
+  background: rgb(255 255 255 / 0.22);
+}
+.lang-switch__item--active {
+  background: #fff;
+  color: #0b0b0d;
+}
+
+/* ホームのナビ：普段は画面の外（上）にいて、上端にカーソルが来る・フォーカスされる・つまみを押すと降りてくる */
+.home-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 55;
+  display: flex;
+  justify-content: center;
+  padding: 0.9rem var(--gutter-sp) 0;
+  pointer-events: none;
+  transform: translateY(-140%);
+  transition: transform 0.5s var(--ease-out);
+}
+@media (width >= 48rem) {
+  .home-nav {
+    padding-inline: var(--gutter-pc);
+  }
+}
+.home-nav[data-open],
+.home-nav:focus-within {
+  transform: none;
+}
+.home-nav__bar.crystal {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  max-width: 100%;
+  padding: 0.45rem 0.55rem 0.45rem 0.6rem;
+  pointer-events: auto;
+}
+/* 上端中央の小さなつまみ（ナビが降りているあいだは消える） */
+.home-nav__handle.crystal {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  z-index: 54;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.2rem 0.95rem 0.3rem;
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  cursor: pointer;
+  opacity: 0.85;
+  transform: translateX(-50%);
+  transition: opacity 0.3s var(--ease-out);
+}
+html:has([data-home-nav][data-open]) .home-nav__handle,
+html:has([data-home-nav]:focus-within) .home-nav__handle {
+  opacity: 0;
+  pointer-events: none;
 }
 
 /* ---------- ホームの操作ヒントとホバーカード ---------- */

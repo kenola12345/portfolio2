@@ -7,8 +7,9 @@
 import GridIcon from '../ui/GridIcon.astro';
 import FlipText from '../ui/FlipText.astro';
 import PageNav from '../ui/PageNav.astro';
+import LangSwitch from '../ui/LangSwitch.astro';
 import { ui } from '../../data/ui';
-import { t } from '../../lib/i18n';
+import { getLang, localePath, useT } from '../../lib/i18n';
 
 interface Props {
   /** レコードステージ側のレコードの識別子（'artist' or アルバムの slug） */
@@ -19,19 +20,26 @@ interface Props {
 }
 
 const { slug, label, title } = Astro.props;
+const t = useT(Astro.url);
+const lang = getLang(Astro.url);
 ---
 
 <header class="pt-6 md:pt-10">
   <div class="enter flex flex-col gap-3 md:flex-row md:items-center md:gap-4">
-    <a
-      href="/"
-      class="crystal menu-text inline-flex w-fit shrink-0 items-center gap-2 px-4 py-2 text-sm"
-      style="--crystal-radius: 999px"
-    >
-      <GridIcon />
-      <FlipText>{t(ui.backToMenu)}</FlipText>
-    </a>
+    <!-- SP：「メインメニュー」と言語切り替えを 1 段目に、ページのナビを 2 段目に -->
+    <div class="flex items-center justify-between gap-3 md:contents">
+      <a
+        href={localePath('/', lang)}
+        class="crystal menu-text inline-flex w-fit shrink-0 items-center gap-2 px-4 py-2 text-sm"
+        style="--crystal-radius: 999px"
+      >
+        <GridIcon />
+        <FlipText>{t(ui.backToMenu)}</FlipText>
+      </a>
+      <LangSwitch class="md:hidden" />
+    </div>
     <PageNav current={slug} />
+    <LangSwitch class="hidden md:ml-auto md:inline-flex" />
   </div>
 
   <div class="mt-8 grid grid-cols-[112px_1fr] items-end gap-4 md:mt-10 md:grid-cols-[232px_1fr] md:gap-8">

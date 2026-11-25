@@ -1,0 +1,121 @@
+---
+/**
+ * ホーム。3D のレコードプレーヤーとジャケットが並ぶ 1 画面（100svh）。
+ * ジャケットとレコードは永続化した 3D ステージ（RecordStage）が描き、クリックできる。
+ * このページの DOM は「画面の高さを確保する枠」「キーボード・スクリーンリーダー用のリンク」
+ * 「スクロールすると出てくる名前と連絡先のフッター」だけ。
+ */
+import AppLayout from '../layouts/AppLayout.astro';
+import HomeNav from '../components/ui/HomeNav.astro';
+import SocialLinks from '../components/ui/SocialLinks.astro';
+import FlipText from '../components/ui/FlipText.astro';
+import { albums } from '../data/albums';
+import { artist } from '../data/artist';
+import { ui } from '../data/ui';
+import { getLang, localePath, useT } from '../lib/i18n';
+
+const t = useT(Astro.url);
+const lang = getLang(Astro.url);
+
+const links = [
+  { slug: 'artist', href: localePath('/artist', lang), title: t(artist.name), blurb: t(artist.shelfBlurb) },
+  ...albums.map((album) => ({
+    slug: album.slug,
+    href: localePath(`/albums/${album.slug}`, lang),
+    title: t(album.title),
+    blurb: t(album.blurb),
+  })),
+];
+
+const year = new Date().getFullYear();
+---
+
+<AppLayout>
+  <!-- main は透明にしてクリックを通し、後ろの 3D キャンバスを直接クリックできるようにする -->
+  <!-- 上端にカーソルを持っていくと降りてくるナビ（ほかのページへの移動と言語の切り替え） -->
+  <HomeNav />
+  <main class="pointer-events-none relative z-10">
+    <h1 class="sr-only">{t(artist.name)} — {lang === 'ja' ? 'ディスコグラフィ' : 'Discography'}</h1>
+
+    <section data-stage-home class="relative min-h-svh">
+      <!-- 見た目には出さない。キーボードで選べる実際のリンク（フォーカスすると 3D のレコードが顔を出す） -->
+      <nav aria-label={t(ui.albumsNav)} class="sr-only pointer-events-auto">
+        <ul>
+          {
+            links.map((item) => (
+              <li>
+                <a data-card={item.slug} href={item.href}>
+                  {item.title}<span class="sr-only"> — {item.blurb}</span>
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+
+      <!-- 操作のヒント。台はドラッグで回せることを、カーソル（つかむ手）と合わせて伝える。一度回したら消える -->
+      <p class="drag-hint crystal menu-text" style="--crystal-radius: 999px" aria-hidden="true">
+        <svg class="drag-hint__icon" viewBox="0 0 32 32" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M8 11 3 16l5 5" />
+          <path d="M24 11l5 5-5 5" />
+          <path d="M4 16h24" opacity="0.45" />
+          <circle class="drag-hint__dot" cx="16" cy="16" r="3.2" fill="currentColor" stroke="none" />
+        </svg>
+        <span>{t(ui.dragHint)}</span>
+        <span class="drag-hint__sep">·</span>
+        <span class="drag-hint__click">{t(ui.clickHint)}</span>
+      </p>
+    </section>
+
+    <!-- フッター：® 付きの名前と連絡先 -->
+    <footer class="pointer-events-auto wrap pb-14 pt-16 md:pb-20 md:pt-24">
+      <!-- 名前は 1 行。画面幅に合わせて小さくなり、スマホでも折り返さない -->
+      <p
+        class="menu-text whitespace-nowrap text-[clamp(1.5rem,4.2vw,3rem)] uppercase leading-none tracking-tight"
+        aria-label={`${t(artist.name)} ®`}
+      >
+        <span aria-hidden="true"
+          >{t(artist.name)}<sup class="ml-[0.1em] align-top text-[0.4em] font-bold leading-none">®</sup></span
+        >
+      </p>
+
+      <div class="mt-8 md:mt-10">
+        <p class="menu-text text-lg md:text-2xl">{t(ui.contactMe)}</p>
+        <SocialLinks class="mt-4" />
+        <p class="mt-4">
+          <a
+            href={localePath("/albums/contact#direct-mail", lang)}
+            class="crystal menu-text inline-block px-5 py-2.5 text-sm"
+            style="--crystal-radius: 999px"
+          >
+            <FlipText>{t(ui.sendMessage)}</FlipText>
+          </a>
+        </p>
+      </div>
+
+      <p class="mt-12 text-xs text-muted md:mt-16">© {year} {t(artist.name)}. {t(artist.tagline)}.</p>
+      <!-- 3D モデルのクレジット。「Record player」は CC-BY 4.0 なので作者表示が必要 -->
+      {
+        lang === 'ja' ? (
+          <p class="mt-2 max-w-2xl text-xs leading-relaxed text-muted/80">
+            3D モデル：
+            <a class="underline underline-offset-2" href="https://sketchfab.com/3d-models/record-player-65200511d04f4b4dba0742186ee754b5" target="_blank" rel="noreferrer">「Record player」</a>
+            （Temmie_Dola 作、
+            <a class="underline underline-offset-2" href="http://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noreferrer">CC BY 4.0</a>
+            ／名前の追加と不要な部品の削除を行いました）と
+            <a class="underline underline-offset-2" href="https://sketchfab.com/3d-models/vinyl-record-7afce8845d9c4331ba3ac96a3d51694f" target="_blank" rel="noreferrer">「Vinyl Record」</a>
+            （liamo123 作）。いずれも Sketchfab より。
+          </p>
+        ) : (
+          <p class="mt-2 max-w-2xl text-xs leading-relaxed text-muted/80">
+            3D models:{' '}
+            <a class="underline underline-offset-2" href="https://sketchfab.com/3d-models/record-player-65200511d04f4b4dba0742186ee754b5" target="_blank" rel="noreferrer">“Record player”</a>{' '}
+            by Temmie_Dola (<a class="underline underline-offset-2" href="http://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noreferrer">CC BY 4.0</a>, modified: name added, extra parts removed) and{' '}
+            <a class="underline underline-offset-2" href="https://sketchfab.com/3d-models/vinyl-record-7afce8845d9c4331ba3ac96a3d51694f" target="_blank" rel="noreferrer">“Vinyl Record”</a>{' '}
+            by liamo123, via Sketchfab.
+          </p>
+        )
+      }
+    </footer>
+  </main>
+</AppLayout>
