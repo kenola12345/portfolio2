@@ -68,8 +68,7 @@ function computeTarget(slug: string, out: Target, canvas: { width: number; heigh
     const top = r.top + window.scrollY;
     out.pos.set((r.left + r.width / 2 - canvas.width / 2) * wpp, (canvas.height / 2 - (top + r.height / 2)) * wpp, 0);
     out.quat.copy(PAGE_QUAT);
-    // タッチ端末では canvas 自体がページと一緒にスクロールするので、消さなくてよい
-    out.scale = !isTouchDevice() && window.scrollY > r.height * 0.5 ? 0 : (r.width * wpp) / 2 / RECORD_MODEL_RADIUS;
+    out.scale = window.scrollY > r.height * 0.5 ? 0 : (r.width * wpp) / 2 / RECORD_MODEL_RADIUS;
     out.spin = STAGE.spinSlot;
     out.hidden = false;
     return true;
@@ -351,7 +350,7 @@ function HomeScene({ records }: { records: RecordDef[] }) {
     scale.current = MathUtils.damp(scale.current, want, 6, dt);
     g.visible = scale.current > 0.01;
     g.scale.setScalar(Math.max(scale.current, 1e-4));
-    // タッチ端末では canvas がページと一緒にスクロールするので、3D 側では動かさない（スクロールとのずれが出ない）
+    // タッチ端末では 3D を画面に固定したままにして、フッターで覆い隠す（iOS ではスクロール追従がガタつくため）
     g.position.y = isTouchDevice() ? 0 : window.scrollY * view.worldPerPx;
   });
 
@@ -516,13 +515,7 @@ function Stage3D({ records }: { records: RecordDef[] }) {
       <div
         className="stage-root"
         aria-hidden="true"
-        style={
-          isTouchDevice()
-            ? // タッチ端末：canvas をページの先頭に置いてネイティブにスクロールさせる（iOS では fixed + 毎フレーム追従だとガタつく）。
-              // 高さは最大のビューポート（lvh）にして、アドレスバーの伸縮で canvas が作り直されないようにする
-              { position: 'absolute', top: 0, left: 0, width: '100%', height: '100lvh', zIndex: 0, viewTransitionName: 'stage' }
-            : { position: 'fixed', inset: 0, zIndex: 0, viewTransitionName: 'stage' }
-        }
+        style={{ position: 'fixed', inset: 0, zIndex: 0, viewTransitionName: 'stage' }}
       >
         <Canvas
           camera={{ fov: HOME.fov, near: 0.05, far: 80, position: [0, 0, 8] }}

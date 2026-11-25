@@ -69,6 +69,13 @@ body {
 
 /* ---------- 背景 ---------- */
 
+/* タッチ端末では 3D を画面に固定したままにするので、フッターに地の色を敷いて、上がってきたときに覆い隠す */
+@media (hover: none) and (pointer: coarse) {
+  footer.wrap {
+    background: var(--color-bg);
+  }
+}
+
 /* 画面全体の虹色のにじみ（クリスタル越しに見える光）。レコードのキャンバスより奥 */
 .aurora {
   position: fixed;
