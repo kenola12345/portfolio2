@@ -52,14 +52,14 @@ export default function Record({ cover }: RecordProps) {
         <primitive object={object} />
       </group>
       {/* 黒い盤が暗い背景に溶けないよう、縁にクリスタルのような青白い光の輪を足す */}
-      <mesh renderOrder={2}>
+      <mesh position={[0, 0, 0.012]}>
         <ringGeometry args={[RECORD_RIM.inner, RECORD_RIM.outer, 128]} />
         <meshBasicMaterial
           color={RECORD_RIM.color}
           transparent
           opacity={RECORD_RIM.opacity}
           blending={AdditiveBlending}
-          depthTest={false}
+          depthWrite={false}
           toneMapped={false}
         />
       </mesh>

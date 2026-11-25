@@ -1,10 +1,9 @@
 ---
 /**
- * ホーム（棚）。1 画面（100svh）に、ジャケット（カード）だけを並べる。
- * ジャケットの裏にレコードが隠れていて、ホバーで少し顔を出し、
- * クリックで引き出されてアルバムページへ飛んでいく。
- * スクロールすると、® 付きの名前と連絡先のフッターが出てくる。
- * レコード本体は永続化した 3D ステージが描く（RecordStage）。
+ * ホーム。3D のレコードプレーヤーとジャケットが並ぶ 1 画面（100svh）。
+ * ジャケットとレコードは永続化した 3D ステージ（RecordStage）が描き、クリックできる。
+ * このページの DOM は「画面の高さを確保する枠」「キーボード・スクリーンリーダー用のリンク」
+ * 「スクロールすると出てくる名前と連絡先のフッター」だけ。
  */
 import AppLayout from '../layouts/AppLayout.astro';
 import SocialLinks from '../components/ui/SocialLinks.astro';
@@ -14,47 +13,28 @@ import { artist } from '../data/artist';
 import { ui } from '../data/ui';
 import { t } from '../lib/i18n';
 
-const shelf = [
-  { slug: 'artist', href: '/artist', cover: artist.portrait, title: t(artist.name), label: t(ui.artistLabel) },
-  ...albums.map((album) => ({
-    slug: album.slug,
-    href: `/albums/${album.slug}`,
-    cover: album.cover,
-    title: t(album.title),
-    label: `${album.type} · ${album.tracks.length} ${t(album.tracks.length === 1 ? ui.track : ui.tracks)}`,
-  })),
+const links = [
+  { slug: 'artist', href: '/artist', title: t(artist.name) },
+  ...albums.map((album) => ({ slug: album.slug, href: `/albums/${album.slug}`, title: t(album.title) })),
 ];
 
 const year = new Date().getFullYear();
 ---
 
 <AppLayout>
-  <main class="relative z-10">
-    <!-- 画面の文字は出さない。見出しはスクリーンリーダーと検索エンジン用 -->
+  <!-- main は透明にしてクリックを通し、後ろの 3D キャンバスを直接クリックできるようにする -->
+  <main class="pointer-events-none relative z-10">
     <h1 class="sr-only">{t(artist.name)} — Discography</h1>
 
-    <!-- 1 画面ぶん。ジャケットの上にレコードがはみ出す余白（pt）を含めて縦中央に置く -->
-    <section class="flex min-h-svh items-center pt-24 pb-10 md:pt-32">
-      <nav aria-label={t(ui.albumsNav)} class="mx-auto w-full max-w-[1400px] md:px-[var(--gutter-pc)]">
-        <!-- SP は 1 行の横スワイプ（1 画面に収めるため）、PC は 5 列 -->
-        <ul
-          class="flex snap-x snap-mandatory gap-4 overflow-x-auto px-[var(--gutter-sp)] pb-6 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden md:grid md:grid-cols-5 md:gap-6 md:overflow-visible md:px-0 md:pb-0"
-          style="scroll-padding-inline: var(--gutter-sp)"
-        >
+    <section data-stage-home class="min-h-svh">
+      <!-- 見た目には出さない。キーボードで選べる実際のリンク（フォーカスすると 3D のレコードが顔を出す） -->
+      <nav aria-label={t(ui.albumsNav)} class="sr-only pointer-events-auto">
+        <ul>
           {
-            shelf.map((item, i) => (
-              <li class="enter-slide w-[58vw] max-w-[260px] shrink-0 snap-start md:w-auto md:max-w-none" style={`--i:${i}`}>
-                <a data-card={item.slug} href={item.href} class="group block">
-                  <img
-                    class="crystal aspect-square w-full object-cover"
-                    style="--crystal-radius: 14px"
-                    src={item.cover}
-                    alt=""
-                    width="768"
-                    height="768"
-                  />
-                  <span class="menu-text mt-4 block text-base md:text-lg">{item.title}</span>
-                  <span class="mt-0.5 block text-xs tracking-wide text-muted md:text-sm">{item.label}</span>
+            links.map((item) => (
+              <li>
+                <a data-card={item.slug} href={item.href}>
+                  {item.title}
                 </a>
               </li>
             ))
@@ -64,7 +44,7 @@ const year = new Date().getFullYear();
     </section>
 
     <!-- フッター：® 付きの名前と連絡先 -->
-    <footer class="wrap pb-14 pt-16 md:pb-20 md:pt-24">
+    <footer class="pointer-events-auto wrap pb-14 pt-16 md:pb-20 md:pt-24">
       <p
         class="menu-text text-[clamp(1.75rem,6.5vw,4.5rem)] uppercase leading-[0.95] tracking-tight"
         aria-label={`${t(artist.name)} ®`}
@@ -89,6 +69,29 @@ const year = new Date().getFullYear();
       </div>
 
       <p class="mt-12 text-xs text-muted md:mt-16">© {year} {t(artist.name)}. {t(artist.tagline)}.</p>
+      <!-- 3D モデルのクレジット。「Record player」は CC-BY 4.0 なので作者表示が必要 -->
+      <p class="mt-2 max-w-2xl text-xs leading-relaxed text-muted/80">
+        3D models:
+        <a
+          class="underline underline-offset-2"
+          href="https://sketchfab.com/3d-models/record-player-65200511d04f4b4dba0742186ee754b5"
+          target="_blank"
+          rel="noreferrer">“Record player”</a
+        >
+        by Temmie_Dola (<a
+          class="underline underline-offset-2"
+          href="http://creativecommons.org/licenses/by/4.0/"
+          target="_blank"
+          rel="noreferrer">CC BY 4.0</a
+        >, modified: name added, extra parts removed) and
+        <a
+          class="underline underline-offset-2"
+          href="https://sketchfab.com/3d-models/vinyl-record-7afce8845d9c4331ba3ac96a3d51694f"
+          target="_blank"
+          rel="noreferrer">“Vinyl Record”</a
+        >
+        by liamo123, via Sketchfab.
+      </p>
     </footer>
   </main>
 </AppLayout>

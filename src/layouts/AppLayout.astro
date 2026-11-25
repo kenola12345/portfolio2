@@ -30,8 +30,8 @@ const {
 
 // ステージに渡すレコード一覧（Artist が先頭、あとはアルバム順）
 const records = [
-  { slug: 'artist', cover: artist.portrait },
-  ...albums.map((album) => ({ slug: album.slug, cover: album.cover })),
+  { slug: 'artist', cover: artist.portrait, href: '/artist' },
+  ...albums.map((album) => ({ slug: album.slug, cover: album.cover, href: `/albums/${album.slug}` })),
 ];
 ---
 
@@ -59,6 +59,26 @@ const records = [
     <ClientRouter />
   </head>
   <body>
+    <!--
+      ローディング画面。HTML に最初から入れておくので、JS が動く前に中身がちらっと見えることがない。
+      transition:persist なのでページ遷移しても作り直されず、閉じたまま残る。
+      バーの進みは RecordStage の LoadingBridge が --progress に書き込む
+    -->
+    <div id="loading-screen" transition:persist="loading-screen" role="presentation">
+      <p class="menu-text loading-name">KENTARO OSHIMOTO</p>
+      <div class="loading-bar" aria-hidden="true"><div class="loading-bar__fill"></div></div>
+      <p class="menu-text loading-pct" aria-hidden="true"><span data-pct>0</span>%</p>
+    </div>
+    <noscript><style>#loading-screen{display:none}.enter,.enter-slide{animation-play-state:running!important}</style></noscript>
+    <script is:inline>
+      // 読み込みに失敗しても画面が隠れたままにならないよう、20 秒で必ず閉じる
+      if (!window.__loadGuard) {
+        window.__loadGuard = setTimeout(function () {
+          var el = document.getElementById('loading-screen');
+          if (el) el.setAttribute('data-done', '');
+        }, 20000);
+      }
+    </script>
     <div class="aurora" aria-hidden="true"></div>
     {glow && <div class="page-glow" aria-hidden="true"></div>}
     <RecordStage client:only="react" transition:persist="record-stage" records={records} />
