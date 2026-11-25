@@ -350,7 +350,8 @@ function HomeScene({ records }: { records: RecordDef[] }) {
     scale.current = MathUtils.damp(scale.current, want, 6, dt);
     g.visible = scale.current > 0.01;
     g.scale.setScalar(Math.max(scale.current, 1e-4));
-    g.position.y = window.scrollY * view.worldPerPx;
+    // タッチ端末では 3D を画面に固定したままにして、フッターで覆い隠す（iOS ではスクロール追従がガタつくため）
+    g.position.y = isTouchDevice() ? 0 : window.scrollY * view.worldPerPx;
   });
 
   return (
