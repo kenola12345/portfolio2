@@ -1,19 +1,10 @@
 /** 3D ステージの調整値。数値はコンポーネントに直書きせずここにまとめる */
 
-/** レコードの GLB（Sketchfab「Vinyl Record」by liamo123, Sketchfab Standard License） */
-export const RECORD_MODEL_URL = '/models/vinyl_record.glb';
-
 /**
  * レコードプレーヤーの GLB（Sketchfab「Record player」by Temmie_Dola, CC-BY-4.0）。
  * 元は約 64MB。scripts/optimize-record-player.mjs でジャケット等を除き 1024px の webp にしてある
  */
 export const RECORD_PLAYER_URL = '/models/record_player.glb';
-
-/**
- * GLB のノード変換を合計すると X 軸 -90°（盤面が真上 +Y を向く）になっているため、
- * +90° 戻してカメラ（+Z）に盤面を向ける
- */
-export const RECORD_FACING_ROTATION: [number, number, number] = [Math.PI / 2, 0, 0];
 
 /** GLB のディスク半径（モデル単位）。ワールドの大きさへの換算に使う */
 export const RECORD_MODEL_RADIUS = 0.949;
@@ -28,23 +19,26 @@ export const RECORD_RIM = {
 } as const;
 
 /**
- * GLB のベースカラーテクスチャ（1024px）上の中央ラベルの位置。
- * テクスチャには A 面（上半分）と B 面（下半分）の 2 枚の盤面が並んでいる。
- * 元のラベルには他人の文字が入っているので、半径は少し大きめにして必ず覆う。
+ * レコード（自作：コードで組み立てている。3D モデルのファイルは使わない）。
+ * 単位はモデル単位（半径 = RECORD_MODEL_RADIUS）。ワールドへの換算は HOME.recordRadius で行う
  */
-export const LABEL = {
+export const RECORD = {
+  /** 盤の厚み */
+  thickness: 0.012,
+  segments: 128,
+  /** 盤面のテクスチャの大きさ（px）。盤の直径がそのまま 1 辺になる */
   textureSize: 1024,
-  centers: [
-    { x: 257, y: 257 },
-    { x: 257, y: 770 },
-  ],
-  radius: 90,
-  /** ラベル画像の回転（ラジアン）。モデルの UV の向きに合わせる */
-  rotation: 0,
-  /** モデルの UV が左右反転しているため、画像も反転して描くと正しい向きで見える */
-  mirrorX: true,
-  /** 中央の穴の半径（px） */
-  holeRadius: 6,
+  /** ラベルの半径（盤の半径に対する割合） */
+  labelRatio: 0.34,
+  /** 溝を描く範囲（盤の半径に対する割合）。内側と外側の無地の帯を除く */
+  grooveInner: 0.4,
+  grooveOuter: 0.965,
+  /** 溝の細かさ（px）。小さいほど細かく、細かすぎると縞模様（モアレ）が出る */
+  grooveStep: 2.4,
+  bumpScale: 0.9,
+  /** 盤面の向きの調整。丸いテクスチャの向きに合わせて、ラベルの絵が正しい向きで見えるようにする */
+  labelMirrorX: false,
+  labelRotation: 0,
 } as const;
 
 /**

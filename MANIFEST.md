@@ -32,7 +32,7 @@ This is "inspired by" only. Do **not** copy any real product's logos, icons, sou
 
 ### Design direction update 2 — 3D home scene + loading screen
 
-- **Home = a 3D record-player scene** (replaces the DOM sleeve cards). The turntable (`public/models/record_player.glb`) sits in the middle, the five album **sleeves** (cover image on a thin white box) lie on the table around it, and each album's **record** (`vinyl_record.glb`) rests half-pulled-out of its sleeve. Hover slides the record out further; click lifts it out, then the page changes and the record **flies to the album page's top-left slot and spins** (same transition as before). Sleeves and records are both clickable (R3F pointer events; the canvas only takes clicks on the home route, see `html[data-stage]`).
+- **Home = a 3D record-player scene** (replaces the DOM sleeve cards). The turntable (`public/models/record_player.glb`) sits in the middle, the five album **sleeves** (cover image on a thin white box) lie on the table around it, and each album's **record** (built in code, no model file) rests half-pulled-out of its sleeve. Hover slides the record out further; click lifts it out, then the page changes and the record **flies to the album page's top-left slot and spins** (same transition as before). Sleeves and records are both clickable (R3F pointer events; the canvas only takes clicks on the home route, see `html[data-stage]`).
 - **Two layouts** (`HOME.layouts` in `stage/config.ts`): `wide` (PC) and `tall` (phone), chosen by viewport aspect ratio. In both, the **player is in the centre** and the five sleeves are **scattered around it at slightly crooked angles** (each has a `yaw`; the record slides out along its sleeve's own edge) — like the original Sketchfab scene. The camera is perspective; the table is tilted toward the camera and scrolls away with the page; album pages map the DOM slot rect onto the z=0 plane (`view.worldPerPx`). **Records stay glued to their sleeves** (no easing on position while docked — easing made them lag behind and cross over the covers when scrolling); only the peek/lift amounts ease, and they only ease-fly when travelling between the shelf and an album page.
 - **Camera:** lower, shallower starting angle (`tilt` per layout, ~31° on PC) with a longer lens (`HOME.fov` 22) for flatter perspective; the player is true size (platter and records match). **Drag to orbit**: left/right spins the table, up/down changes elevation (clamped, mouse only — touch keeps vertical swipes for page scroll). The view resets to the starting angle when you leave the home page. A "Drag to rotate" hint pill (with arrows icon) sits at the bottom and disappears after the first drag (remembered in `sessionStorage`); the cursor is a grab hand over the scene.
 - **Click sequence (shelf → album):** the record is pulled out in **three ordered steps** so it never passes through its sleeve: ① slide fully clear of the sleeve along its own direction (`HOME.peek.pulled`, must exceed sleeve half-size + record radius), ② lift (`HOME.lift`, starts once ~85% out), ③ after ~0.9 s (`STAGE.pullMs`) the page changes and the record flies to the album slot. Hover card is hidden while pulling.
@@ -50,10 +50,10 @@ This is "inspired by" only. Do **not** copy any real product's logos, icons, sou
 - **Keyboard / screen readers:** the home DOM contains a visually-hidden `<nav>` of real links (`a[data-card]`); focusing one makes its record peek, Enter pulls it out and navigates.
 - **Record player model:** the original Sketchfab file is 64 MB. `node scripts/optimize-record-player.mjs <original.glb>` strips the baked-in sleeves/vinyl/animation, **erases the blue logo and prints the name in a circle on the black platter** ("KENTARO OSHIMOTO" large on the top arc, "FULL STACK ENGINEER" small on the bottom arc; Futura-style, because Montserrat isn't installed locally) directly into the base-colour texture, and writes a ~340 KB webp-textured GLB. Letters are placed one by one around the circle because the SVG renderer has no `textPath`; the platter's texture island is flipped top-to-bottom on the model, which the script compensates for. Re-run it to change the text or sizes (`RING` in the script).
 - **Loading screen:** a full-screen overlay with the name and a progress bar (`#loading-screen` in `AppLayout.astro`, persisted across pages). `LoadingBridge` in `RecordStage.tsx` writes drei `useProgress` (real GLB/texture loading) into `--progress`; it closes ~450 ms after loading finishes, and a 15 s / 20 s safety timeout always closes it. Page entrance animations and the 3D intro wait until it has closed.
-- **Licenses & credits:** see `CREDITS.md`. The record player (CC BY 4.0) must stay credited in the footer. The vinyl model is Sketchfab "Free Standard" and its agreement restricts making the file downloadable by others — **unresolved**: replace it, get the author's permission, or accept the risk (details in CREDITS.md). The cover images for Work and Contact are third-party artwork whose rights are not recorded.
+- **Licenses & credits:** see `CREDITS.md`. The record player (CC BY 4.0) must stay credited in the footer. The vinyl records are built in code, so only the record player needs credit (details in CREDITS.md). The cover images for Work and Contact are third-party artwork whose rights are not recorded.
 - **2D fallback:** if WebGL is missing, the 3D scene fails to load, or the URL has `?view=2d`, `html[data-3d="off"]` is set (AppLayout inline script, re-applied after each navigation): the home page shows the cover-card grid, album/artist pages show a slowly turning round cover in the record slot, and no canvas is created.
 - **Share image:** `public/og.png` (1200×630, face photo + name; regenerate with `node scripts/generate-og.mjs`) with `og:*` / `twitter:*` tags. Absolute URLs, `canonical` and `hreflang` need the public URL: set `SITE_URL` (Vercel's production URL is used automatically).
-- **Credits (required):** "Record player" by Temmie_Dola is **CC BY 4.0** — the credit line in the home footer must stay. "Vinyl Record" by liamo123 is under the Sketchfab Standard license.
+- **Credits (required):** "Record player" by Temmie_Dola is **CC BY 4.0** — the credit line in the home footer must stay. The vinyl records are code-made (no credit needed).
 - Dev only: `/?zoom=4&cy=0.28` moves the camera in to inspect the models.
 
 ## 2. Experience flow
@@ -148,8 +148,7 @@ Alternative considered and rejected: a single-page React app with a client route
 - Bottom: hint row — `← → Select   ⏎ Open   Drag to tilt` (on touch: `Swipe · Tap to open`).
 
 ### The record (3D object)
-- **Model:** `public/models/vinyl_record.glb`, from Sketchfab, "Vinyl Record" by liamo123, under the Sketchfab Standard license. Credit it in the footer/colophon.
-  - One mesh (`Circle_Material.001_0`) and one PBR material with baseColor + metallicRoughness + normal maps, all 1024² PNG. File size is about 1 MB. No animations.
+- **Built in code, no model file:** `Record.tsx` makes a `CylinderGeometry` disc; `labelTexture.ts` draws the black face, a circular cover label and a shared groove bump map (`RECORD` in `config.ts`).
   - The disc lies flat in **XY** with radius ≈ 0.949 and thickness 0.01 along **+Z**. Rotate it so it faces the camera and scale it to the layout. Load it with drei `useGLTF` and `useGLTF.preload`.
   - The texture atlas has **two faces**: side A sits in the top half of the UV, centered ≈ (257, 257) px, and side B in the bottom half, centered ≈ (257, 770) px. The baked center label is a blue circle, radius ≈ 85 px, with third-party text on it. That text **must always be covered**.
 - **Center label = album picture:** per record, build a `CanvasTexture`. Draw the original baseColor first, then paint the album cover, clipped to a circle, over **both** label areas. Give each record a cloned material using that texture, and keep the normal and roughness maps shared. Keep the label centers and radius in `stage/config.ts` and tune them visually. If compositing ever looks wrong, the fallback is a thin `CircleGeometry` decal with the cover texture on each face, z-offset ±0.0005.
@@ -354,7 +353,6 @@ portfolio2/
 ├─ package.json            # npm
 ├─ tsconfig.json
 ├─ public/
-│  ├─ models/vinyl_record.glb  # record model (Sketchfab, liamo123 — credit required in colophon)
 │  ├─ covers/              # album label images (.webp)
 │  ├─ projects/            # existing screenshots (keep)
 │  ├─ icons/               # existing social icons (keep)
@@ -432,7 +430,6 @@ Each phase ends with: `npm run build` passes, the site is checked in the browser
 
 ### Phase 3 — 3D record + shelf
 - [x] Persistent `RecordStage` canvas behind the DOM.
-- [ ] Optimize `public/models/vinyl_record.glb` (webp textures, ≤ 400 KB).
 - [x] `Record`: load the GLB, composite each album cover over both baked labels, lighting, glowing rim.
 - [ ] Shelf arc layout, focus change via keys / click / swipe / wheel, accent glow.
 - [ ] Clamped tilt drag with spring back + subtle pointer follow.
