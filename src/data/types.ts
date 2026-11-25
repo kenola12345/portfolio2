@@ -23,8 +23,8 @@ export interface Track {
   /** width / height は実寸。開閉アニメーションが画像の高さを先に知るために必須 */
   images?: { src: string; alt: L10n; width: number; height: number }[];
   links?: { label: L10n; href: string }[];
-  /** true のとき、展開部分に問い合わせフォームを出す */
-  form?: boolean;
+  /** 何枚目のディスクか（1 から）。省略は 1。アルバムに discs があるときだけ使う */
+  disc?: number;
 }
 
 /** アルバム = ポートフォリオの 1 セクション。ホームでは 3D レコードとして並ぶ */
@@ -40,6 +40,8 @@ export interface Album {
   accent: string;
   /** レコード中央ラベルに貼る画像 */
   cover: string;
+  /** ディスクが複数あるアルバム（例：Disc 1 = 職歴、Disc 2 = 学歴）。要素の順がディスク番号 */
+  discs?: { title: L10n }[];
   linerNotes?: L10n;
   tracks: Track[];
 }

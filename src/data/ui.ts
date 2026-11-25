@@ -19,7 +19,7 @@ export const ui = {
   albumsNav: { en: 'Albums', ja: 'アルバム' },
   dragHint: { en: 'Drag to rotate', ja: 'ドラッグで回転' },
   clickHint: { en: 'Click a record to open it', ja: 'レコードをクリックで開く' },
-  formHoneypot: { en: 'Leave this empty', ja: 'ここは空のままにしてください' },
+  disc: { en: 'Disc', ja: 'ディスク' },
   contactMe: { en: 'Contact me', ja: 'お問い合わせ' },
   play: { en: 'Play', ja: '再生' },
   langNav: { en: 'Language', ja: '言語' },
@@ -27,22 +27,4 @@ export const ui = {
   menuHandleLabel: { en: 'Show the menu', ja: 'メニューを表示' },
   pagesNav: { en: 'Pages', ja: 'ページ' },
   navArtist: { en: 'About me', ja: '自己紹介' },
-  formName: { en: 'Your name', ja: 'お名前' },
-  formEmail: { en: 'Your email', ja: 'メールアドレス' },
-  formMessage: { en: 'Message', ja: 'メッセージ' },
-  formSend: { en: 'Send message', ja: '送信する' },
-  formSending: { en: 'Sending…', ja: '送信中…' },
-  formSent: { en: 'Thanks! Your message has been sent.', ja: 'ありがとうございます。メッセージを送信しました。' },
-  formError: {
-    en: 'Sorry, something went wrong. Please try again, or email me directly.',
-    ja: '送信に失敗しました。もう一度お試しいただくか、メールで直接ご連絡ください。',
-  },
-  formCaptcha: {
-    en: 'Please confirm you are not a robot.',
-    ja: '「ロボットではありません」にチェックを入れてください。',
-  },
-  formFallback: {
-    en: 'Opening your mail app with your message…',
-    ja: 'メッセージを入力した状態でメールアプリを開きます…',
-  },
 } satisfies Record<string, L10n>;

@@ -143,6 +143,11 @@ export const albums: Album[] = [
     },
     // 最新の在籍年
     year: 2026,
+    // 2 枚組：Disc 1 = 職歴、Disc 2 = 学歴
+    discs: [
+      { title: { en: 'Work', ja: '職歴' } },
+      { title: { en: 'Education', ja: '学歴' } },
+    ],
     accent: '#3d7be0',
     cover: '/covers/work.webp',
     // 日本語は履歴書（英語版）をもとにした訳。社名・サービス名以外は表現を調整してよい
@@ -253,7 +258,8 @@ export const albums: Album[] = [
       },
       {
         slug: 'temple',
-        title: { en: 'Education · Temple University, Japan Campus', ja: '学歴 · テンプル大学ジャパンキャンパス' },
+        title: { en: 'Temple University, Japan Campus', ja: 'テンプル大学ジャパンキャンパス' },
+        disc: 2,
         meta: { en: '2017 — 2020', ja: '2017年 — 2020年' },
         description: {
           en: 'Bachelor of Arts in Economics, studying behavioral economics and econometrics. GPA 4.0.',
@@ -262,7 +268,8 @@ export const albums: Album[] = [
       },
       {
         slug: 'el-camino',
-        title: { en: 'Education · El Camino College', ja: '学歴 · エルカミーノ・カレッジ' },
+        title: { en: 'El Camino College', ja: 'エルカミーノ・カレッジ' },
+        disc: 2,
         meta: { en: '2015 — 2017', ja: '2015年 — 2017年' },
         // TODO(owner): LinkedIn では「Bachelor's degree, Economics」だが、2 年制の大学のため学位の表記は省いてある。正しい表記を確認する
         description: {
@@ -346,12 +353,12 @@ export const albums: Album[] = [
   },
   {
     slug: 'contact',
-    // トラックが 4 つになったので SINGLE ではなく EP
+    // 3 トラック（メール・GitHub・LinkedIn）なので EP
     type: 'EP',
     title: { en: 'Contact', ja: 'お問い合わせ' },
     blurb: {
-      en: 'Email, GitHub, LinkedIn, or send me a message directly.',
-      ja: 'メール、GitHub、LinkedIn、またはこのサイトから直接メッセージを送れます。',
+      en: 'Email, GitHub and LinkedIn: the ways to get in touch.',
+      ja: 'メール、GitHub、LinkedIn。ご連絡はこちらから。',
     },
     accent: '#d9a72b',
     cover: '/covers/contact.webp',
@@ -385,17 +392,6 @@ export const albums: Album[] = [
           ja: '職務経歴などのプロフィールはこちら。',
         },
         links: [{ label: { en: 'LinkedIn', ja: 'LinkedIn' }, href: 'https://www.linkedin.com/in/kentaro-oshimoto/' }],
-      },
-      {
-        slug: 'direct-mail',
-        title: { en: 'Direct Mail', ja: 'ダイレクトメール' },
-        meta: { en: 'Send a message', ja: 'メッセージを送る' },
-        description: {
-          en: 'Send me a message right from this page.',
-          ja: 'このページから直接メッセージを送れます。',
-        },
-        // 説明の下に問い合わせフォームを出す
-        form: true,
       },
     ],
   },

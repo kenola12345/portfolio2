@@ -48,7 +48,7 @@ const countLabel = trackCount(album.tracks.length, lang);
       </button>
     </div>
 
-    <Tracklist tracks={album.tracks} />
+    <Tracklist tracks={album.tracks} discs={album.discs} />
 
     {
       album.linerNotes && (
