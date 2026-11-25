@@ -1,0 +1,37 @@
+---
+/**
+ * 仮のホーム。Phase 1 ではデータとトークンが正しく読めるかの確認用。
+ * Phase 2 で棚（2D のカバー一覧 + アクセシブルなナビ）に置き換える。
+ */
+import AppLayout from '../layouts/AppLayout.astro';
+import { albums } from '../data/albums';
+import { artist } from '../data/artist';
+import { t } from '../lib/i18n';
+---
+
+<AppLayout>
+  <main class="wrap py-16 md:py-24">
+    <p class="text-sm font-bold uppercase tracking-[0.2em] text-muted">Discography</p>
+    <h1 class="mt-2 font-display text-4xl font-black uppercase md:text-7xl">{t(artist.name)}</h1>
+    <p class="mt-3 text-muted">{t(artist.tagline)}</p>
+
+    <ul class="mt-12 grid grid-cols-2 gap-4 md:grid-cols-5 md:gap-6">
+      <li>
+        <img class="aspect-square w-full rounded-card" src={artist.portrait} alt="" width="1024" height="1024" />
+        <p class="mt-3 font-bold">{t(artist.name)}</p>
+        <p class="text-sm text-muted">ARTIST</p>
+      </li>
+      {
+        albums.map((album) => (
+          <li>
+            <img class="aspect-square w-full rounded-card" src={album.cover} alt="" width="1024" height="1024" />
+            <p class="mt-3 font-bold">{t(album.title)}</p>
+            <p class="text-sm text-muted">
+              {album.type} · {album.tracks.length} {album.tracks.length === 1 ? 'track' : 'tracks'}
+            </p>
+          </li>
+        ))
+      }
+    </ul>
+  </main>
+</AppLayout>

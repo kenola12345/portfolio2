@@ -1,0 +1,62 @@
+@import "tailwindcss";
+
+/* デザイントークン（MANIFEST §11）。色・フォントは @theme に置き、Tailwind のユーティリティ
+   （bg-bg, bg-surface, text-muted, font-display など）と CSS 変数の両方で使えるようにする */
+@theme {
+  --color-bg: #0b0b0d;
+  --color-surface: #151518;
+  --color-surface-2: #1f1f24;
+  --color-text: #f4f4f5;
+  --color-muted: #a1a1aa;
+  /* アルバムごとに要素側で上書きする（ヘッダーのグラデーション・フォーカスの光） */
+  --color-accent: #8b5cf6;
+
+  --font-display: 'Montserrat', 'Noto Sans JP', system-ui, sans-serif;
+  --font-body: 'Inter', 'Noto Sans JP', system-ui, sans-serif;
+  --font-jp: 'Noto Sans JP', system-ui, sans-serif;
+
+  --radius-card: 8px;
+  --ease-out: cubic-bezier(.22, 1, .36, 1);
+}
+
+/* テーマ外のトークン。左右余白は全ページこの値だけを使う */
+:root {
+  --gutter-sp: 16px;
+  --gutter-pc: 40px;
+}
+
+/* SP は 768px 未満。md: を PC として使う（Tailwind 標準の md = 48rem = 768px） */
+
+html {
+  background: var(--color-bg);
+  color: var(--color-text);
+  color-scheme: dark;
+}
+
+body {
+  margin: 0;
+  min-height: 100svh;
+  background: var(--color-bg);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* 全ページ共通の左右余白。SP のテキストが画面端に付かないよう必ずこのコンテナに入れる */
+@utility wrap {
+  width: 100%;
+  margin-inline: auto;
+  padding-inline: var(--gutter-sp);
+
+  @media (width >= 48rem) {
+    padding-inline: var(--gutter-pc);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
