@@ -13,8 +13,8 @@ export const ui = {
   track: { en: 'track', ja: '曲' },
   title: { en: 'Title', ja: 'タイトル' },
   nowPlaying: { en: 'Now Playing', ja: '再生中' },
-  hintKeys: { en: '← → Select   ⏎ Open   Drag to tilt', ja: '← → 選択   ⏎ 開く   ドラッグで傾ける' },
-  hintTouch: { en: 'Swipe · Tap to open', ja: 'スワイプ · タップで開く' },
+  hintKeys: { en: 'Hover to peek · Click to pull out the record', ja: 'ホバーで顔を出す · クリックでレコードを引き出す' },
+  hintTouch: { en: 'Tap a sleeve to pull out the record', ja: 'ジャケットをタップしてレコードを引き出す' },
   notFoundTitle: { en: 'Track not found', ja: '曲が見つかりません' },
   albumsNav: { en: 'Albums', ja: 'アルバム' },
 } satisfies Record<string, L10n>;

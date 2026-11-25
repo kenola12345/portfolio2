@@ -1,0 +1,42 @@
+---
+/**
+ * アルバム／アーティストページ共通のヘッダー。
+ * 左上の data-record-slot の位置に、3D ステージのレコードが飛んできて回り続ける。
+ * 「棚へ戻る」ボタンはクリスタルのピル型。
+ */
+import GridIcon from '../ui/GridIcon.astro';
+import { ui } from '../../data/ui';
+import { t } from '../../lib/i18n';
+
+interface Props {
+  /** レコードステージ側のレコードの識別子（'artist' or アルバムの slug） */
+  slug: string;
+  /** タイトルの上の小さい種別ラベル（ALBUM / EP / SINGLE / ARTIST） */
+  label: string;
+  title: string;
+}
+
+const { slug, label, title } = Astro.props;
+---
+
+<header class="pt-6 md:pt-10">
+  <a
+    href="/"
+    class="crystal menu-text enter inline-flex items-center gap-2 px-4 py-2 text-sm"
+    style="--crystal-radius: 999px"
+  >
+    <GridIcon />
+    {t(ui.backToShelf)}
+  </a>
+
+  <div class="mt-8 grid grid-cols-[112px_1fr] items-end gap-4 md:mt-10 md:grid-cols-[232px_1fr] md:gap-8">
+    <!-- レコードの置き場所。ここは空のまま、3D ステージがこの矩形に合わせてレコードを置く -->
+    <div data-record-slot={slug} class="aspect-square w-full" aria-hidden="true"></div>
+
+    <div class="enter min-w-0" style="--i:1">
+      <p class="menu-text text-xs tracking-[0.2em] opacity-80 md:text-sm">{label}</p>
+      <h1 class="menu-text mt-1 break-words text-3xl leading-[1.05] md:text-7xl">{title}</h1>
+      <slot />
+    </div>
+  </div>
+</header>

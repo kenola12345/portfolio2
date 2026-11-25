@@ -1,27 +1,42 @@
 ---
 /**
- * 全ページ共通のレイアウト。head・フォント・解析タグを持つ。
- * Phase 2 で <ClientRouter />、Phase 3 で永続化する 3D ステージをここに追加する。
+ * 全ページ共通のレイアウト。head・フォント・解析タグに加えて、
+ * ページ遷移しても消えない 3D レコードステージ（transition:persist）を持つ。
  */
 import '../styles/globals.css';
 import Analytics from '@vercel/analytics/astro';
+import { ClientRouter } from 'astro:transitions';
+import RecordStage from '../components/stage/RecordStage';
+import { albums } from '../data/albums';
 import { artist } from '../data/artist';
 
 interface Props {
   title?: string;
   description?: string;
   lang?: 'en' | 'ja';
+  /** ヘッダーのグラデーションとクリスタルの光の色。棚（ホーム）は背景色のまま */
+  accent?: string;
+  /** アルバムページのヘッダーのグラデーションを出すか */
+  glow?: boolean;
 }
 
 const {
   title = `${artist.name.en} — Discography`,
   description = artist.tagline.en,
   lang = 'en',
+  accent = '#0b0b0d',
+  glow = false,
 } = Astro.props;
+
+// ステージに渡すレコード一覧（Artist が先頭、あとはアルバム順）
+const records = [
+  { slug: 'artist', cover: artist.portrait },
+  ...albums.map((album) => ({ slug: album.slug, cover: album.cover })),
+];
 ---
 
 <!doctype html>
-<html lang={lang}>
+<html lang={lang} style={`--page-accent: ${accent}`}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -38,19 +53,15 @@ const {
     <link
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Montserrat:wght@700;800;900&family=Noto+Sans+JP:wght@400;700&display=swap"
-      media="print"
-      onload="this.media='all'"
     />
-    <noscript>
-      <link
-        rel="stylesheet"
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Montserrat:wght@700;800;900&family=Noto+Sans+JP:wght@400;700&display=swap"
-      />
-    </noscript>
 
     <title>{title}</title>
+    <ClientRouter />
   </head>
   <body>
+    <div class="aurora" aria-hidden="true"></div>
+    {glow && <div class="page-glow" aria-hidden="true"></div>}
+    <RecordStage client:only="react" transition:persist="record-stage" records={records} />
     <slot />
     <Analytics />
   </body>

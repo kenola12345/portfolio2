@@ -23,6 +23,12 @@ This is "inspired by" only. Do **not** copy any real product's logos, icons, sou
 
 ---
 
+### Design direction update (decided with Kentaro)
+
+- **Sleeves hide the records.** On the shelf each album is a **sleeve card** (cover image) and its record sits **behind** it, peeking out of the top edge. Hover raises the record, click **pulls it out of the sleeve**, then the page changes and the record **flies to the top-left slot of the album page and spins** (the Spotify album-header layout). Going back reverses it.
+- **Crystal UI (GameCube-menu feel).** All UI elements (back button, track rows, link pills, play button, sleeve cards) are glass "crystal" parts, similar to iOS-style translucent glass: blurred translucent face, bevelled inner highlight, rainbow rim light, a diagonal specular streak, bold white rounded labels with a soft blue glow, and a dark background with faint rainbow aurora blobs. Shelf caption: `··· Menu Selection`. Styles live in `src/styles/globals.css` (`.crystal`, `.menu-text`, `.aurora`, `.page-glow`).
+- **How the 3D lines up with the DOM:** the canvas is fixed **behind** the page and uses an orthographic camera with 1 unit = 1 CSS px, so each record just reads the `getBoundingClientRect()` of its sleeve (`[data-card]`) or of the header slot (`[data-record-slot]`) every frame and eases toward it (`src/components/stage/stageLayout.ts`, `RecordStage.tsx`). Opaque DOM cards naturally hide the records; the canvas is persisted across pages with `transition:persist`.
+
 ## 2. Experience flow
 
 ```
@@ -388,26 +394,26 @@ Each phase ends with: `npm run build` passes, the site is checked in the browser
 - [x] `globals.css` with tokens (§11) in `@theme` + `wrap` utility for the gutters. Fonts via Google Fonts (`AppLayout.astro`).
 - [x] Data types + seed data (`src/data/`) with placeholder SVG covers in `public/covers/` (§12).
 
-### Phase 2 — Static pages (no 3D yet)
-- [ ] `AppLayout` with `<ClientRouter />`.
-- [ ] Album page from data: header (with an `<img>` in the record slot for now), tracklist accordion, liner notes.
-- [ ] Artist page: banner, popular, discography, about card, socials.
-- [ ] Shelf page as a 2D cover row with captions + a11y nav (this is also the no-WebGL fallback).
+### Phase 2 — Static pages (done early, together with Phases 3–4 basics)
+- [x] `AppLayout` with `<ClientRouter />`.
+- [x] Album page from data: header with the live record in the slot, tracklist accordion (`<details name>`), liner notes.
+- [x] Artist page: about card (banner photo + bio + socials) and discography. TODO: "Popular" section.
+- [x] Shelf page as sleeve cards + captions; cards are real links (also the keyboard / no-WebGL fallback).
 - [ ] 404 page.
 - [ ] Check SP gutters on every page.
 
 ### Phase 3 — 3D record + shelf
-- [ ] Persistent `RecordStage` canvas behind the DOM.
+- [x] Persistent `RecordStage` canvas behind the DOM.
 - [ ] Optimize `public/models/vinyl_record.glb` (webp textures, ≤ 400 KB).
-- [ ] `Record`: load the GLB, composite each album cover over both baked labels (no original label text visible from any angle), lighting.
+- [x] `Record`: load the GLB, composite each album cover over both baked labels, lighting, glowing rim.
 - [ ] Shelf arc layout, focus change via keys / click / swipe / wheel, accent glow.
 - [ ] Clamped tilt drag with spring back + subtle pointer follow.
 - [ ] Captions sync with focus; a11y nav sync with focus.
 
 ### Phase 4 — Record flight transition
 - [ ] `stageStore` driven by Astro navigation events.
-- [ ] `useRecordSlot` (DOM rect → world) incl. resize/scroll tracking.
-- [ ] Shelf → Album flight + content entrance (§7). Album → Shelf reverse. Browser back works.
+- [x] DOM rect → world tracking (`stageLayout.ts`), incl. resize/scroll (read every frame).
+- [x] Shelf → Album flight + content entrance (§7). Album → Shelf reverse. (Browser back: still to test.)
 - [ ] Deep-link loads start parked. Replace the slot `<img>` with the live record (keep `<img>` as fallback).
 
 ### Phase 5 — Now Playing bar + album-to-album

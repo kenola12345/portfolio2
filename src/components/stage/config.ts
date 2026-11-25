@@ -9,6 +9,18 @@ export const RECORD_MODEL_URL = '/models/vinyl_record.glb';
  */
 export const RECORD_FACING_ROTATION: [number, number, number] = [Math.PI / 2, 0, 0];
 
+/** GLB のディスク半径（モデル単位）。ピクセルサイズへの換算に使う */
+export const RECORD_MODEL_RADIUS = 0.949;
+
+/** レコードの縁の光の輪（モデル単位、ディスク半径 0.949 の外周に重ねる）と映り込みの強さ */
+export const RECORD_RIM = {
+  inner: 0.925,
+  outer: 0.955,
+  color: '#8fb8ff',
+  opacity: 0.55,
+  envIntensity: 2.2,
+} as const;
+
 /**
  * GLB のベースカラーテクスチャ（1024px）上の中央ラベルの位置。
  * テクスチャには A 面（上半分）と B 面（下半分）の 2 枚の盤面が並んでいる。
@@ -29,11 +41,25 @@ export const LABEL = {
   holeRadius: 6,
 } as const;
 
-/** ショーケース（仮の棚）の配置 */
-export const SHOWCASE = {
-  spacing: 2.3,
-  /** 自転の速さ（ラジアン/秒）。約 8rpm 相当より少し遅め */
-  spinSpeed: 0.6,
-  /** 盤面を少し寝かせて立体感を出す */
-  tiltX: -0.35,
+/**
+ * ステージの動き。カメラは正射影で 1 ユニット = 1 CSS px にしてあるので、
+ * DOM の getBoundingClientRect の値をそのまま 3D の位置・大きさに使える。
+ */
+export const STAGE = {
+  /** ジャケット（カード）の幅に対するレコード直径の割合 */
+  recordFill: 0.9,
+  /** ジャケットの上辺からレコードがはみ出す量（レコード直径に対する割合） */
+  peekRest: 0.16,
+  peekHover: 0.4,
+  peekPulled: 0.62,
+  /** クリックしてレコードを引き出してからページ遷移を始めるまで（ms） */
+  pullMs: 480,
+  /** 位置・大きさの追従の速さ。大きいほど速い（指数減衰） */
+  damp: 8,
+  /** 自転の速さ（ラジアン/秒） */
+  spinPulled: 1.4,
+  spinHover: 0.6,
+  spinSlot: 0.9,
+  /** アルバムページで盤面を少し傾けて立体感を出す（ラジアン） */
+  slotTilt: 0.16,
 } as const;
