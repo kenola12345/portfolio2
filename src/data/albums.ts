@@ -224,7 +224,6 @@ export const albums: Album[] = [
         slug: 'digital-hearts',
         title: { en: 'Linguistic Game Tester · DIGITAL Hearts Holdings', ja: 'ゲーム言語テスター · DIGITAL Hearts Holdings' },
         meta: { en: 'Jan 2021 — Apr 2023', ja: '2021年1月 — 2023年4月' },
-        // TODO(owner): LinkedIn の文章は途中までしか見えなかったので、続きがあれば足す
         description: {
           en: 'Tokyo, Japan. Part-time.',
           ja: '東京。パートタイム。',
@@ -234,13 +233,20 @@ export const albums: Album[] = [
             en: 'Tested the linguistics of multiple video game and trading card game titles at various offices in Tokyo.',
             ja: '東京のさまざまなオフィスで、複数のビデオゲーム／トレーディングカードゲームのタイトルについて、言語面のテストを担当。',
           },
+          {
+            en: 'Found and logged mistakes in grammar, consistency, nuance and more in the UI and dialogue, and reported them to clients in Excel, in Japanese or English depending on the client.',
+            ja: 'UI やセリフに含まれる文法・表記の一貫性・ニュアンスなどの誤りを洗い出し、クライアントの希望に応じて日本語または英語で、Excel にまとめて報告。',
+          },
+          {
+            en: 'Translated untranslated or mistranslated text, mainly from Japanese to English.',
+            ja: '未翻訳・誤訳のテキストを、主に日本語から英語へ翻訳。',
+          },
         ],
       },
       {
         slug: 'willworks',
         title: { en: 'Human Resources Assistant · Willworks', ja: '人事アシスタント · Willworks' },
         meta: { en: 'Jan 2020 — Apr 2020', ja: '2020年1月 — 2020年4月' },
-        // TODO(owner): 2 つ目の箇条書きは LinkedIn で途中までしか見えなかった。翻訳したものが何かを足す
         description: {
           en: 'Greater Tokyo Area. Internship.',
           ja: '東京近郊。インターンシップ。',
@@ -251,8 +257,16 @@ export const albums: Album[] = [
             ja: '日本企業・外資系企業のさまざまな求人について、求人票（ジョブディスクリプション）と候補者を管理。',
           },
           {
-            en: "Created the company's pages on LinkedIn and Gaijin-Pot, which required translation work.",
-            ja: '会社の LinkedIn と Gaijin-Pot のページを作成。翻訳を伴う作業でした。',
+            en: "Created the company's pages on LinkedIn and Gaijin-Pot, which required translating company information from Japanese to English.",
+            ja: '会社の LinkedIn と Gaijin-Pot のページを作成。会社情報を日本語から英語へ翻訳しました。',
+          },
+          {
+            en: 'Analyzed data from Porters HR (Business Cloud) using Excel and R to design a better approach to HR and recruiting, and presented the findings in Japanese to other employees, including the president.',
+            ja: 'Porters HR（Business Cloud）のデータを Excel と R で分析し、採用・人事の進め方を最適化する案をまとめ、社長を含む社員に日本語でプレゼンテーション。',
+          },
+          {
+            en: 'Translated job descriptions and company details from English to Japanese and from Japanese to English.',
+            ja: '求人票や会社情報を、英語から日本語、日本語から英語へ翻訳。',
           },
         ],
       },
