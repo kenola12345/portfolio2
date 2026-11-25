@@ -20,7 +20,8 @@ export interface Track {
   tags?: string[];
   description?: L10n;
   bullets?: L10n[];
-  images?: { src: string; alt: L10n }[];
+  /** width / height は実寸。開閉アニメーションが画像の高さを先に知るために必須 */
+  images?: { src: string; alt: L10n; width: number; height: number }[];
   links?: { label: string; href: string }[];
 }
 

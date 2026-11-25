@@ -20,6 +20,8 @@ export const albums: Album[] = [
         images: [
           {
             src: '/projects/oshimotonet.png',
+            width: 1512,
+            height: 800,
             alt: { en: 'Screenshot of oshimoto.net', ja: 'oshimoto.net のスクリーンショット' },
           },
         ],
@@ -32,6 +34,8 @@ export const albums: Album[] = [
         images: [
           {
             src: '/projects/seta-tei.png',
+            width: 1512,
+            height: 911,
             alt: { en: 'Screenshot of seta-tei.jp', ja: 'seta-tei.jp のスクリーンショット' },
           },
         ],
