@@ -5,10 +5,9 @@
  * 「Record player」は CC BY 4.0 なので、作者表示（このフッターのクレジット）は外さない
  */
 import SocialLinks from './SocialLinks.astro';
-import FlipText from './FlipText.astro';
 import { artist } from '../../data/artist';
 import { ui } from '../../data/ui';
-import { getLang, localePath, useT } from '../../lib/i18n';
+import { getLang, useT } from '../../lib/i18n';
 
 const t = useT(Astro.url);
 const lang = getLang(Astro.url);
@@ -31,15 +30,6 @@ const year = new Date().getFullYear();
   <div class="mt-8 md:mt-10">
     <p class="menu-text text-lg md:text-2xl">{t(ui.contactMe)}</p>
     <SocialLinks class="mt-4" />
-    <p class="mt-4">
-      <a
-        href={localePath("/albums/contact#direct-mail", lang)}
-        class="crystal menu-text inline-block px-5 py-2.5 text-sm"
-        style="--crystal-radius: 999px"
-      >
-        <FlipText>{t(ui.sendMessage)}</FlipText>
-      </a>
-    </p>
   </div>
 
   <p class="mt-12 text-xs text-muted md:mt-16">© {year} {t(artist.name)}. {t(artist.tagline)}.</p>

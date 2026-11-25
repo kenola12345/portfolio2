@@ -21,7 +21,6 @@ export const ui = {
   clickHint: { en: 'Click a record to open it', ja: 'レコードをクリックで開く' },
   formHoneypot: { en: 'Leave this empty', ja: 'ここは空のままにしてください' },
   contactMe: { en: 'Contact me', ja: 'お問い合わせ' },
-  sendMessage: { en: 'Send a message →', ja: 'メッセージを送る →' },
   play: { en: 'Play', ja: '再生' },
   langNav: { en: 'Language', ja: '言語' },
   menuHandle: { en: 'Menu', ja: 'メニュー' },
