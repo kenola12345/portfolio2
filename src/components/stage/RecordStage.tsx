@@ -16,6 +16,8 @@ export interface RecordDef {
   href: string;
   /** ホバーカードに出す文字（ビルド時に言語を解決して渡す） */
   title: string;
+  /** ジャケットの下に常に出す短い名前（ホバーしなくても何のレコードか分かるように） */
+  label: string;
   meta: string;
   blurb: string;
 }
@@ -126,7 +128,7 @@ function StageRecord({ slug, cover, href }: RecordDef) {
     const s = cur.current;
     const t = target.current;
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const lambda = reduce ? 60 : STAGE.damp;
+    const lambda = reduce ? 60 : STAGE.damp * (layout.fast ? STAGE.fastFactor : 1);
 
     const pulled = layout.pulled === slug;
 
@@ -337,7 +339,7 @@ function HomeScene({ records }: { records: RecordDef[] }) {
         {records.map((r) => {
           const cfg = L.sleeves[r.slug];
           return cfg ? (
-            <Sleeve key={r.slug} cover={r.cover} x={cfg.x} z={cfg.z} yaw={cfg.yaw} handlers={slugHandlers(r.slug, r.href)} />
+            <Sleeve key={r.slug} slug={r.slug} label={r.label} cover={r.cover} x={cfg.x} z={cfg.z} yaw={cfg.yaw} handlers={slugHandlers(r.slug, r.href)} />
           ) : null;
         })}
       </group>

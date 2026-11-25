@@ -167,6 +167,63 @@ html[data-dragging] .stage-root canvas {
   cursor: grabbing !important;
 }
 
+/* ---------- ホームの常時表示の文字 ---------- */
+
+/* ジャケットの下の名前。ホバーしなくても何のレコードか分かる */
+.sleeve-label {
+  padding: 0.22rem 0.7rem;
+  border-radius: 999px;
+  background: rgb(11 11 13 / 0.6);
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.16);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  font-size: 0.8rem;
+  line-height: 1.3;
+  white-space: nowrap;
+  transition:
+    background-color 0.25s var(--ease-out),
+    color 0.25s var(--ease-out);
+}
+.sleeve-label[data-active] {
+  background: #fff;
+  color: #0b0b0d;
+  text-shadow: none;
+}
+@media (width < 48rem) {
+  .sleeve-label {
+    padding: 0.18rem 0.55rem;
+    font-size: 0.7rem;
+  }
+}
+
+/* 左上の名前と肩書き。画面を開いてすぐ「誰のサイトか」が読めるようにする */
+.home-id {
+  position: absolute;
+  top: 1.5rem;
+  left: var(--gutter-sp);
+  display: grid;
+  gap: 0.1rem;
+  text-decoration: none;
+}
+@media (width >= 48rem) {
+  .home-id {
+    left: var(--gutter-pc);
+  }
+}
+.home-id__name {
+  font-size: 1.05rem;
+  letter-spacing: 0.04em;
+}
+.home-id__role {
+  font-size: 0.8rem;
+  color: var(--color-muted);
+}
+.home-id:hover .home-id__name,
+.home-id:focus-visible .home-id__name {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
 /* ---------- 言語の切り替えとホームのナビ ---------- */
 
 /* display は Tailwind の hidden / md:hidden で上書きできるよう、components レイヤーに置く */

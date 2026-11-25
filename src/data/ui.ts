@@ -27,7 +27,7 @@ export const ui = {
   menuHandle: { en: 'Menu', ja: 'メニュー' },
   menuHandleLabel: { en: 'Show the menu', ja: 'メニューを表示' },
   pagesNav: { en: 'Pages', ja: 'ページ' },
-  navArtist: { en: 'Artist', ja: 'アーティスト' },
+  navArtist: { en: 'About me', ja: '自己紹介' },
   formName: { en: 'Your name', ja: 'お名前' },
   formEmail: { en: 'Your email', ja: 'メールアドレス' },
   formMessage: { en: 'Message', ja: 'メッセージ' },

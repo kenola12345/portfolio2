@@ -38,6 +38,12 @@ const year = new Date().getFullYear();
     <h1 class="sr-only">{t(artist.name)} — {lang === 'ja' ? 'ディスコグラフィ' : 'Discography'}</h1>
 
     <section data-stage-home class="relative min-h-svh">
+      <!-- 左上の名前と肩書き（小さく）。押すと自己紹介のページへ -->
+      <a href={localePath('/artist', lang)} class="home-id pointer-events-auto">
+        <span class="home-id__name menu-text">{t(artist.name)}</span>
+        <span class="home-id__role">{t(artist.tagline)}</span>
+      </a>
+
       <!-- 見た目には出さない。キーボードで選べる実際のリンク（フォーカスすると 3D のレコードが顔を出す） -->
       <nav aria-label={t(ui.albumsNav)} class="sr-only pointer-events-auto">
         <ul>

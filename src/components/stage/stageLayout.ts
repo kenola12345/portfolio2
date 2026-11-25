@@ -14,6 +14,8 @@ interface StageLayout {
   pulled: string | null;
   /** ローディングが終わって、画面を見せてよいか */
   ready: boolean;
+  /** 速い動き（2 回目以降のクリックと、その戻り）にするか */
+  fast: boolean;
 }
 
 export const layout: StageLayout = {
@@ -23,6 +25,7 @@ export const layout: StageLayout = {
   pendingHover: null,
   pulled: null,
   ready: false,
+  fast: false,
 };
 
 const hoverListeners = new Set<(slug: string | null) => void>();
@@ -79,16 +82,35 @@ export function refreshLayout() {
 }
 
 /** ジャケット／レコードがクリックされた：盤を引き出してからページ遷移する */
+/** 引き抜きを見せたことがあるか（そのタブの間、覚えておく） */
+function hasSeenPull(): boolean {
+  try {
+    return sessionStorage.getItem('stage-pulled') === '1';
+  } catch {
+    return false;
+  }
+}
+function markPullSeen() {
+  try {
+    sessionStorage.setItem('stage-pulled', '1');
+  } catch {
+    /* 保存できない環境では、毎回ゆっくりになるだけ */
+  }
+}
+
 export function activate(slug: string, href: string) {
   if (layout.pulled) return;
   layout.pulled = slug;
+  // 最初の 1 回だけゆっくり。2 回目以降は速くする（戻りの動きも同じ速さ）
+  layout.fast = hasSeenPull();
+  markPullSeen();
   // 引き抜いている間は、ホバーカードを出さない
   setHover(null);
   const go = () => {
     void navigate(href);
   };
   if (prefersReducedMotion()) go();
-  else window.setTimeout(go, STAGE.pullMs);
+  else window.setTimeout(go, layout.fast ? STAGE.pullMsFast : STAGE.pullMs);
 }
 
 /**
