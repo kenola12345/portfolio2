@@ -54,12 +54,6 @@ const _yawAxis = new Vector3(0, 1, 0);
  * ホームでは台の上のジャケットから（motion = 出ている量・持ち上げ量）、
  * アルバムページでは DOM のスロットの矩形から決める。
  */
-/**
- * スクロールに 3D を追従させない端末（タッチ操作の端末）。
- * iOS ではスクロール中のアドレスバーの伸縮や慣性スクロールで、DOM と canvas がずれて見えるため
- */
-const touchOnly = isTouchDevice;
-
 function computeTarget(slug: string, out: Target, canvas: { width: number; height: number }, motion: Motion): boolean {
   out.hidden = true;
   out.scale = 0;
@@ -143,7 +137,7 @@ function StageRecord({ slug, cover, href }: RecordDef) {
 
     // 棚へ戻ってくる：アルバムページのスロットから戻るときは、まず「ジャケットの真横・上空」（引き抜いたときの
     // 終わりの姿勢）へ飛んでくる。ジャケットの真上や中を通らないので、突き抜けて見えない
-    const touchDevice = touchOnly();
+    const touchDevice = isTouchDevice();
     if (!touchDevice && layout.mode === 'home' && !s.docked && !s.returning && !pulled && s.scale > 1e-3) {
       s.returning = true;
       s.peek = HOME.peek.pulled;
@@ -352,14 +346,11 @@ function HomeScene({ records }: { records: RecordDef[] }) {
     g.rotation.set(o.pitch, o.yaw, 0);
 
     // ローディングが終わるまでは出さない（終わってから、ふわっと現れる）
-    // タッチ端末ではスクロールに追従させないので、少しスクロールしたら消す（下のフッターと重ならないように）
-    const touch = touchOnly();
-    const scrolledAway = touch && window.scrollY > window.innerHeight * 0.4;
-    const want = isHome && layout.ready && !scrolledAway ? 1 : 0;
+    const want = isHome && layout.ready ? 1 : 0;
     scale.current = MathUtils.damp(scale.current, want, 6, dt);
     g.visible = scale.current > 0.01;
     g.scale.setScalar(Math.max(scale.current, 1e-4));
-    g.position.y = touch ? 0 : window.scrollY * view.worldPerPx;
+    g.position.y = window.scrollY * view.worldPerPx;
   });
 
   return (
