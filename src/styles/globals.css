@@ -167,6 +167,102 @@ html[data-dragging] .stage-root canvas {
   cursor: grabbing !important;
 }
 
+/* ---------- スマホのハンバーガーメニュー ---------- */
+
+.mobile-menu {
+  position: relative;
+}
+/* ホーム：画面の右上に固定する */
+.mobile-menu--fixed {
+  position: fixed;
+  top: 0.9rem;
+  right: var(--gutter-sp);
+  z-index: 56;
+}
+.mobile-menu__button.crystal {
+  display: grid;
+  width: 44px;
+  height: 44px;
+  place-items: center;
+  cursor: pointer;
+}
+/* 3 本線 → ×（transform と opacity だけで動かす） */
+.hamburger {
+  display: grid;
+  width: 18px;
+  gap: 5px;
+}
+.hamburger i {
+  display: block;
+  height: 2px;
+  border-radius: 2px;
+  background: #fff;
+  transition:
+    transform 0.35s var(--ease-out),
+    opacity 0.25s var(--ease-out);
+}
+[data-mobile-menu][data-open] .hamburger i:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+[data-mobile-menu][data-open] .hamburger i:nth-child(2) {
+  opacity: 0;
+}
+[data-mobile-menu][data-open] .hamburger i:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+/* パネル：ボタンの下に右寄せで開く。.crystal の position: relative に負けないよう、クラスを重ねる */
+.mobile-menu__panel.crystal {
+  position: absolute;
+  top: calc(100% + 0.6rem);
+  right: 0;
+  display: grid;
+  gap: 0.9rem;
+  width: min(84vw, 320px);
+  padding: 0.7rem;
+  visibility: hidden;
+  opacity: 0;
+  transform: translateY(-8px) scale(0.98);
+  transform-origin: top right;
+  transition:
+    opacity 0.3s var(--ease-out),
+    transform 0.35s var(--ease-out),
+    visibility 0s linear 0.35s;
+}
+[data-mobile-menu][data-open] .mobile-menu__panel.crystal {
+  visibility: visible;
+  opacity: 1;
+  transform: none;
+  transition-delay: 0s;
+}
+/* 後ろの 3D が透けすぎて文字が読みにくいので、パネルの地は少し濃くする */
+.mobile-menu__panel.crystal {
+  background-color: rgb(14 14 18 / 0.72);
+}
+.mobile-menu__link {
+  display: block;
+  padding: 0.7rem 1rem;
+  border-radius: 14px;
+  font-size: 1.05rem;
+  text-decoration: none;
+  transition: background-color 0.25s var(--ease-out);
+}
+.mobile-menu__link:hover,
+.mobile-menu__link:focus-visible {
+  background: rgb(255 255 255 / 0.14);
+}
+.mobile-menu__lang {
+  justify-self: start;
+  margin: 0 0.3rem 0.2rem;
+}
+/* スマホではホームの「上端に降りてくるナビ」と「つまみ」は使わない（ハンバーガーに置き換える） */
+@media (width < 48rem) {
+  /* このルールより後ろに display を指定する規則があるので、!important で確実に隠す */
+  .home-nav,
+  .home-nav__handle.crystal {
+    display: none !important;
+  }
+}
+
 /* ---------- ホームの常時表示の文字 ---------- */
 
 /* ジャケットの下の名前。ホバーしなくても何のレコードか分かる */

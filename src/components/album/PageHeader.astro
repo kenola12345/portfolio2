@@ -8,6 +8,7 @@ import GridIcon from '../ui/GridIcon.astro';
 import FlipText from '../ui/FlipText.astro';
 import PageNav from '../ui/PageNav.astro';
 import LangSwitch from '../ui/LangSwitch.astro';
+import MobileMenu from '../ui/MobileMenu.astro';
 import { ui } from '../../data/ui';
 import { getLang, localePath, useT } from '../../lib/i18n';
 
@@ -25,8 +26,9 @@ const lang = getLang(Astro.url);
 ---
 
 <header class="pt-6 md:pt-10">
-  <div class="enter flex flex-col gap-3 md:flex-row md:items-center md:gap-4">
-    <!-- SP：「メインメニュー」と言語切り替えを 1 段目に、ページのナビを 2 段目に -->
+  <!-- relative z-30：開いたハンバーガーのパネルが、あとに続くタイトルなどより手前に出るように -->
+  <div class="enter relative z-30 flex flex-col gap-3 md:flex-row md:items-center md:gap-4">
+    <!-- SP：左に「メインメニュー」、右にハンバーガー（ページ一覧と言語の切り替えはその中）。PC：横並びのナビ -->
     <div class="flex items-center justify-between gap-3 md:contents">
       <a
         href={localePath('/', lang)}
@@ -36,9 +38,9 @@ const lang = getLang(Astro.url);
         <GridIcon />
         <FlipText>{t(ui.backToMenu)}</FlipText>
       </a>
-      <LangSwitch class="md:hidden" />
+      <MobileMenu current={slug} />
     </div>
-    <PageNav current={slug} />
+    <div class="hidden md:block"><PageNav current={slug} /></div>
     <LangSwitch class="hidden md:ml-auto md:inline-flex" />
   </div>
 

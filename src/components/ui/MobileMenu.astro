@@ -1,0 +1,95 @@
+---
+/**
+ * スマホ用のハンバーガーメニュー（md 以上では出さない。PC は横並びのピル型ナビを使う）。
+ * ボタンを押すと、ページの一覧と言語の切り替えが入った縦長のパネルが開く。
+ * 外をタップする・Esc・ページ移動で閉じる。fixed = true のときは画面の右上に固定する（ホーム用）。
+ */
+import LangSwitch from './LangSwitch.astro';
+import { albums } from '../../data/albums';
+import { ui } from '../../data/ui';
+import { getLang, localePath, useT } from '../../lib/i18n';
+
+interface Props {
+  /** 今のページ（'artist' or アルバムの slug）。ホームのように、どれでもないときは空 */
+  current?: string;
+  /** 画面の右上に固定するか（ホーム）。false なら、置いた場所に出る（アルバム／アーティストのヘッダー） */
+  fixed?: boolean;
+}
+const { current = '', fixed = false } = Astro.props;
+
+const t = useT(Astro.url);
+const lang = getLang(Astro.url);
+const items = [
+  { slug: 'artist', href: localePath('/artist', lang), label: t(ui.navArtist) },
+  ...albums.map((album) => ({ slug: album.slug, href: localePath(`/albums/${album.slug}`, lang), label: t(album.title) })),
+];
+---
+
+<div class:list={['mobile-menu md:hidden', fixed && 'mobile-menu--fixed']} data-mobile-menu>
+  <button
+    type="button"
+    class="mobile-menu__button crystal"
+    data-mm-toggle
+    aria-expanded="false"
+    aria-controls="mobile-menu-panel"
+    aria-label={t(ui.menuHandle)}
+    style="--crystal-radius: 999px"
+  >
+    <!-- 3 本線。開くと × に変わる -->
+    <span class="hamburger" aria-hidden="true"><i></i><i></i><i></i></span>
+  </button>
+
+  <div id="mobile-menu-panel" class="mobile-menu__panel crystal" style="--crystal-radius: 22px">
+    <nav aria-label={t(ui.pagesNav)}>
+      <ul>
+        {
+          items.map((item) => {
+            const active = item.slug === current;
+            return (
+              <li>
+                <a
+                  href={item.href}
+                  class="mobile-menu__link menu-text"
+                  aria-current={active ? 'page' : undefined}
+                  style={active ? 'background:#fff;color:#0b0b0d;text-shadow:none' : undefined}
+                >
+                  {item.label}
+                </a>
+              </li>
+            );
+          })
+        }
+      </ul>
+    </nav>
+    <LangSwitch class="mobile-menu__lang" />
+  </div>
+</div>
+
+<script>
+  const roots = () => document.querySelectorAll<HTMLElement>('[data-mobile-menu]');
+  const setOpen = (root: HTMLElement, open: boolean) => {
+    root.toggleAttribute('data-open', open);
+    root.querySelector('[data-mm-toggle]')?.setAttribute('aria-expanded', String(open));
+  };
+
+  // ボタンで開閉。メニューの外をタップしたら閉じる
+  document.addEventListener('click', (e) => {
+    const target = e.target as Element;
+    const toggle = target.closest('[data-mm-toggle]');
+    roots().forEach((root) => {
+      if (toggle && root.contains(toggle)) setOpen(root, !root.hasAttribute('data-open'));
+      else if (!root.contains(target)) setOpen(root, false);
+    });
+  });
+  // Esc で閉じて、フォーカスをボタンへ戻す
+  document.addEventListener('keydown', (e) => {
+    if (e.key !== 'Escape') return;
+    roots().forEach((root) => {
+      if (!root.hasAttribute('data-open')) return;
+      setOpen(root, false);
+      root.querySelector<HTMLElement>('[data-mm-toggle]')?.focus();
+    });
+  });
+  // ページ移動のあとは閉じた状態から始める
+  document.addEventListener('astro:after-swap', () => roots().forEach((root) => setOpen(root, false)));
+</script>
