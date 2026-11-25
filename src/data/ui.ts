@@ -17,4 +17,18 @@ export const ui = {
   hintTouch: { en: 'Tap a sleeve to pull out the record', ja: 'ジャケットをタップしてレコードを引き出す' },
   notFoundTitle: { en: 'Track not found', ja: '曲が見つかりません' },
   albumsNav: { en: 'Albums', ja: 'アルバム' },
+  formName: { en: 'Your name', ja: 'お名前' },
+  formEmail: { en: 'Your email', ja: 'メールアドレス' },
+  formMessage: { en: 'Message', ja: 'メッセージ' },
+  formSend: { en: 'Send message', ja: '送信する' },
+  formSending: { en: 'Sending…', ja: '送信中…' },
+  formSent: { en: 'Thanks! Your message has been sent.', ja: 'ありがとうございます。メッセージを送信しました。' },
+  formError: {
+    en: 'Sorry, something went wrong. Please try again, or email me directly.',
+    ja: '送信に失敗しました。もう一度お試しいただくか、メールで直接ご連絡ください。',
+  },
+  formFallback: {
+    en: 'Opening your mail app with your message…',
+    ja: 'メッセージを入力した状態でメールアプリを開きます…',
+  },
 } satisfies Record<string, L10n>;

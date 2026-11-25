@@ -1,0 +1,110 @@
+---
+/**
+ * ダイレクトメール用フォーム（お問い合わせ）。
+ * 送信は EmailJS の REST API を使う（静的サイトなのでサーバーを持たない）。
+ * 環境変数が未設定のときは、入力内容を入れた mailto: をメールアプリで開く。
+ */
+import { ui } from '../../data/ui';
+import { t } from '../../lib/i18n';
+
+// 環境変数は公開される値（PUBLIC_）。実際の値は .env に入れる（.env.example を参照）
+const config = {
+  serviceId: import.meta.env.PUBLIC_EMAILJS_SERVICE_ID ?? '',
+  templateId: import.meta.env.PUBLIC_EMAILJS_TEMPLATE_ID ?? '',
+  publicKey: import.meta.env.PUBLIC_EMAILJS_PUBLIC_KEY ?? '',
+};
+const toEmail = 'ken.oshimoto@gmail.com';
+---
+
+<form
+  data-contact-form
+  data-service-id={config.serviceId}
+  data-template-id={config.templateId}
+  data-public-key={config.publicKey}
+  data-to={toEmail}
+  data-msg-sending={t(ui.formSending)}
+  data-msg-sent={t(ui.formSent)}
+  data-msg-error={t(ui.formError)}
+  data-msg-fallback={t(ui.formFallback)}
+  class="mt-5 grid max-w-xl gap-4"
+>
+  <label class="grid gap-1.5 text-sm">
+    <span class="menu-text">{t(ui.formName)}</span>
+    <input class="field" type="text" name="name" autocomplete="name" required maxlength="100" />
+  </label>
+  <label class="grid gap-1.5 text-sm">
+    <span class="menu-text">{t(ui.formEmail)}</span>
+    <input class="field" type="email" name="email" autocomplete="email" required maxlength="200" />
+  </label>
+  <label class="grid gap-1.5 text-sm">
+    <span class="menu-text">{t(ui.formMessage)}</span>
+    <textarea class="field min-h-32 resize-y" name="message" rows="5" required minlength="5" maxlength="4000"></textarea>
+  </label>
+
+  <!-- スパム対策のおとり欄。人間には見えず、入力されていたら送信しない -->
+  <div class="absolute -left-[9999px]" aria-hidden="true">
+    <label>Leave this empty <input type="text" name="website" tabindex="-1" autocomplete="off" /></label>
+  </div>
+
+  <div class="flex flex-wrap items-center gap-4">
+    <button type="submit" class="crystal menu-text px-6 py-2.5 text-sm" style="--crystal-radius: 999px">
+      <span data-label>{t(ui.formSend)}</span>
+    </button>
+    <p data-status role="status" aria-live="polite" class="text-sm text-muted"></p>
+  </div>
+</form>
+
+<script>
+  /** 問い合わせフォームの送信処理。ページ遷移後に追加されたフォームにも効くよう document で受ける */
+  document.addEventListener('submit', async (e) => {
+    const form = (e.target as Element).closest<HTMLFormElement>('form[data-contact-form]');
+    if (!form) return;
+    e.preventDefault();
+
+    const status = form.querySelector<HTMLElement>('[data-status]')!;
+    const button = form.querySelector<HTMLButtonElement>('button[type="submit"]')!;
+    const data = new FormData(form);
+    const d = form.dataset;
+
+    // おとり欄が埋まっていたらボット。成功したふりをして何も送らない
+    if (data.get('website')) {
+      status.textContent = d.msgSent ?? '';
+      return;
+    }
+
+    const name = String(data.get('name') ?? '').trim();
+    const email = String(data.get('email') ?? '').trim();
+    const message = String(data.get('message') ?? '').trim();
+
+    // EmailJS が未設定なら、メールアプリに入力内容を渡す
+    if (!d.serviceId || !d.templateId || !d.publicKey) {
+      status.textContent = d.msgFallback ?? '';
+      const subject = encodeURIComponent(`Message from ${name}`);
+      const body = encodeURIComponent(`${message}\n\n— ${name} (${email})`);
+      window.location.href = `mailto:${d.to}?subject=${subject}&body=${body}`;
+      return;
+    }
+
+    button.disabled = true;
+    status.textContent = d.msgSending ?? '';
+    try {
+      const res = await fetch('https://api.emailjs.com/api/v1.0/email/send', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          service_id: d.serviceId,
+          template_id: d.templateId,
+          user_id: d.publicKey,
+          template_params: { name, email, message },
+        }),
+      });
+      if (!res.ok) throw new Error(`EmailJS responded ${res.status}`);
+      status.textContent = d.msgSent ?? '';
+      form.reset();
+    } catch {
+      status.textContent = d.msgError ?? '';
+    } finally {
+      button.disabled = false;
+    }
+  });
+</script>

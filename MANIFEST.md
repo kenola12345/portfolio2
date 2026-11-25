@@ -206,7 +206,7 @@ Animate only `transform` and `opacity` on DOM elements. In 3D, animate object po
 - **Projects:** title, year, tags (tech), description, image, live link, repo link (optional).
 - **Work Experience:** role title, company, period, location, bullet points of what was done, tech used. **TODO(owner):** all entries.
 - **Skills (EP):** tracks = Frontend, Backend, Database, Tools. Expanded row lists the items as "credits" chips.
-- **Contact (Single):** one track "Get in touch". Expanded = email (mailto), GitHub, LinkedIn icons + short message.
+- **Contact (EP):** four tracks — Email (mailto), GitHub, LinkedIn, and **Direct Mail** (a form: name, email, message + hidden honeypot). The form posts to the EmailJS REST API using `PUBLIC_EMAILJS_SERVICE_ID` / `PUBLIC_EMAILJS_TEMPLATE_ID` / `PUBLIC_EMAILJS_PUBLIC_KEY` (see `.env.example`; template variables `{{name}} {{email}} {{message}}`). With those unset it falls back to opening a prefilled `mailto:`.
 
 ---
 
@@ -311,8 +311,8 @@ Files: `src/data/albums.ts` (exports `albums: Album[]` in shelf order), `src/dat
 ### Seed content (from the current site)
 - **Projects:** `oshimoto.net` → https://www.oshimoto.net/ (image `/projects/oshimotonet.png`); `seta-tei.jp` → https://www.seta-tei.jp/ (image `/projects/seta-tei.png`). TODO(owner): years, descriptions, tags, more projects.
 - **Skills:** Frontend — HTML, CSS, Sass, JavaScript, TypeScript, React, Next.js, Astro · Backend — Node.js · Database — PostgreSQL, MongoDB · Tools — Docker, Claude Code. (Add Three.js once this site ships.)
-- **Work:** TODO(owner) — current role is "Full Stack Developer at a Japanese startup"; need company name (or "a Tokyo startup" if private), period, bullets.
-- **Contact / socials:** GitHub `bap-ssbm`, LinkedIn `kentaro-oshimoto`, email — taken from the old `Footer.tsx`. TODO(owner): confirm they are still current.
+- **Work:** filled in from the resume (`Kentaro_Oshimoto_Resume_EN.docx`): AXR (Full Stack Engineer, Nov 2026 – present) and Holon Inc. (Frontend Developer, Jun 2023 – Oct 2026). Japanese text is a translation of the English resume — TODO(owner): review. The phone number from the resume is intentionally NOT on the site.
+- **Contact / socials:** GitHub `kenola12345` (from the resume; the old site had `bap-ssbm`), LinkedIn `kentaro-oshimoto` (from the old `Footer.tsx`), email `ken.oshimoto@gmail.com`. TODO(owner): confirm LinkedIn is still current.
 - **Covers:** Artist = selfie on the pier (`public/covers/artist.webp`, face-centered crop; full photo at `public/images/artist-banner.webp` for the banner). Projects = the retro-computer illustration (`public/covers/projects.webp`). TODO(owner): Work, Skills, Contact covers — placeholder SVGs (accent color + title) until provided.
 
 ---

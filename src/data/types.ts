@@ -23,6 +23,8 @@ export interface Track {
   /** width / height は実寸。開閉アニメーションが画像の高さを先に知るために必須 */
   images?: { src: string; alt: L10n; width: number; height: number }[];
   links?: { label: string; href: string }[];
+  /** true のとき、展開部分に問い合わせフォームを出す */
+  form?: boolean;
 }
 
 /** アルバム = ポートフォリオの 1 セクション。ホームでは 3D レコードとして並ぶ */
@@ -47,6 +49,8 @@ export interface Artist {
   name: L10n;
   tagline: L10n;
   bio: L10n;
+  /** 紹介カードの下に並べる短い項目（拠点・言語・学歴など） */
+  facts: { label: L10n; value: L10n }[];
   banner: string;
   /** ホームの「Artist」レコードのラベル画像 */
   portrait: string;
