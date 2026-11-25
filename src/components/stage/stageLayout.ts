@@ -97,18 +97,13 @@ function markPullSeen() {
 }
 
 /**
- * タッチ端末（iOS など）か。persist した canvas の長い飛行アニメが不安定なので、タッチ端末では飛行をやめる
+ * タッチ端末（iOS など）か。persist した canvas の長い飛行アニメが不安定なので、タッチ端末では飛行はせず、
+ * ジャケットから盤を引き抜く動きだけを見せて、行き先のスロットには盤をその場に置く
  */
 export const isTouchDevice = () => typeof window !== 'undefined' && window.matchMedia('(hover: none) and (pointer: coarse)').matches;
 
 export function activate(slug: string, href: string) {
   if (layout.pulled) return;
-  if (isTouchDevice()) {
-    // 引き抜く・飛んでいく動きは省略し、すぐ遷移する（行き先のスロットには、盤が最初から置かれている）
-    setHover(null);
-    void navigate(href);
-    return;
-  }
   layout.pulled = slug;
   // 最初の 1 回だけゆっくり。2 回目以降は速くする（戻りの動きも同じ速さ）
   layout.fast = hasSeenPull();
