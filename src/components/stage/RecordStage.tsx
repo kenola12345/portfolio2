@@ -7,7 +7,7 @@ import RecordPlayer from './RecordPlayer';
 import Sleeve from './Sleeve';
 import { slugHandlers } from './useSlugHandlers';
 import { HOME, ORBIT, RECORD_MODEL_RADIUS, STAGE, layoutKeyFor } from './config';
-import { bindStageEvents, flushPendingHover, layout, markDragged, setHover, subscribeHover } from './stageLayout';
+import { bindStageEvents, flushPendingHover, isTouchDevice, layout, markDragged, setHover, subscribeHover } from './stageLayout';
 import { home, view } from './stageView';
 
 export interface RecordDef {
@@ -58,7 +58,7 @@ const _yawAxis = new Vector3(0, 1, 0);
  * スクロールに 3D を追従させない端末（タッチ操作の端末）。
  * iOS ではスクロール中のアドレスバーの伸縮や慣性スクロールで、DOM と canvas がずれて見えるため
  */
-const touchOnly = () => typeof window !== 'undefined' && window.matchMedia('(hover: none) and (pointer: coarse)').matches;
+const touchOnly = isTouchDevice;
 
 function computeTarget(slug: string, out: Target, canvas: { width: number; height: number }, motion: Motion): boolean {
   out.hidden = true;
@@ -143,7 +143,8 @@ function StageRecord({ slug, cover, href }: RecordDef) {
 
     // 棚へ戻ってくる：アルバムページのスロットから戻るときは、まず「ジャケットの真横・上空」（引き抜いたときの
     // 終わりの姿勢）へ飛んでくる。ジャケットの真上や中を通らないので、突き抜けて見えない
-    if (layout.mode === 'home' && !s.docked && !s.returning && !pulled && s.scale > 1e-3) {
+    const touchDevice = touchOnly();
+    if (!touchDevice && layout.mode === 'home' && !s.docked && !s.returning && !pulled && s.scale > 1e-3) {
       s.returning = true;
       s.peek = HOME.peek.pulled;
       s.lift = HOME.lift;
@@ -168,6 +169,12 @@ function StageRecord({ slug, cover, href }: RecordDef) {
 
     if (!computeTarget(slug, t, canvas, s)) return; // DOM が入れ替わっている最中は前の状態を保つ
 
+    // タッチ端末：ページ間の飛行はしない。ホームではジャケットへ、アルバムページではスロットへ、その場で置く
+    if (touchDevice && !t.hidden) {
+      s.pos.copy(t.pos);
+      s.quat.copy(t.quat);
+      if (layout.mode === 'home') s.docked = true;
+    }
     if (layout.mode !== 'home') {
       s.docked = false;
       s.returning = false;
