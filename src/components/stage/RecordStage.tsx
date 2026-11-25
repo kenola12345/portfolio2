@@ -54,6 +54,12 @@ const _yawAxis = new Vector3(0, 1, 0);
  * ホームでは台の上のジャケットから（motion = 出ている量・持ち上げ量）、
  * アルバムページでは DOM のスロットの矩形から決める。
  */
+/**
+ * スクロールに 3D を追従させない端末（タッチ操作の端末）。
+ * iOS ではスクロール中のアドレスバーの伸縮や慣性スクロールで、DOM と canvas がずれて見えるため
+ */
+const touchOnly = () => typeof window !== 'undefined' && window.matchMedia('(hover: none) and (pointer: coarse)').matches;
+
 function computeTarget(slug: string, out: Target, canvas: { width: number; height: number }, motion: Motion): boolean {
   out.hidden = true;
   out.scale = 0;
@@ -63,9 +69,12 @@ function computeTarget(slug: string, out: Target, canvas: { width: number; heigh
     if (layout.slot.slug !== slug) return true;
     const r = layout.slot.el.getBoundingClientRect();
     const wpp = view.worldPerPx;
-    out.pos.set((r.left + r.width / 2 - canvas.width / 2) * wpp, (canvas.height / 2 - (r.top + r.height / 2)) * wpp, 0);
+    // アルバムページではスクロールに追従させない：ページの先頭にいるときの位置に置いたままにし、
+    // スクロールして DOM のスロットが見えなくなったら小さくして消す
+    const top = r.top + window.scrollY;
+    out.pos.set((r.left + r.width / 2 - canvas.width / 2) * wpp, (canvas.height / 2 - (top + r.height / 2)) * wpp, 0);
     out.quat.copy(PAGE_QUAT);
-    out.scale = (r.width * wpp) / 2 / RECORD_MODEL_RADIUS;
+    out.scale = window.scrollY > r.height * 0.5 ? 0 : (r.width * wpp) / 2 / RECORD_MODEL_RADIUS;
     out.spin = STAGE.spinSlot;
     out.hidden = false;
     return true;
@@ -205,7 +214,10 @@ function StageRecord({ slug, cover, href }: RecordDef) {
     } else {
       s.scale = MathUtils.damp(s.scale, 0, lambda * 1.8, dt);
     }
-    spin.current = MathUtils.damp(spin.current, reduce ? 0 : t.spin, 5, dt);
+    // 「視差効果を減らす」がオンの端末（iOS で多い）でも、アルバムページのスロットの盤は回す。
+    // ホームの盤（ホバー・引き出し中）だけは、設定どおり回さない
+    const allowSpin = !reduce || layout.mode === 'page';
+    spin.current = MathUtils.damp(spin.current, allowSpin ? t.spin : 0, 5, dt);
 
     g.visible = s.scale > 1e-3;
     g.position.copy(s.pos);
@@ -320,11 +332,14 @@ function HomeScene({ records }: { records: RecordDef[] }) {
     g.rotation.set(o.pitch, o.yaw, 0);
 
     // ローディングが終わるまでは出さない（終わってから、ふわっと現れる）
-    const want = isHome && layout.ready ? 1 : 0;
+    // タッチ端末ではスクロールに追従させないので、少しスクロールしたら消す（下のフッターと重ならないように）
+    const touch = touchOnly();
+    const scrolledAway = touch && window.scrollY > window.innerHeight * 0.4;
+    const want = isHome && layout.ready && !scrolledAway ? 1 : 0;
     scale.current = MathUtils.damp(scale.current, want, 6, dt);
     g.visible = scale.current > 0.01;
     g.scale.setScalar(Math.max(scale.current, 1e-4));
-    g.position.y = window.scrollY * view.worldPerPx;
+    g.position.y = touch ? 0 : window.scrollY * view.worldPerPx;
   });
 
   return (
