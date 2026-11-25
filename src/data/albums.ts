@@ -138,8 +138,8 @@ export const albums: Album[] = [
     type: 'ALBUM',
     title: { en: 'Work Experience', ja: '職歴' },
     blurb: {
-      en: "Where I've worked and what I did there: AXR and Holon Inc.",
-      ja: 'これまでの職歴と担当した仕事（AXR、Holon Inc.）。',
+      en: "Where I've worked and what I did there: AXR, Holon Inc., DIGITAL Hearts and Willworks, plus my education.",
+      ja: 'これまでの職歴と担当した仕事（AXR、Holon Inc.、DIGITAL Hearts、Willworks）と学歴。',
     },
     // 最新の在籍年
     year: 2026,
@@ -214,6 +214,61 @@ export const albums: Album[] = [
             ja: 'ページ読み込み速度を最大 30% 改善し、クライアントサイト全体の SEO 設定（meta・canonical・OGP）を担当。Figma・Photoshop・Adobe XD のデザインをモバイルファーストのページに実装。',
           },
         ],
+      },
+      {
+        slug: 'digital-hearts',
+        title: { en: 'Linguistic Game Tester · DIGITAL Hearts Holdings', ja: 'ゲーム言語テスター · DIGITAL Hearts Holdings' },
+        meta: { en: 'Jan 2021 — Apr 2023', ja: '2021年1月 — 2023年4月' },
+        // TODO(owner): LinkedIn の文章は途中までしか見えなかったので、続きがあれば足す
+        description: {
+          en: 'Tokyo, Japan. Part-time.',
+          ja: '東京。パートタイム。',
+        },
+        bullets: [
+          {
+            en: 'Tested the linguistics of multiple video game and trading card game titles at various offices in Tokyo.',
+            ja: '東京のさまざまなオフィスで、複数のビデオゲーム／トレーディングカードゲームのタイトルについて、言語面のテストを担当。',
+          },
+        ],
+      },
+      {
+        slug: 'willworks',
+        title: { en: 'Human Resources Assistant · Willworks', ja: '人事アシスタント · Willworks' },
+        meta: { en: 'Jan 2020 — Apr 2020', ja: '2020年1月 — 2020年4月' },
+        // TODO(owner): 2 つ目の箇条書きは LinkedIn で途中までしか見えなかった。翻訳したものが何かを足す
+        description: {
+          en: 'Greater Tokyo Area. Internship.',
+          ja: '東京近郊。インターンシップ。',
+        },
+        bullets: [
+          {
+            en: 'Managed job descriptions and candidates for job openings at various Japanese and foreign companies.',
+            ja: '日本企業・外資系企業のさまざまな求人について、求人票（ジョブディスクリプション）と候補者を管理。',
+          },
+          {
+            en: "Created the company's pages on LinkedIn and Gaijin-Pot, which required translation work.",
+            ja: '会社の LinkedIn と Gaijin-Pot のページを作成。翻訳を伴う作業でした。',
+          },
+        ],
+      },
+      {
+        slug: 'temple',
+        title: { en: 'Education · Temple University, Japan Campus', ja: '学歴 · テンプル大学ジャパンキャンパス' },
+        meta: { en: '2017 — 2020', ja: '2017年 — 2020年' },
+        description: {
+          en: 'Bachelor of Arts in Economics, studying behavioral economics and econometrics. GPA 4.0.',
+          ja: '経済学士。行動経済学・計量経済学を専攻。GPA 4.0。',
+        },
+      },
+      {
+        slug: 'el-camino',
+        title: { en: 'Education · El Camino College', ja: '学歴 · エルカミーノ・カレッジ' },
+        meta: { en: '2015 — 2017', ja: '2015年 — 2017年' },
+        // TODO(owner): LinkedIn では「Bachelor's degree, Economics」だが、2 年制の大学のため学位の表記は省いてある。正しい表記を確認する
+        description: {
+          en: 'Economics. GPA 3.5.',
+          ja: '経済学を専攻。GPA 3.5。',
+        },
       },
     ],
   },

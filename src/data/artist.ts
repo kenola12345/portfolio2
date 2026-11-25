@@ -28,8 +28,8 @@ export const artist: Artist = {
     {
       label: { en: 'Education', ja: '学歴' },
       value: {
-        en: 'B.A. in Economics, Temple University, Japan Campus (2020)',
-        ja: '経済学士、テンプル大学ジャパンキャンパス（2020 年）',
+        en: 'B.A. in Economics, Temple University, Japan Campus (2017–2020) · Economics, El Camino College (2015–2017)',
+        ja: '経済学士、テンプル大学ジャパンキャンパス（2017〜2020 年）· 経済学、エルカミーノ・カレッジ（2015〜2017 年）',
       },
     },
   ],
