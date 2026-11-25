@@ -5,7 +5,7 @@
  * 元ファイルは約 64MB（ほぼ 4K テクスチャ）。このサイトで使うのはプレーヤー本体とトーンアームだけなので、
  *  - モデルに入っているジャケット 3 枚と盤（ノード Convert / Vinyl disk / Convert.001 / Convert.002）を消す
  *  - アニメーションを消す（アームは静止ポーズで使う）
- *  - 天板のロゴ（青い鳥のマーク）を消し、手前の縁に名前を印字する（ベースカラーのテクスチャを直接書き換える）
+ *  - 天板のロゴ（青い鳥のマーク）を消し、黒いターンテーブルの円周に沿って名前を印字する（ベースカラーのテクスチャを直接書き換える）
  *  - 使われなくなったテクスチャ等を prune し、ベースカラーは 2048px、他は 1024px の webp にする
  */
 import { NodeIO } from '@gltf-transform/core';
@@ -22,23 +22,64 @@ if (!input) {
 const REMOVE_NODES = ['Convert', 'Vinyl disk', 'Convert.001', 'Convert.002'];
 
 /**
- * ベースカラー（4096px）は展開図になっていて、右上の正方形が天板。
- * 以下の座標は、その展開図を 1024px に縮めたときのもの（天板は x 517〜1020、y 5〜515）。
- * 天板の左下（= 手前の左）にロゴがあるので白で塗りつぶし、同じ手前の縁に名前を入れる。
+ * ベースカラー（4096px）は展開図になっている。以下の座標は、それを 1024px に縮めたときのもの。
+ *  - 右上の正方形が天板（x 517〜1020、y 5〜515）。左下にロゴがあるので白で塗りつぶす
+ *  - 左下の円が黒いターンテーブル（中心 (215, 740)、黒い面の半径 205）。この上に名前を円形に印字する
+ * ターンテーブルの展開図は、モデル上では上下が反転して見える（展開図の上 = 手前、右 = 右）。
+ * そのため「見たままの向き」で描いて、最後に上下反転の変換（matrix(1 0 0 -1 …)）を掛けている
  */
-const NAME = {
-  text: 'KENTARO OSHIMOTO',
-  // 天板の展開図は横向き＋左右反転で貼られている（展開図の左端 = モデルの手前の縁、下端 = モデルの左端）。
-  // そのため文字は展開図の上向きに走らせ、反転した行列（matrix(0 -1 -1 0 …)）で描くと、
-  // 手前の縁に沿って左から右へ正しく読める。baseline = 文字の底の x 位置、center = 縁に沿った中心の y 位置
-  baseline: 538,
-  center: 260,
-  fontSize: 26,
-  letterSpacing: 3.5,
-  color: '#1d2330',
+const PLATTER = { cx: 215, cy: 740 };
+const RING = {
+  /** 大きい文字：名前。ターンテーブルの上側の円弧に、文字の上が外側を向くように並べる */
+  name: 'KENTARO OSHIMOTO',
+  nameRadius: 146, // 文字の底（ベースライン）の半径
+  nameSize: 50,
+  nameSpacing: 3,
+  /** 小さい文字：肩書き。下側の円弧に、文字の上が内側を向くように並べる */
+  sub: 'FULL STACK ENGINEER',
+  subRadius: 186,
+  subSize: 22,
+  subSpacing: 2.5,
+  color: '#f4f4f5',
   // Montserrat に近い幾何学的なゴシック。環境にあるものを順に使う
   font: "Futura, 'Avenir Next', 'Helvetica Neue', Arial, sans-serif",
 };
+
+/**
+ * SVG の textPath（曲線に沿った文字）は、この環境の SVG レンダラーが対応していないので、
+ * 1 文字ずつ幅を測り、円周上の角度を計算して回転・配置する。
+ */
+async function inkWidthEm(ch) {
+  if (ch === ' ') return 0.3;
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300"><rect width="400" height="300" fill="#fff"/>
+    <text x="100" y="200" font-size="100" font-family="${RING.font}" font-weight="800" fill="#000">${ch}</text></svg>`;
+  const { info } = await sharp(Buffer.from(svg)).trim({ threshold: 20 }).toBuffer({ resolveWithObject: true });
+  return info.width / 100;
+}
+
+/**
+ * 文字列を円周に並べた <text> 群を返す（原点が円の中心、y が下向き）。
+ *  - 'top'    : 上側の弧に、文字の上が外側を向くように左から右へ
+ *  - 'bottom' : 下側の弧に、文字の上が内側を向くように左から右へ
+ * radius は文字の底（ベースライン）の半径
+ */
+async function ringText(text, { radius, size, spacing, side }) {
+  const widths = [];
+  for (const ch of text) widths.push((await inkWidthEm(ch)) * size);
+  const total = widths.reduce((a, b) => a + b, 0) + spacing * (widths.length - 1);
+  let cursor = -total / 2; // 円周に沿った位置（中心 = 0）
+  const parts = [];
+  [...text].forEach((ch, i) => {
+    const mid = cursor + widths[i] / 2;
+    cursor += widths[i] + spacing;
+    if (ch === ' ') return;
+    const deg = ((mid / radius) * 180) / Math.PI; // 右へ進むほど増える
+    const t = side === 'top' ? `rotate(${deg.toFixed(3)}) translate(0 ${-radius})` : `rotate(${(-deg).toFixed(3)}) translate(0 ${radius})`;
+    parts.push(`<text transform="${t}" text-anchor="middle">${ch}</text>`);
+  });
+  return { svg: parts.join('\n    '), spanDeg: ((total / radius) * 180) / Math.PI };
+}
+
 const LOGO_PATCH = { x: 522, y: 395, width: 83, height: 113 };
 
 const io = new NodeIO().registerExtensions(ALL_EXTENSIONS);
@@ -54,11 +95,19 @@ root.listAnimations().forEach((a) => a.dispose());
 const playerMaterial = root.listMaterials().find((m) => m.getName() === 'Player');
 const baseTexture = playerMaterial?.getBaseColorTexture();
 if (!baseTexture) throw new Error('Player material has no base color texture');
+const name = await ringText(RING.name, { radius: RING.nameRadius, size: RING.nameSize, spacing: RING.nameSpacing, side: 'top' });
+const sub = await ringText(RING.sub, { radius: RING.subRadius, size: RING.subSize, spacing: RING.subSpacing, side: 'bottom' });
+console.log(`name arc ${name.spanDeg.toFixed(0)}°, sub arc ${sub.spanDeg.toFixed(0)}°`);
 const overlay = `<svg xmlns="http://www.w3.org/2000/svg" width="4096" height="4096" viewBox="0 0 1024 1024">
   <rect x="${LOGO_PATCH.x}" y="${LOGO_PATCH.y}" width="${LOGO_PATCH.width}" height="${LOGO_PATCH.height}" fill="#ffffff"/>
-  <text transform="matrix(0 -1 -1 0 ${NAME.baseline} ${NAME.center})" text-anchor="middle"
-        font-family="${NAME.font}" font-weight="800" font-size="${NAME.fontSize}"
-        letter-spacing="${NAME.letterSpacing}" fill="${NAME.color}">${NAME.text}</text>
+  <g transform="matrix(1 0 0 -1 ${PLATTER.cx} ${PLATTER.cy})" fill="${RING.color}" font-family="${RING.font}" font-weight="800">
+    <g font-size="${RING.nameSize}">
+    ${name.svg}
+    </g>
+    <g font-size="${RING.subSize}">
+    ${sub.svg}
+    </g>
+  </g>
 </svg>`;
 const edited = await sharp(Buffer.from(baseTexture.getImage()))
   .composite([{ input: Buffer.from(overlay) }])

@@ -32,15 +32,23 @@ interface Target {
 }
 const newTarget = (): Target => ({ pos: new Vector3(), quat: new Quaternion(), scale: 0, spin: 0, hidden: true });
 
+/** ホームで、盤がジャケットからどれだけ出ているか・持ち上がっているか（滑らかに変化させる値） */
+interface Motion {
+  peek: number;
+  lift: number;
+}
+
 const _local = new Vector3();
 const _groupQuat = new Quaternion();
+const _yawQuat = new Quaternion();
+const _yawAxis = new Vector3(0, 1, 0);
 
 /**
  * レコード slug の目標状態（ワールド座標）を求める。毎フレーム呼ぶ。
- * ホームでは台の上のジャケットから、アルバムページでは DOM のスロットの矩形から決める。
- * tucked = true はジャケットの中に完全に収まった状態（初回表示・棚に戻るとき用）
+ * ホームでは台の上のジャケットから（motion = 出ている量・持ち上げ量）、
+ * アルバムページでは DOM のスロットの矩形から決める。
  */
-function computeTarget(slug: string, out: Target, canvas: { width: number; height: number }, tucked = false): boolean {
+function computeTarget(slug: string, out: Target, canvas: { width: number; height: number }, motion: Motion): boolean {
   out.hidden = true;
   out.scale = 0;
   out.spin = 0;
@@ -62,18 +70,21 @@ function computeTarget(slug: string, out: Target, canvas: { width: number; heigh
     const cfg = layoutCfg.sleeves[slug];
     const g = home.group;
     if (!cfg || !g) return false;
-    const pulled = layout.pulled === slug && !tucked;
-    const hover = layout.hover === slug && !tucked;
-    const peek = tucked ? 0 : pulled ? HOME.peek.pulled : hover ? HOME.peek.hover : HOME.peek.rest;
+    // ジャケットは yaw だけ回転して置いてあるので、盤が出てくる向きも同じだけ回す
+    const cos = Math.cos(cfg.yaw);
+    const sin = Math.sin(cfg.yaw);
+    const dx = cfg.dir[0] * cos + cfg.dir[1] * sin;
+    const dz = -cfg.dir[0] * sin + cfg.dir[1] * cos;
     _local
-      .set(cfg.x + cfg.dir[0] * peek, HOME.sleeve.thickness / 2 + (pulled ? HOME.lift : 0), cfg.z + cfg.dir[1] * peek)
+      .set(cfg.x + dx * motion.peek, HOME.sleeve.thickness / 2 + motion.lift, cfg.z + dz * motion.peek)
       .add(_offset.set(...layoutCfg.offset));
     g.updateWorldMatrix(true, false);
     out.pos.copy(_local).applyMatrix4(g.matrixWorld);
     g.getWorldQuaternion(_groupQuat);
-    out.quat.copy(_groupQuat).multiply(FLAT);
+    _yawQuat.setFromAxisAngle(_yawAxis, cfg.yaw);
+    out.quat.copy(_groupQuat).multiply(_yawQuat).multiply(FLAT);
     out.scale = g.scale.x * RECORD_SCALE;
-    out.spin = pulled ? STAGE.spinPulled : hover ? STAGE.spinHover : 0;
+    out.spin = layout.pulled === slug ? STAGE.spinPulled : layout.hover === slug ? STAGE.spinHover : 0;
     out.hidden = false;
   }
   return true;
@@ -88,9 +99,17 @@ function StageRecord({ slug, cover, href }: RecordDef) {
   const spinRef = useRef<Group>(null);
   const canvas = useThree((s) => s.size);
   const handlers = useMemo(() => slugHandlers(slug, href), [slug, href]);
-  const cur = useRef({ ready: false, pos: new Vector3(), quat: new Quaternion(), scale: 0 });
+  const cur = useRef({
+    ready: false,
+    /** ホームでジャケットに追従している状態。このときは位置を補間せず、毎フレーム目標へ直接合わせる */
+    docked: false,
+    pos: new Vector3(),
+    quat: new Quaternion(),
+    scale: 0,
+    peek: 0,
+    lift: 0,
+  });
   const target = useRef(newTarget());
-  const tucked = useRef(newTarget());
   const spin = useRef(0);
 
   useFrame((_, rawDelta) => {
@@ -101,32 +120,55 @@ function StageRecord({ slug, cover, href }: RecordDef) {
     const s = cur.current;
     const t = target.current;
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const lambda = reduce ? 60 : STAGE.damp;
 
-    if (!computeTarget(slug, t, canvas)) return; // DOM が入れ替わっている最中は前の状態を保つ
+    // 出ている量と持ち上げ量だけを滑らかに動かす（位置そのものは補間しない：スクロールで遅れて見えるため）
+    const pulled = layout.pulled === slug;
+    const wantPeek = pulled ? HOME.peek.pulled : layout.hover === slug ? HOME.peek.hover : HOME.peek.rest;
+    s.peek = MathUtils.damp(s.peek, wantPeek, lambda, dt);
+    s.lift = MathUtils.damp(s.lift, pulled ? HOME.lift : 0, lambda, dt);
 
-    // 初回、または隠れていた（大きさ 0 だった）レコードが棚に戻るときは、ジャケットの中から出てくる
-    if (layout.mode === 'home' && !t.hidden && s.scale < 1e-3) {
-      if (computeTarget(slug, tucked.current, canvas, true)) {
-        s.pos.copy(tucked.current.pos);
-        s.quat.copy(tucked.current.quat);
-      }
-      s.ready = true;
-    } else if (!s.ready) {
+    if (!computeTarget(slug, t, canvas, s)) return; // DOM が入れ替わっている最中は前の状態を保つ
+
+    if (layout.mode !== 'home') {
+      s.docked = false;
+    } else if (!t.hidden && s.scale < 1e-3) {
+      // 初回、または隠れていたレコードが棚に戻るとき：ジャケットの中に収まった状態から出てくる
+      s.peek = 0;
+      s.lift = 0;
+      computeTarget(slug, t, canvas, s);
+      s.pos.copy(t.pos);
+      s.quat.copy(t.quat);
+      s.docked = true;
+    }
+    if (!s.ready) {
       s.pos.copy(t.pos);
       s.quat.copy(t.quat);
       s.ready = true;
     }
 
-    const lambda = reduce ? 60 : t.hidden ? STAGE.damp * 1.8 : STAGE.damp;
     if (!t.hidden) {
-      s.pos.set(
-        MathUtils.damp(s.pos.x, t.pos.x, lambda, dt),
-        MathUtils.damp(s.pos.y, t.pos.y, lambda, dt),
-        MathUtils.damp(s.pos.z, t.pos.z, lambda, dt),
-      );
-      s.quat.slerp(t.quat, 1 - Math.exp(-lambda * dt));
+      if (s.docked) {
+        // ジャケットに追従中：スクロールしても遅れないよう、目標へそのまま合わせる
+        s.pos.copy(t.pos);
+        s.quat.copy(t.quat);
+        s.scale = t.scale;
+      } else {
+        s.pos.set(
+          MathUtils.damp(s.pos.x, t.pos.x, lambda, dt),
+          MathUtils.damp(s.pos.y, t.pos.y, lambda, dt),
+          MathUtils.damp(s.pos.z, t.pos.z, lambda, dt),
+        );
+        s.quat.slerp(t.quat, 1 - Math.exp(-lambda * dt));
+        s.scale = MathUtils.damp(s.scale, t.scale, lambda, dt);
+        // アルバムページから棚へ戻ってきて、ジャケットに追いついたら追従に切り替える
+        if (layout.mode === 'home' && s.pos.distanceTo(t.pos) < 0.004 && Math.abs(s.scale - t.scale) < 0.002) {
+          s.docked = true;
+        }
+      }
+    } else {
+      s.scale = MathUtils.damp(s.scale, 0, lambda * 1.8, dt);
     }
-    s.scale = MathUtils.damp(s.scale, t.scale, lambda, dt);
     spin.current = MathUtils.damp(spin.current, reduce ? 0 : t.spin, 5, dt);
 
     g.visible = s.scale > 1e-3;
@@ -181,7 +223,7 @@ function HomeScene({ records }: { records: RecordDef[] }) {
         {records.map((r) => {
           const cfg = L.sleeves[r.slug];
           return cfg ? (
-            <Sleeve key={r.slug} cover={r.cover} x={cfg.x} z={cfg.z} handlers={slugHandlers(r.slug, r.href)} />
+            <Sleeve key={r.slug} cover={r.cover} x={cfg.x} z={cfg.z} yaw={cfg.yaw} handlers={slugHandlers(r.slug, r.href)} />
           ) : null;
         })}
       </group>

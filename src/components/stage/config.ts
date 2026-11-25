@@ -51,6 +51,14 @@ export const LABEL = {
  * ホーム（レコードプレーヤー + ジャケット + レコード）の配置。単位はメートル。
  * 台（XZ 平面、Y が上）の上に並べ、全体を X 軸まわりに傾けて斜め上から見下ろす形にする。
  */
+/** ジャケット 1 枚の置き場所。yaw = 台の上での回転（ラジアン）、dir = 盤が出てくる向き（回転前のジャケットから見た XZ の単位ベクトル） */
+export interface SleeveSpot {
+  x: number;
+  z: number;
+  yaw: number;
+  dir: [number, number];
+}
+
 export const HOME = {
   /** カメラの画角（度）。z=0 の面での見える範囲から距離を逆算する */
   fov: 30,
@@ -64,39 +72,40 @@ export const HOME = {
   /** クリックで引き出したとき、盤を持ち上げる高さ */
   lift: 0.09,
   /** プレーヤーは主役なので実寸より少し大きく見せる */
-  playerScale: 1.35,
+  playerScale: 1.6,
   /**
    * 画面の縦横比に合わせた 2 つの配置。wide = PC など横長、tall = スマホなど縦長。
    *  - viewHeight / viewWidth: 画面に必ず収めたい範囲（メートル、z=0 の面）。足りない側に合わせてカメラを引く
    *  - offset: 全体の中心合わせ（台の座標系）
-   *  - sleeves: 各ジャケットの位置と、盤が出てくる向き（台の XZ 平面での単位ベクトル）
+   *  - sleeves: 各ジャケットの位置・回転・盤が出てくる向き
    */
   layouts: {
     wide: {
-      viewHeight: 1.6,
-      viewWidth: 2.55,
-      offset: [0, 0, -0.35] as [number, number, number],
-      playerPosition: [0, 0, -0.05] as [number, number, number],
+      viewHeight: 2.0,
+      viewWidth: 2.8,
+      offset: [0, 0, 0] as [number, number, number],
+      playerPosition: [0, 0, 0] as [number, number, number],
+      // 中央のプレーヤーを囲むように、少しずつ角度（yaw）をずらして散らす
       sleeves: {
-        artist: { x: -0.8, z: 0.05, dir: [-1, 0] },
-        projects: { x: -0.42, z: 0.62, dir: [0, 1] },
-        work: { x: 0, z: 0.82, dir: [0, 1] },
-        skills: { x: 0.42, z: 0.62, dir: [0, 1] },
-        contact: { x: 0.8, z: 0.05, dir: [1, 0] },
-      } as Record<string, { x: number; z: number; dir: [number, number] }>,
+        artist: { x: -0.92, z: 0.08, yaw: 0.32, dir: [-1, 0] },
+        projects: { x: -0.5, z: -0.66, yaw: -0.2, dir: [0, -1] },
+        work: { x: 0.48, z: -0.7, yaw: 0.26, dir: [0, -1] },
+        skills: { x: 0.92, z: 0.14, yaw: -0.3, dir: [1, 0] },
+        contact: { x: 0.0, z: 0.74, yaw: 0.1, dir: [0, 1] },
+      } as Record<string, SleeveSpot>,
     },
     tall: {
-      viewHeight: 2.5,
-      viewWidth: 1.3,
-      offset: [0, 0, -0.85] as [number, number, number],
-      playerPosition: [0, 0, -0.1] as [number, number, number],
+      viewHeight: 2.7,
+      viewWidth: 1.6,
+      offset: [0, 0, 0] as [number, number, number],
+      playerPosition: [0, 0, 0] as [number, number, number],
       sleeves: {
-        artist: { x: -0.4, z: 0.5, dir: [0, 1] },
-        projects: { x: 0.4, z: 0.5, dir: [0, 1] },
-        work: { x: -0.4, z: 1.05, dir: [0, 1] },
-        skills: { x: 0.4, z: 1.05, dir: [0, 1] },
-        contact: { x: 0, z: 1.6, dir: [0, 1] },
-      } as Record<string, { x: number; z: number; dir: [number, number] }>,
+        artist: { x: -0.58, z: 0.05, yaw: 0.25, dir: [0, -1] },
+        projects: { x: 0.58, z: 0, yaw: -0.22, dir: [0, -1] },
+        work: { x: 0.02, z: -0.88, yaw: 0.12, dir: [0, -1] },
+        skills: { x: -0.4, z: 0.88, yaw: -0.2, dir: [0, 1] },
+        contact: { x: 0.42, z: 0.84, yaw: 0.28, dir: [0, 1] },
+      } as Record<string, SleeveSpot>,
     },
   },
 } as const;
