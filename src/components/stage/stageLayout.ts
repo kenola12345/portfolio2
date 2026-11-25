@@ -8,6 +8,8 @@ interface StageLayout {
   mode: StageMode;
   slot: { slug: string; el: HTMLElement } | null;
   hover: string | null;
+  /** ドラッグ中にポインターの下に来たレコード。ドラッグが終わるまでホバー扱いにせず、終わった時点で反映する */
+  pendingHover: string | null;
   /** クリックされて引き出し中のレコード */
   pulled: string | null;
   /** ローディングが終わって、画面を見せてよいか */
@@ -18,9 +20,51 @@ export const layout: StageLayout = {
   mode: 'none',
   slot: null,
   hover: null,
+  pendingHover: null,
   pulled: null,
   ready: false,
 };
+
+const hoverListeners = new Set<(slug: string | null) => void>();
+
+/** ホバー中のレコードを変える。DOM 側のホバーカードが購読して表示を切り替える */
+export function setHover(slug: string | null) {
+  if (layout.hover === slug) return;
+  layout.hover = slug;
+  hoverListeners.forEach((fn) => fn(slug));
+}
+
+/** 台をドラッグ中か（html の data-dragging は RecordStage のドラッグ処理が付け外しする） */
+export const isDragging = () => document.documentElement.dataset.dragging !== undefined;
+
+/** ドラッグが終わったとき、保留していたホバーを反映する */
+export function flushPendingHover() {
+  setHover(layout.pendingHover);
+}
+
+export function subscribeHover(fn: (slug: string | null) => void): () => void {
+  hoverListeners.add(fn);
+  return () => {
+    hoverListeners.delete(fn);
+  };
+}
+
+/** 「ドラッグで回せる」ヒントを、一度回したら消す。ページ遷移で html の属性が入れ替わるので、sessionStorage から付け直す */
+export function markDragged() {
+  document.documentElement.dataset.dragged = '';
+  try {
+    sessionStorage.setItem('stage-dragged', '1');
+  } catch {
+    /* 保存できない環境では、そのページの間だけ消える */
+  }
+}
+function restoreDragged() {
+  try {
+    if (sessionStorage.getItem('stage-dragged')) document.documentElement.dataset.dragged = '';
+  } catch {
+    /* 無視 */
+  }
+}
 
 const prefersReducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -31,6 +75,7 @@ export function refreshLayout() {
   layout.mode = slotEl ? 'page' : document.querySelector('[data-stage-home]') ? 'home' : 'none';
   // CSS 側で、ホームのときだけキャンバスがクリックを受けるようにする
   document.documentElement.dataset.stage = layout.mode;
+  restoreDragged();
 }
 
 /** ジャケット／レコードがクリックされた：盤を引き出してからページ遷移する */
@@ -54,16 +99,16 @@ export function bindStageEvents(): () => void {
 
   const onSwap = () => {
     layout.pulled = null;
-    layout.hover = null;
+    setHover(null);
     refreshLayout();
   };
 
   const cardOf = (e: Event) => (e.target as Element | null)?.closest<HTMLAnchorElement>('a[data-card]') ?? null;
   const onFocusIn = (e: Event) => {
-    layout.hover = cardOf(e)?.dataset.card ?? null;
+    setHover(cardOf(e)?.dataset.card ?? null);
   };
   const onFocusOut = (e: Event) => {
-    if (cardOf(e)) layout.hover = null;
+    if (cardOf(e)) setHover(null);
   };
 
   /** キーボードで Enter されたとき。Astro のルーターより先に処理して、すぐ遷移されないようにする */
@@ -76,14 +121,30 @@ export function bindStageEvents(): () => void {
     activate(a.dataset.card ?? '', a.href);
   };
 
+  // ブラウザの「戻る／進む」でホームに戻ったときは、ページの一番上から始める。
+  // 既定では前に見ていたスクロール位置（フッターなど）に戻り、3D の台がまるごと画面の上に出てしまうため
+  let navigationType = '';
+  const onBeforePreparation = (e: Event) => {
+    navigationType = (e as Event & { navigationType?: string }).navigationType ?? '';
+  };
+  const onPageLoad = () => {
+    refreshLayout();
+    if (layout.mode === 'home' && navigationType === 'traverse' && window.scrollY > 0) {
+      window.scrollTo({ top: 0, behavior: 'instant' });
+    }
+    navigationType = '';
+  };
+
   document.addEventListener('astro:after-swap', onSwap);
-  document.addEventListener('astro:page-load', refreshLayout);
+  document.addEventListener('astro:before-preparation', onBeforePreparation);
+  document.addEventListener('astro:page-load', onPageLoad);
   document.addEventListener('focusin', onFocusIn);
   document.addEventListener('focusout', onFocusOut);
   document.addEventListener('click', onClick, true);
   return () => {
     document.removeEventListener('astro:after-swap', onSwap);
-    document.removeEventListener('astro:page-load', refreshLayout);
+    document.removeEventListener('astro:before-preparation', onBeforePreparation);
+    document.removeEventListener('astro:page-load', onPageLoad);
     document.removeEventListener('focusin', onFocusIn);
     document.removeEventListener('focusout', onFocusOut);
     document.removeEventListener('click', onClick, true);

@@ -6,6 +6,7 @@
  */
 import GridIcon from '../ui/GridIcon.astro';
 import FlipText from '../ui/FlipText.astro';
+import PageNav from '../ui/PageNav.astro';
 import { ui } from '../../data/ui';
 import { t } from '../../lib/i18n';
 
@@ -21,14 +22,17 @@ const { slug, label, title } = Astro.props;
 ---
 
 <header class="pt-6 md:pt-10">
-  <a
-    href="/"
-    class="crystal menu-text enter inline-flex items-center gap-2 px-4 py-2 text-sm"
-    style="--crystal-radius: 999px"
-  >
-    <GridIcon />
-    <FlipText>{t(ui.backToShelf)}</FlipText>
-  </a>
+  <div class="enter flex flex-col gap-3 md:flex-row md:items-center md:gap-4">
+    <a
+      href="/"
+      class="crystal menu-text inline-flex w-fit shrink-0 items-center gap-2 px-4 py-2 text-sm"
+      style="--crystal-radius: 999px"
+    >
+      <GridIcon />
+      <FlipText>{t(ui.backToShelf)}</FlipText>
+    </a>
+    <PageNav current={slug} />
+  </div>
 
   <div class="mt-8 grid grid-cols-[112px_1fr] items-end gap-4 md:mt-10 md:grid-cols-[232px_1fr] md:gap-8">
     <!-- レコードの置き場所。ここは空のまま、3D ステージがこの矩形に合わせてレコードを置く -->

@@ -1,0 +1,52 @@
+---
+/**
+ * アルバム／アーティストページの上部のナビ。ほかのページへ直接移動できる（棚に戻らなくてよい）。
+ * 今いるページは白く塗って、aria-current で伝える。
+ */
+import FlipText from './FlipText.astro';
+import { albums } from '../../data/albums';
+import { ui } from '../../data/ui';
+import { t } from '../../lib/i18n';
+
+interface Props {
+  /** 今のページ（'artist' or アルバムの slug） */
+  current: string;
+}
+const { current } = Astro.props;
+
+const items = [
+  { slug: 'artist', href: '/artist', label: t(ui.navArtist) },
+  ...albums.map((album) => ({ slug: album.slug, href: `/albums/${album.slug}`, label: t(album.title) })),
+];
+---
+
+<!-- SP は左右の余白まで広げて、はみ出す分は横スクロール -->
+<nav
+  aria-label={t(ui.pagesNav)}
+  class="-mx-[var(--gutter-sp)] overflow-x-auto px-[var(--gutter-sp)] [scrollbar-width:none] md:mx-0 md:overflow-visible md:px-0 [&::-webkit-scrollbar]:hidden"
+>
+  <ul class="flex w-max gap-2 md:w-auto md:flex-wrap">
+    {
+      items.map((item) => {
+        const active = item.slug === current;
+        return (
+          <li>
+            <a
+              href={item.href}
+              aria-current={active ? 'page' : undefined}
+              style={active ? 'color:#0b0b0d;text-shadow:none' : undefined}
+              class:list={[
+                'menu-text inline-block whitespace-nowrap rounded-full px-4 py-2 text-sm ring-1 transition-colors duration-300',
+                active
+                  ? 'bg-white ring-white'
+                  : 'bg-white/10 ring-white/15 hover:bg-white/20',
+              ]}
+            >
+              <FlipText>{item.label}</FlipText>
+            </a>
+          </li>
+        );
+      })
+    }
+  </ul>
+</nav>

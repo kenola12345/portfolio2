@@ -34,6 +34,8 @@ export interface Album {
   title: L10n;
   /** メタ行に出す年。実際の年が分かるまでは省略する（推測で入れない） */
   year?: number;
+  /** ホームでレコードにホバーしたときに出す、何についてのレコードかの一言説明 */
+  blurb: L10n;
   /** ヘッダーのグラデーションとホームの光の色 */
   accent: string;
   /** レコード中央ラベルに貼る画像 */
@@ -49,6 +51,8 @@ export interface Artist {
   name: L10n;
   tagline: L10n;
   bio: L10n;
+  /** ホームでアーティストのレコードにホバーしたときの一言説明 */
+  shelfBlurb: L10n;
   /** 紹介カードの下に並べる短い項目（拠点・言語・学歴など） */
   facts: { label: L10n; value: L10n }[];
   banner: string;

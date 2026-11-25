@@ -12,6 +12,10 @@ export const artist: Artist = {
     en: 'Bilingual English–Japanese engineer born in the United States and based in Tokyo. After 3+ years building production web applications at a Japanese web agency, I now work as a Full Stack Engineer, expanding into backend development (Node.js, REST APIs, relational databases, Docker) with AI-driven workflows. I have led end-to-end development on 10+ client projects across real estate, hospitality, healthcare and consumer brands, and mentored junior developers along the way.',
     ja: '米国生まれ、東京在住の日英バイリンガルエンジニア。日本の Web 制作会社で 3 年以上、本番のウェブアプリケーションを開発し、現在はフルスタックエンジニアとして、AI 駆動のワークフローでバックエンド開発（Node.js、REST API、リレーショナルデータベース、Docker）へ領域を広げています。不動産・ホスピタリティ・ヘルスケア・コンシューマーブランドなど 10 件以上の案件を企画から公開まで担当し、若手の育成にも携わってきました。',
   },
+  shelfBlurb: {
+    en: 'About me: who I am, where I\'m from and what I do.',
+    ja: '自己紹介：どんな人で、どこの出身で、何をしているか。',
+  },
   facts: [
     {
       label: { en: 'Based in', ja: '拠点' },

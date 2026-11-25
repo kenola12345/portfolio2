@@ -9,6 +9,10 @@ export const albums: Album[] = [
     slug: 'projects',
     type: 'ALBUM',
     title: { en: 'Projects', ja: '制作実績' },
+    blurb: {
+      en: "Websites and apps I've designed and built, with screenshots and links.",
+      ja: '自分で設計・開発したウェブサイトやアプリの紹介（スクリーンショットとリンク付き）。',
+    },
     // TODO(owner): 最新プロジェクトの年
     accent: '#e0533d',
     cover: '/covers/projects.webp',
@@ -47,6 +51,10 @@ export const albums: Album[] = [
     slug: 'work',
     type: 'ALBUM',
     title: { en: 'Work Experience', ja: '職歴' },
+    blurb: {
+      en: "Where I've worked and what I did there: AXR and Holon Inc.",
+      ja: 'これまでの職歴と担当した仕事（AXR、Holon Inc.）。',
+    },
     // 最新の在籍年
     year: 2026,
     accent: '#3d7be0',
@@ -127,6 +135,10 @@ export const albums: Album[] = [
     slug: 'skills',
     type: 'EP',
     title: { en: 'Skills', ja: 'スキル' },
+    blurb: {
+      en: 'The languages, frameworks and tools I work with.',
+      ja: '使っている言語・フレームワーク・ツール。',
+    },
     accent: '#23a7a0',
     cover: '/covers/skills.svg',
     tracks: [
@@ -161,6 +173,10 @@ export const albums: Album[] = [
     // トラックが 4 つになったので SINGLE ではなく EP
     type: 'EP',
     title: { en: 'Contact', ja: 'お問い合わせ' },
+    blurb: {
+      en: 'Email, GitHub, LinkedIn, or send me a message directly.',
+      ja: 'メール、GitHub、LinkedIn、またはこのサイトから直接メッセージを送れます。',
+    },
     accent: '#d9a72b',
     cover: '/covers/contact.svg',
     tracks: [

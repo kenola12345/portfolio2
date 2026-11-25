@@ -181,6 +181,17 @@ const isExternal = (href: string) => /^https?:\/\//.test(href);
     else select(details);
   });
 
+  // 再生ボタン：最初のトラックを開く。すでに開いていれば次のトラックへ進む
+  document.addEventListener('click', (e) => {
+    if (!(e.target as Element).closest('[data-play]')) return;
+    const tracks = [...document.querySelectorAll<HTMLDetailsElement>('details[data-track]')];
+    if (!tracks.length) return;
+    const current = tracks.findIndex((d) => d.open);
+    const next = tracks[current < 0 ? 0 : (current + 1) % tracks.length];
+    select(next);
+    next.scrollIntoView({ behavior: reduceMotion() ? 'auto' : 'smooth', block: 'nearest' });
+  });
+
   // #トラック名 つきの URL（または再生ボタン）で、その行を開く
   function openFromHash() {
     const id = decodeURIComponent(location.hash.slice(1));

@@ -153,6 +153,95 @@ body:has(#loading-screen:not([data-done])) :is(.enter, .enter-slide) {
 html[data-stage='home'] .stage-root {
   pointer-events: auto;
 }
+/* ホームの台はドラッグで回せるので、つかむ手のカーソルにする（ジャケットの上では 3D 側が pointer に上書き） */
+html[data-stage='home'] .stage-root canvas {
+  cursor: grab;
+}
+html[data-dragging] .stage-root canvas {
+  cursor: grabbing !important;
+}
+
+/* ---------- ホームの操作ヒントとホバーカード ---------- */
+
+/* .crystal の position: relative に負けないよう、クラスを重ねて指定する */
+.drag-hint.crystal {
+  position: absolute;
+  bottom: 1.5rem;
+  left: 50%;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.55rem 1.1rem;
+  font-size: 0.8rem;
+  white-space: nowrap;
+  pointer-events: none;
+  transform: translateX(-50%);
+  transition: opacity 0.6s var(--ease-out);
+}
+.drag-hint__sep,
+.drag-hint__click {
+  opacity: 0.6;
+}
+/* 点が左右に揺れて「ドラッグ」を伝える */
+.drag-hint__dot {
+  animation: drag-hint-sway 2.2s ease-in-out infinite;
+}
+@keyframes drag-hint-sway {
+  0%,
+  100% {
+    transform: translateX(-5px);
+  }
+  50% {
+    transform: translateX(5px);
+  }
+}
+/* 一度ドラッグしたら消す（html の data-dragged は stageLayout が付ける） */
+html[data-dragged] .drag-hint {
+  opacity: 0;
+}
+/* 狭い画面では短い方だけ */
+@media (width < 40rem) {
+  .drag-hint__sep,
+  .drag-hint__click {
+    display: none;
+  }
+}
+
+/* ホバーカード：カーソルの右下について回る、レコードの説明 */
+.hover-card.crystal {
+  --crystal-radius: 16px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 60;
+  width: min(260px, 70vw);
+  padding: 0.85rem 1rem;
+  pointer-events: none;
+  opacity: 0;
+  /* 位置は JS が transform で書き込むので、ここでは opacity だけ動かす */
+  transition: opacity 0.25s var(--ease-out);
+}
+.hover-card[data-show] {
+  opacity: 1;
+}
+/* ドラッグ中は出さない */
+html[data-dragging] .hover-card {
+  opacity: 0;
+}
+.hover-card__title {
+  font-size: 1rem;
+}
+.hover-card__meta {
+  margin-top: 0.1rem;
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  color: var(--color-muted);
+}
+.hover-card__blurb {
+  margin-top: 0.5rem;
+  font-size: 0.82rem;
+  line-height: 1.5;
+}
 
 /* ---------- クリスタル UI ----------
    ゲームキューブのメニューのような、屈折する水晶ガラスの部品。
@@ -355,6 +444,7 @@ details[open].crystal::after {
   *::before,
   *::after {
     animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
     animation-delay: 0ms !important;
     transition-duration: 0.01ms !important;
   }

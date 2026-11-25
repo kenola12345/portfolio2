@@ -9,6 +9,8 @@ import { ClientRouter } from 'astro:transitions';
 import RecordStage from '../components/stage/RecordStage';
 import { albums } from '../data/albums';
 import { artist } from '../data/artist';
+import { ui } from '../data/ui';
+import { t } from '../lib/i18n';
 
 interface Props {
   title?: string;
@@ -28,10 +30,24 @@ const {
   glow = false,
 } = Astro.props;
 
-// ステージに渡すレコード一覧（Artist が先頭、あとはアルバム順）
+// ステージに渡すレコード一覧（Artist が先頭、あとはアルバム順）。ホバーカードの文字もここで解決する
 const records = [
-  { slug: 'artist', cover: artist.portrait, href: '/artist' },
-  ...albums.map((album) => ({ slug: album.slug, cover: album.cover, href: `/albums/${album.slug}` })),
+  {
+    slug: 'artist',
+    cover: artist.portrait,
+    href: '/artist',
+    title: t(artist.name),
+    meta: t(ui.artistLabel),
+    blurb: t(artist.shelfBlurb),
+  },
+  ...albums.map((album) => ({
+    slug: album.slug,
+    cover: album.cover,
+    href: `/albums/${album.slug}`,
+    title: t(album.title),
+    meta: `${album.type} · ${album.tracks.length} ${t(album.tracks.length === 1 ? ui.track : ui.tracks)}`,
+    blurb: t(album.blurb),
+  })),
 ];
 ---
 

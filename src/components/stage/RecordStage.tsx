@@ -1,4 +1,4 @@
-import { Suspense, useEffect, useLayoutEffect, useMemo, useRef } from 'react';
+import { Suspense, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { Environment, Lightformer, useProgress } from '@react-three/drei';
 import { Euler, MathUtils, Quaternion, Vector3, type Group } from 'three';
@@ -6,14 +6,18 @@ import Record from './Record';
 import RecordPlayer from './RecordPlayer';
 import Sleeve from './Sleeve';
 import { slugHandlers } from './useSlugHandlers';
-import { HOME, RECORD_MODEL_RADIUS, STAGE, layoutKeyFor } from './config';
-import { bindStageEvents, layout } from './stageLayout';
+import { HOME, ORBIT, RECORD_MODEL_RADIUS, STAGE, layoutKeyFor } from './config';
+import { bindStageEvents, flushPendingHover, layout, markDragged, setHover, subscribeHover } from './stageLayout';
 import { home, view } from './stageView';
 
 export interface RecordDef {
   slug: string;
   cover: string;
   href: string;
+  /** ホバーカードに出す文字（ビルド時に言語を解決して渡す） */
+  title: string;
+  meta: string;
+  blurb: string;
 }
 
 const RECORD_SCALE = HOME.recordRadius / RECORD_MODEL_RADIUS;
@@ -132,6 +136,12 @@ function StageRecord({ slug, cover, href }: RecordDef) {
 
     if (layout.mode !== 'home') {
       s.docked = false;
+      // アルバム → アルバムの移動：隠れていた盤は、スロットの位置でその場から大きくなって現れる
+      // （前のページの盤は縮んで消える）。棚から飛んでくる場合は、すでに大きさがあるので対象外
+      if (layout.mode === 'page' && !t.hidden && s.scale < 1e-3) {
+        s.pos.copy(t.pos);
+        s.quat.copy(t.quat);
+      }
     } else if (!t.hidden && s.scale < 1e-3) {
       // 初回、または隠れていたレコードが棚に戻るとき：ジャケットの中に収まった状態から出てくる
       s.peek = 0;
@@ -194,16 +204,97 @@ function StageRecord({ slug, cover, href }: RecordDef) {
 function HomeScene({ records }: { records: RecordDef[] }) {
   const ref = useRef<Group>(null);
   const scale = useRef(0);
+  const gl = useThree((s) => s.gl);
   // 縦長・横長で配置を切り替える（切り替わるときだけ再描画される）
   const key = useThree((s) => layoutKeyFor(s.size.width / s.size.height));
   const L = HOME.layouts[key];
+
+  /**
+   * ドラッグで台を回す。yaw = 台の上方向まわり、pitch = 手前に起こす角度（カメラの仰角にあたる）。
+   * 目標値（〜T）を動かし、実際の値はそこへ滑らかに追従する。
+   */
+  const orbit = useRef({
+    yaw: 0,
+    pitch: L.tilt as number,
+    yawT: 0,
+    pitchT: L.tilt as number,
+    drag: null as { id: number; x: number; y: number } | null,
+    wasHome: true,
+  });
+
+  // 配置（PC / スマホ）が切り替わったら、その配置の初期の角度に戻す
+  useEffect(() => {
+    orbit.current.pitchT = L.tilt;
+  }, [L.tilt]);
+
+  useEffect(() => {
+    const el = gl.domElement;
+    const o = orbit.current;
+    const down = (e: PointerEvent) => {
+      if (layout.mode !== 'home' || e.button !== 0) return;
+      o.drag = { id: e.pointerId, x: e.clientX, y: e.clientY };
+      el.setPointerCapture(e.pointerId);
+      document.documentElement.dataset.dragging = '';
+      setHover(null);
+    };
+    const move = (e: PointerEvent) => {
+      const d = o.drag;
+      if (!d || d.id !== e.pointerId) return;
+      const dx = e.clientX - d.x;
+      const dy = e.clientY - d.y;
+      d.x = e.clientX;
+      d.y = e.clientY;
+      if (Math.abs(dx) + Math.abs(dy) > 0) markDragged();
+      o.yawT += dx * ORBIT.yawPerPx;
+      // タッチの縦ドラッグはページのスクロールに使うので、縦方向の回転はマウスのときだけ
+      if (e.pointerType === 'mouse') {
+        o.pitchT = MathUtils.clamp(o.pitchT + dy * ORBIT.pitchPerPx, ORBIT.pitchMin, ORBIT.pitchMax);
+      }
+    };
+    const up = (e: PointerEvent) => {
+      if (o.drag?.id !== e.pointerId) return;
+      o.drag = null;
+      delete document.documentElement.dataset.dragging;
+      if (el.hasPointerCapture(e.pointerId)) el.releasePointerCapture(e.pointerId);
+      flushPendingHover();
+    };
+    el.addEventListener('pointerdown', down);
+    el.addEventListener('pointermove', move);
+    el.addEventListener('pointerup', up);
+    el.addEventListener('pointercancel', up);
+    return () => {
+      el.removeEventListener('pointerdown', down);
+      el.removeEventListener('pointermove', move);
+      el.removeEventListener('pointerup', up);
+      el.removeEventListener('pointercancel', up);
+    };
+  }, [gl]);
 
   useFrame((_, rawDelta) => {
     const g = ref.current;
     if (!g) return;
     const dt = Math.min(rawDelta, 0.05);
+    const o = orbit.current;
+    const isHome = layout.mode === 'home';
+
+    // ホームを離れたら初期の角度へ戻す（戻ってきたときに毎回同じ見た目で始まるように）。
+    // 何周も回していた場合に逆回転しないよう、-π〜π に畳んでから戻す
+    if (!isHome && o.wasHome) {
+      o.yaw = Math.atan2(Math.sin(o.yaw), Math.cos(o.yaw));
+      o.yawT = 0;
+      o.pitchT = L.tilt;
+      o.drag = null;
+      delete document.documentElement.dataset.dragging;
+    }
+    o.wasHome = isHome;
+
+    o.yaw = MathUtils.damp(o.yaw, o.yawT, ORBIT.damp, dt);
+    o.pitch = MathUtils.damp(o.pitch, o.pitchT, ORBIT.damp, dt);
+    // 回転の順序は XYZ：先に台の上方向まわりの yaw、そのあと手前に起こす pitch
+    g.rotation.set(o.pitch, o.yaw, 0);
+
     // ローディングが終わるまでは出さない（終わってから、ふわっと現れる）
-    const want = layout.mode === 'home' && layout.ready ? 1 : 0;
+    const want = isHome && layout.ready ? 1 : 0;
     scale.current = MathUtils.damp(scale.current, want, 6, dt);
     g.visible = scale.current > 0.01;
     g.scale.setScalar(Math.max(scale.current, 1e-4));
@@ -216,7 +307,6 @@ function HomeScene({ records }: { records: RecordDef[] }) {
         ref.current = g;
         home.group = g;
       }}
-      rotation={[HOME.tilt, 0, 0]}
     >
       <group position={L.offset}>
         <RecordPlayer position={L.playerPosition} />
@@ -228,6 +318,64 @@ function HomeScene({ records }: { records: RecordDef[] }) {
         })}
       </group>
     </group>
+  );
+}
+
+/**
+ * ホームでレコード（ジャケット）にホバーしたとき、カーソルのそばに「何についてのレコードか」を出すカード。
+ * 位置は React の再描画ではなく、ポインターが動くたびに transform を直接書き換える
+ */
+function HoverCard({ records }: { records: RecordDef[] }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const pointer = useRef({ x: 0, y: 0 });
+  // 消えるときにも中身が残るよう、最後に出していたレコードを覚えておく
+  const [active, setActive] = useState<string | null>(null);
+  const [shown, setShown] = useState<RecordDef | null>(null);
+
+  useEffect(
+    () =>
+      subscribeHover((slug) => {
+        setActive(slug);
+        const found = slug ? records.find((r) => r.slug === slug) : undefined;
+        if (found) setShown(found);
+      }),
+    [records],
+  );
+
+  /** カーソルの右下に置く。画面の端にかかるときは反対側へ */
+  const place = () => {
+    const el = ref.current;
+    if (!el) return;
+    const gap = 18;
+    const w = el.offsetWidth;
+    const h = el.offsetHeight;
+    let x = pointer.current.x + gap;
+    let y = pointer.current.y + gap;
+    if (x + w > window.innerWidth - 8) x = pointer.current.x - w - gap;
+    if (y + h > window.innerHeight - 8) y = pointer.current.y - h - gap;
+    el.style.transform = `translate(${Math.max(8, x)}px, ${Math.max(8, y)}px)`;
+  };
+
+  useEffect(() => {
+    // キーボードでフォーカスしたとき（ポインターが無い）は、画面の下寄りの中央に出す
+    pointer.current = { x: window.innerWidth / 2 - 130, y: window.innerHeight * 0.72 };
+    const onMove = (e: PointerEvent) => {
+      if (e.pointerType !== 'mouse') return;
+      pointer.current = { x: e.clientX, y: e.clientY };
+      place();
+    };
+    window.addEventListener('pointermove', onMove, { passive: true });
+    return () => window.removeEventListener('pointermove', onMove);
+  }, []);
+
+  useLayoutEffect(place, [shown, active]);
+
+  return (
+    <div ref={ref} className="hover-card crystal" data-show={active ? '' : undefined} aria-hidden="true">
+      <p className="menu-text hover-card__title">{shown?.title}</p>
+      <p className="hover-card__meta">{shown?.meta}</p>
+      <p className="hover-card__blurb">{shown?.blurb}</p>
+    </div>
   );
 }
 
@@ -310,6 +458,7 @@ export default function RecordStage({ records }: { records: RecordDef[] }) {
   return (
     <>
       <LoadingBridge />
+      <HoverCard records={records} />
       <div
         className="stage-root"
         aria-hidden="true"
@@ -321,6 +470,12 @@ export default function RecordStage({ records }: { records: RecordDef[] }) {
           onCreated={({ gl }) => {
             // 縦スクロールは通す（キャンバスの上でもページをスワイプできるように）
             gl.domElement.style.touchAction = 'pan-y';
+            // WebGL の描画面が失われても復元できるようにする。ブラウザの「戻る」でキャッシュから
+            // ページが復元されたとき、描画面だけ空になっていたら、ページごと読み込み直す
+            gl.domElement.addEventListener('webglcontextlost', (e) => e.preventDefault());
+            window.addEventListener('pageshow', (e) => {
+              if (e.persisted && gl.getContext().isContextLost()) window.location.reload();
+            });
           }}
         >
           <CameraRig />
