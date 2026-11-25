@@ -107,6 +107,8 @@ function StageRecord({ slug, cover, href }: RecordDef) {
     ready: false,
     /** ホームでジャケットに追従している状態。このときは位置を補間せず、毎フレーム目標へ直接合わせる */
     docked: false,
+    /** アルバムページから棚へ戻っている最中（①ジャケットの横の上空へ → ②降りる → ③滑り込む の順に見せる） */
+    returning: false,
     pos: new Vector3(),
     quat: new Quaternion(),
     scale: 0,
@@ -126,19 +128,38 @@ function StageRecord({ slug, cover, href }: RecordDef) {
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const lambda = reduce ? 60 : STAGE.damp;
 
-    // 出ている量と持ち上げ量だけを滑らかに動かす（位置そのものは補間しない：スクロールで遅れて見えるため）
     const pulled = layout.pulled === slug;
-    const wantPeek = pulled ? HOME.peek.pulled : layout.hover === slug ? HOME.peek.hover : HOME.peek.rest;
+
+    // 棚へ戻ってくる：アルバムページのスロットから戻るときは、まず「ジャケットの真横・上空」（引き抜いたときの
+    // 終わりの姿勢）へ飛んでくる。ジャケットの真上や中を通らないので、突き抜けて見えない
+    if (layout.mode === 'home' && !s.docked && !s.returning && !pulled && s.scale > 1e-3) {
+      s.returning = true;
+      s.peek = HOME.peek.pulled;
+      s.lift = HOME.lift;
+    }
+    if (pulled) s.returning = false;
+
+    // 出ている量と持ち上げ量だけを滑らかに動かす（位置そのものは補間しない：スクロールで遅れて見えるため）
+    let wantPeek: number;
+    if (s.returning) wantPeek = HOME.peek.pulled; // 降りるあいだも、ジャケットの横に出したまま
+    else wantPeek = pulled ? HOME.peek.pulled : layout.hover === slug ? HOME.peek.hover : HOME.peek.rest;
     s.peek = MathUtils.damp(s.peek, wantPeek, lambda, dt);
-    // 順番：①ジャケットから真横に完全に抜ける → ②持ち上がる → ③（ページ遷移後）行き先へ飛ぶ。
-    // 抜けきる前に持ち上げたり飛ばしたりすると、ジャケットを突き抜けて見える
-    const clear = pulled && s.peek >= HOME.peek.pulled * HOME.liftAfterPeek;
-    s.lift = MathUtils.damp(s.lift, clear ? HOME.lift : 0, lambda, dt);
+
+    // 引き抜き：①ジャケットから真横に完全に抜ける → ②持ち上がる → ③（ページ遷移後）行き先へ飛ぶ。
+    // 戻り　　：①ジャケットの横の上空へ飛ぶ → ②まっすぐ降りる → ③ジャケットへ滑り込む。
+    // 抜けきる前や、ジャケットの上で動かすと、ジャケットを突き抜けて見える
+    let wantLift: number;
+    if (s.returning) wantLift = s.docked ? 0 : HOME.lift;
+    else wantLift = pulled && s.peek >= HOME.peek.pulled * HOME.liftAfterPeek ? HOME.lift : 0;
+    s.lift = MathUtils.damp(s.lift, wantLift, lambda, dt);
+    // 降りきったら、通常の状態（rest の長さまで滑り込む）へ
+    if (s.returning && s.docked && s.lift < 0.006) s.returning = false;
 
     if (!computeTarget(slug, t, canvas, s)) return; // DOM が入れ替わっている最中は前の状態を保つ
 
     if (layout.mode !== 'home') {
       s.docked = false;
+      s.returning = false;
       // アルバム → アルバムの移動：隠れていた盤は、スロットの位置でその場から大きくなって現れる
       // （前のページの盤は縮んで消える）。棚から飛んでくる場合は、すでに大きさがあるので対象外
       if (layout.mode === 'page' && !t.hidden && s.scale < 1e-3) {
