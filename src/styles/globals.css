@@ -234,9 +234,11 @@ html[data-dragging] .stage-root canvas {
   transform: none;
   transition-delay: 0s;
 }
-/* 後ろの 3D が透けすぎて文字が読みにくいので、パネルの地は少し濃くする */
+/* 地を濃くして、後ろの文字や 3D が透けて読みにくくならないようにする。
+   アルバムページでは、登場アニメーション中のヘッダー内に置かれていて、ぼかし（backdrop-filter）が
+   ページ全体の後ろまで届かないため、ぼかしに頼らず不透明に近くしている */
 .mobile-menu__panel.crystal {
-  background-color: rgb(14 14 18 / 0.72);
+  background-color: rgb(14 14 18 / 0.95);
 }
 .mobile-menu__link {
   display: block;

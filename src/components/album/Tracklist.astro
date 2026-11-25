@@ -24,7 +24,7 @@ const isExternal = (href: string) => /^https?:\/\//.test(href);
     tracks.map((track, i) => (
       <li class="enter" style={`--i:${i + 3}`}>
         <details data-track id={track.slug} class="crystal group scroll-mt-6" style="--crystal-radius: 18px">
-          <summary class="grid cursor-pointer list-none grid-cols-[2rem_1fr_auto_1rem] items-center gap-3 px-4 py-3.5 md:grid-cols-[2.5rem_1fr_auto_1rem] md:px-5 [&::-webkit-details-marker]:hidden">
+          <summary class="grid cursor-pointer list-none grid-cols-[2rem_1fr_1rem] items-center gap-3 px-4 py-3.5 md:grid-cols-[2.5rem_1fr_auto_1rem] md:px-5 [&::-webkit-details-marker]:hidden">
             <span class="relative text-center text-sm text-muted">
               <span class="transition-opacity group-hover:opacity-0 group-open:opacity-0">{i + 1}</span>
               <svg
@@ -39,9 +39,11 @@ const isExternal = (href: string) => /^https?:\/\//.test(href);
               </svg>
             </span>
             <span class="min-w-0">
-              <span class="menu-text block truncate text-base md:text-lg">{t(track.title)}</span>
+              <!-- スマホ：長い肩書き・社名は折り返して全部見せる。PC：閉じているときだけ省略し、開いたら全部見せる -->
+              <span class="menu-text block break-words text-base md:truncate md:text-lg md:group-open:overflow-visible md:group-open:whitespace-normal">{t(track.title)}</span>
+              {track.meta && <span class="mt-0.5 block text-xs text-muted md:hidden">{t(track.meta)}</span>}
             </span>
-            <span class="text-xs text-muted md:text-sm">{track.meta ? t(track.meta) : ''}</span>
+            <span class="hidden text-sm text-muted md:block">{track.meta ? t(track.meta) : ''}</span>
             <svg
               class="text-muted transition-transform duration-300 group-open:rotate-180"
               viewBox="0 0 24 24"
