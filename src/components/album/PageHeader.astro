@@ -5,6 +5,7 @@
  * 「棚へ戻る」ボタンはクリスタルのピル型。
  */
 import GridIcon from '../ui/GridIcon.astro';
+import FlipText from '../ui/FlipText.astro';
 import { ui } from '../../data/ui';
 import { t } from '../../lib/i18n';
 
@@ -26,7 +27,7 @@ const { slug, label, title } = Astro.props;
     style="--crystal-radius: 999px"
   >
     <GridIcon />
-    {t(ui.backToShelf)}
+    <FlipText>{t(ui.backToShelf)}</FlipText>
   </a>
 
   <div class="mt-8 grid grid-cols-[112px_1fr] items-end gap-4 md:mt-10 md:grid-cols-[232px_1fr] md:gap-8">

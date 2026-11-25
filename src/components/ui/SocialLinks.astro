@@ -4,6 +4,7 @@
  * アーティストページとホームのフッターで共通して使う。
  */
 import { artist } from '../../data/artist';
+import FlipText from './FlipText.astro';
 
 /** SNS アイコンのファイル（public/icons）。白で表示するため反転して使う */
 const iconFor = { github: '/icons/github.svg', linkedin: '/icons/linkedIn.svg', email: '/icons/gmail.svg' } as const;
@@ -26,7 +27,7 @@ const { class: className = '' } = Astro.props;
           rel="noreferrer"
         >
           <img class="size-4 invert" src={iconFor[s.kind]} alt="" width="16" height="16" />
-          {s.label}
+          <FlipText>{s.label}</FlipText>
         </a>
       </li>
     ))

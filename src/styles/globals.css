@@ -168,6 +168,49 @@ details[open].crystal::after {
   opacity: 0.8;
 }
 
+/* ボタンの文字のフリップ。ホバーで「上へ裏返って消える → 下から裏返って上がってくる」。
+   transform と opacity だけを動かす。2 つの文字は同じ位置に重ねてある */
+.flip {
+  display: inline-grid;
+  vertical-align: bottom;
+  perspective: 500px;
+  /* 動く文字を行の中で切り取る。上下に少し余白を足して、ディセンダーが切れないようにする */
+  overflow: hidden;
+  padding-block: 0.12em;
+  margin-block: -0.12em;
+}
+.flip > * {
+  grid-area: 1 / 1;
+  white-space: nowrap;
+  transform-origin: 50% 50%;
+  backface-visibility: hidden;
+  transition:
+    transform 0.6s var(--ease-out),
+    opacity 0.6s var(--ease-out);
+}
+.flip__b {
+  opacity: 0;
+  transform: translateY(110%) rotateX(-85deg);
+}
+:is(a, button):is(:hover, :focus-visible) .flip__a {
+  opacity: 0;
+  transform: translateY(-110%) rotateX(85deg);
+}
+:is(a, button):is(:hover, :focus-visible) .flip__b {
+  opacity: 1;
+  transform: none;
+}
+/* 動きを減らす設定のときは、重ねた 2 つ目を出さず文字はそのまま */
+@media (prefers-reduced-motion: reduce) {
+  .flip__b {
+    display: none;
+  }
+  :is(a, button):is(:hover, :focus-visible) .flip__a {
+    opacity: 1;
+    transform: none;
+  }
+}
+
 /* 入力欄。クリスタルの面より少し暗い半透明のくぼみ */
 .field {
   width: 100%;

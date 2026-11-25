@@ -6,6 +6,7 @@
 import type { Track } from '../../data/types';
 import { t } from '../../lib/i18n';
 import ContactForm from '../contact/ContactForm.astro';
+import FlipText from '../ui/FlipText.astro';
 
 interface Props {
   tracks: Track[];
@@ -94,7 +95,7 @@ const isExternal = (href: string) => /^https?:\/\//.test(href);
                     target={isExternal(link.href) ? '_blank' : undefined}
                     rel={isExternal(link.href) ? 'noreferrer' : undefined}
                   >
-                    {link.label} ↗
+                    <FlipText>{link.label} ↗</FlipText>
                   </a>
                 ))}
               </p>
