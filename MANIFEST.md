@@ -37,7 +37,7 @@ This is "inspired by" only. Do **not** copy any real product's logos, icons, sou
 - **Camera:** lower, shallower starting angle (`tilt` per layout, ~31° on PC) with a longer lens (`HOME.fov` 22) for flatter perspective; the player is true size (platter and records match). **Drag to orbit**: left/right spins the table, up/down changes elevation (clamped, mouse only — touch keeps vertical swipes for page scroll). The view resets to the starting angle when you leave the home page. A "Drag to rotate" hint pill (with arrows icon) sits at the bottom and disappears after the first drag (remembered in `sessionStorage`); the cursor is a grab hand over the scene.
 - **Click sequence (shelf → album):** the record is pulled out in **three ordered steps** so it never passes through its sleeve: ① slide fully clear of the sleeve along its own direction (`HOME.peek.pulled`, must exceed sleeve half-size + record radius), ② lift (`HOME.lift`, starts once ~85% out), ③ after ~0.9 s (`STAGE.pullMs`) the page changes and the record flies to the album slot. Hover card is hidden while pulling.
 - **Hover card:** hovering a sleeve/record shows a glass card by the cursor with its title, type · track count and a one-line `blurb` (`Album.blurb`, `Artist.shelfBlurb`). Hover is held back while dragging and applied on release.
-- **Page nav:** every album/artist page has a pill nav (Artist · Projects · Work Experience · Skills · Contact) next to the Shelf button; the current page is white. Records swap in place when moving between pages.
+- **Page nav:** every album/artist page has a pill nav (Artist · Projects · Work Experience · Skills · Contact) next to the Main menu button; the current page is white. Records swap in place when moving between pages.
 - **Back/forward:** going back to the home page always lands at the top (browsers restore the old scroll position, which can leave the 3D scene scrolled out of view above). A lost WebGL context after a cache restore triggers a reload.
 - **Play button** (album pages) opens the first track; pressing again steps to the next track and wraps.
 - **Keyboard / screen readers:** the home DOM contains a visually-hidden `<nav>` of real links (`a[data-card]`); focusing one makes its record peek, Enter pulls it out and navigates.
@@ -246,7 +246,7 @@ Modelled on a music-app **artist profile**:
 ## 10. Global UI
 
 - **Now Playing bar** (album + artist pages only, not on the shelf): fixed bottom, 72px PC / 64px SP. Shows the current track (or the album if none open), artist name, ⏮ ⏭ for previous/next album, ▶ toggles the open track's row. The progress bar is decorative: it shows the scroll progress of the page. Persisted across navigation with `transition:persist`.
-- **Back button** top-left on album/artist pages (`← Shelf`). `Esc` does the same.
+- **Back button** top-left on album/artist pages (`← Main menu`). `Esc` does the same.
 - **No custom cursor**, no Lenis.
 - **Intro** (Phase 8): first session visit only, skippable on any input, ≤2.5s — records drop into place one by one with a soft "settle". `sessionStorage` flag (wrapped in try/catch).
 

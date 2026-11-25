@@ -2,7 +2,7 @@ import type { L10n } from './types';
 
 /** データに属さない UI の固定文言 */
 export const ui = {
-  backToShelf: { en: 'Shelf', ja: '棚へ戻る' },
+  backToMenu: { en: 'Main menu', ja: 'メインメニュー' },
   artistLabel: { en: 'ARTIST', ja: 'アーティスト' },
   verifiedArtist: { en: 'Verified Artist', ja: '認証済みアーティスト' },
   popular: { en: 'Popular', ja: '人気の曲' },

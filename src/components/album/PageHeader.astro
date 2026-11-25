@@ -2,7 +2,7 @@
 /**
  * アルバム／アーティストページ共通のヘッダー。
  * 左上の data-record-slot の位置に、3D ステージのレコードが飛んできて回り続ける。
- * 「棚へ戻る」ボタンはクリスタルのピル型。
+ * 「メインメニュー」（ホームへ戻る）ボタンはクリスタルのピル型。
  */
 import GridIcon from '../ui/GridIcon.astro';
 import FlipText from '../ui/FlipText.astro';
@@ -29,7 +29,7 @@ const { slug, label, title } = Astro.props;
       style="--crystal-radius: 999px"
     >
       <GridIcon />
-      <FlipText>{t(ui.backToShelf)}</FlipText>
+      <FlipText>{t(ui.backToMenu)}</FlipText>
     </a>
     <PageNav current={slug} />
   </div>
