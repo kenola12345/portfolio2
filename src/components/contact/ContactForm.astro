@@ -14,14 +14,22 @@ const config = {
   publicKey: import.meta.env.PUBLIC_EMAILJS_PUBLIC_KEY ?? '',
 };
 const toEmail = 'ken.oshimoto@gmail.com';
+
+// Google が公開している reCAPTCHA v2 のテスト用サイトキー（常に通過する）。
+// 本番ビルドでは使わない。開発中にウィジェットの見た目を確認するためだけに使う
+const GOOGLE_TEST_SITE_KEY = '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI';
+const siteKey = import.meta.env.PUBLIC_RECAPTCHA_SITE_KEY || (import.meta.env.DEV ? GOOGLE_TEST_SITE_KEY : '');
 ---
 
 <form
   data-contact-form
+  data-astro-reload
   data-service-id={config.serviceId}
   data-template-id={config.templateId}
   data-public-key={config.publicKey}
   data-to={toEmail}
+  data-site-key={siteKey}
+  data-msg-captcha={t(ui.formCaptcha)}
   data-msg-sending={t(ui.formSending)}
   data-msg-sent={t(ui.formSent)}
   data-msg-error={t(ui.formError)}
@@ -46,6 +54,9 @@ const toEmail = 'ken.oshimoto@gmail.com';
     <label>Leave this empty <input type="text" name="website" tabindex="-1" autocomplete="off" /></label>
   </div>
 
+  <!-- reCAPTCHA の置き場所。サイトキーがあるときだけ、フォームに触れたときに読み込んで表示する -->
+  {siteKey && <div data-recaptcha class="min-h-[78px]"></div>}
+
   <div class="flex flex-wrap items-center gap-4">
     <button type="submit" class="crystal menu-text px-6 py-2.5 text-sm" style="--crystal-radius: 999px">
       <span data-label>{t(ui.formSend)}</span>
@@ -55,11 +66,88 @@ const toEmail = 'ken.oshimoto@gmail.com';
 </form>
 
 <script>
+  /** reCAPTCHA v2（チェックボックス）の最小限の型 */
+  interface Grecaptcha {
+    ready(cb: () => void): void;
+    render(el: HTMLElement, opts: Record<string, unknown>): number;
+    getResponse(id?: number): string;
+    reset(id?: number): void;
+  }
+  const getRecaptcha = () => (window as unknown as { grecaptcha?: Grecaptcha }).grecaptcha;
+
+  /** フォームごとのウィジェット ID */
+  const widgets = new WeakMap<HTMLFormElement, number>();
+  let loader: Promise<void> | null = null;
+
+  /** reCAPTCHA の本体スクリプトを 1 回だけ読み込む（表示速度のため、フォームに触れるまで読まない） */
+  function loadRecaptcha(): Promise<void> {
+    if (loader) return loader;
+    loader = new Promise<void>((resolve, reject) => {
+      if (getRecaptcha()) return resolve();
+      const script = document.createElement('script');
+      script.src = 'https://www.google.com/recaptcha/api.js?render=explicit';
+      script.async = true;
+      script.onload = () => resolve();
+      script.onerror = () => {
+        loader = null; // 次回また試せるようにする
+        reject(new Error('reCAPTCHA failed to load'));
+      };
+      document.head.appendChild(script);
+    });
+    return loader;
+  }
+
+  /** フォームにまだウィジェットが無ければ描画する */
+  async function mountRecaptcha(form: HTMLFormElement) {
+    const holder = form.querySelector<HTMLElement>('[data-recaptcha]');
+    const siteKey = form.dataset.siteKey;
+    if (!holder || !siteKey || widgets.has(form)) return;
+    try {
+      await loadRecaptcha();
+    } catch {
+      return; // 読み込めないときは、送信時にエラー表示になる
+    }
+    const g = getRecaptcha();
+    if (!g || widgets.has(form) || !holder.isConnected) return;
+    g.ready(() => {
+      if (widgets.has(form)) return;
+      widgets.set(
+        form,
+        g.render(holder, {
+          sitekey: siteKey,
+          theme: 'dark',
+          // 幅が足りない画面では小さいウィジェットにする
+          size: holder.clientWidth > 0 && holder.clientWidth < 304 ? 'compact' : 'normal',
+        }),
+      );
+    });
+  }
+
+  // フォームに触れた（フォーカス）時点で読み込む
+  document.addEventListener('focusin', (e) => {
+    const form = (e.target as Element).closest<HTMLFormElement>('form[data-contact-form]');
+    if (form) void mountRecaptcha(form);
+  });
+  // 展開されて見えた時点でも描画する（フォーカスの前に見せたいので）
+  document.addEventListener('toggle', (e) => {
+    const details = e.target as HTMLElement;
+    if (!(details instanceof HTMLDetailsElement) || !details.open) return;
+    const form = details.querySelector<HTMLFormElement>('form[data-contact-form]');
+    if (form) void mountRecaptcha(form);
+  }, true);
+  // #direct-mail で最初から開いているページ用
+  document.addEventListener('astro:page-load', () => {
+    document.querySelectorAll<HTMLFormElement>('details[open] form[data-contact-form]').forEach((f) => void mountRecaptcha(f));
+  });
+
   /** 問い合わせフォームの送信処理。ページ遷移後に追加されたフォームにも効くよう document で受ける */
   document.addEventListener('submit', async (e) => {
     const form = (e.target as Element).closest<HTMLFormElement>('form[data-contact-form]');
     if (!form) return;
+    // Astro の ClientRouter はフォーム送信も横取りして、入力内容を URL に載せて遷移してしまう。
+    // capture 段階で先に止めて、ルーターには渡さない
     e.preventDefault();
+    e.stopPropagation();
 
     const status = form.querySelector<HTMLElement>('[data-status]')!;
     const button = form.querySelector<HTMLButtonElement>('button[type="submit"]')!;
@@ -70,6 +158,19 @@ const toEmail = 'ken.oshimoto@gmail.com';
     if (data.get('website')) {
       status.textContent = d.msgSent ?? '';
       return;
+    }
+
+    // reCAPTCHA が有効なら、チェック済みであることを必須にする
+    let token = '';
+    if (d.siteKey) {
+      const g = getRecaptcha();
+      const id = widgets.get(form);
+      token = g && id !== undefined ? g.getResponse(id) : '';
+      if (!token) {
+        status.textContent = d.msgCaptcha ?? '';
+        void mountRecaptcha(form);
+        return;
+      }
     }
 
     const name = String(data.get('name') ?? '').trim();
@@ -95,7 +196,8 @@ const toEmail = 'ken.oshimoto@gmail.com';
           service_id: d.serviceId,
           template_id: d.templateId,
           user_id: d.publicKey,
-          template_params: { name, email, message },
+          // EmailJS 側に reCAPTCHA のシークレットキーを登録しておくと、このトークンをサーバー側で検証してくれる
+          template_params: { name, email, message, 'g-recaptcha-response': token },
         }),
       });
       if (!res.ok) throw new Error(`EmailJS responded ${res.status}`);
@@ -105,6 +207,10 @@ const toEmail = 'ken.oshimoto@gmail.com';
       status.textContent = d.msgError ?? '';
     } finally {
       button.disabled = false;
+      // トークンは 1 回しか使えないので、成否にかかわらず引き直す
+      const g = getRecaptcha();
+      const id = widgets.get(form);
+      if (g && id !== undefined) g.reset(id);
     }
-  });
+  }, true);
 </script>

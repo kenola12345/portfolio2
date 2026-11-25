@@ -27,6 +27,10 @@ export const ui = {
     en: 'Sorry, something went wrong. Please try again, or email me directly.',
     ja: '送信に失敗しました。もう一度お試しいただくか、メールで直接ご連絡ください。',
   },
+  formCaptcha: {
+    en: 'Please confirm you are not a robot.',
+    ja: '「ロボットではありません」にチェックを入れてください。',
+  },
   formFallback: {
     en: 'Opening your mail app with your message…',
     ja: 'メッセージを入力した状態でメールアプリを開きます…',

@@ -206,7 +206,7 @@ Animate only `transform` and `opacity` on DOM elements. In 3D, animate object po
 - **Projects:** title, year, tags (tech), description, image, live link, repo link (optional).
 - **Work Experience:** role title, company, period, location, bullet points of what was done, tech used. **TODO(owner):** all entries.
 - **Skills (EP):** tracks = Frontend, Backend, Database, Tools. Expanded row lists the items as "credits" chips.
-- **Contact (EP):** four tracks — Email (mailto), GitHub, LinkedIn, and **Direct Mail** (a form: name, email, message + hidden honeypot). The form posts to the EmailJS REST API using `PUBLIC_EMAILJS_SERVICE_ID` / `PUBLIC_EMAILJS_TEMPLATE_ID` / `PUBLIC_EMAILJS_PUBLIC_KEY` (see `.env.example`; template variables `{{name}} {{email}} {{message}}`). With those unset it falls back to opening a prefilled `mailto:`.
+- **Contact (EP):** four tracks — Email (mailto), GitHub, LinkedIn, and **Direct Mail** (a form: name, email, message + hidden honeypot). The form posts to the EmailJS REST API using `PUBLIC_EMAILJS_SERVICE_ID` / `PUBLIC_EMAILJS_TEMPLATE_ID` / `PUBLIC_EMAILJS_PUBLIC_KEY` (see `.env.example`; template variables `{{name}} {{email}} {{message}}`). Spam protection: hidden honeypot + **Google reCAPTCHA v2 checkbox** (site key in `PUBLIC_RECAPTCHA_SITE_KEY`; the secret key goes in the EmailJS dashboard, which verifies the `g-recaptcha-response` token — never in this repo). In `npm run dev` only, Google's public test key is used so the widget is visible. With EmailJS unset the form falls back to opening a prefilled `mailto:`.
 
 ---
 
