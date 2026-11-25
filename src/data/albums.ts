@@ -11,7 +11,7 @@ export const albums: Album[] = [
     title: { en: 'Projects', ja: '制作実績' },
     // TODO(owner): 最新プロジェクトの年
     accent: '#e0533d',
-    cover: '/covers/projects.svg',
+    cover: '/covers/projects.webp',
     tracks: [
       {
         slug: 'oshimoto-net',

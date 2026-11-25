@@ -307,7 +307,7 @@ Files: `src/data/albums.ts` (exports `albums: Album[]` in shelf order), `src/dat
 - **Skills:** Frontend — HTML, CSS, Sass, JavaScript, TypeScript, React, Next.js, Astro · Backend — Node.js · Database — PostgreSQL, MongoDB · Tools — Docker, Claude Code. (Add Three.js once this site ships.)
 - **Work:** TODO(owner) — current role is "Full Stack Developer at a Japanese startup"; need company name (or "a Tokyo startup" if private), period, bullets.
 - **Contact / socials:** GitHub `bap-ssbm`, LinkedIn `kentaro-oshimoto`, email — taken from the old `Footer.tsx`. TODO(owner): confirm they are still current.
-- **Covers:** TODO(owner) — one square image per album (≥1024px, will be exported as `.webp`) + portrait for the Artist record. Until provided, generate simple placeholder covers (solid accent color + album title) so the build never breaks.
+- **Covers:** Artist = selfie on the pier (`public/covers/artist.webp`, face-centered crop; full photo at `public/images/artist-banner.webp` for the banner). Projects = the retro-computer illustration (`public/covers/projects.webp`). TODO(owner): Work, Skills, Contact covers — placeholder SVGs (accent color + title) until provided.
 
 ---
 

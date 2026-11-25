@@ -12,9 +12,8 @@ export const artist: Artist = {
     en: 'Born and raised in America, now living in Tokyo, Japan. Currently working as a Full Stack Developer at a Japanese startup company.',
     ja: 'アメリカ生まれ・育ち。現在は東京在住。日本のスタートアップ企業でフルスタックエンジニアとして働いています。',
   },
-  // TODO(owner): バナー写真・ポートレート写真
-  banner: '/covers/artist.svg',
-  portrait: '/covers/artist.svg',
+  banner: '/images/artist-banner.webp',
+  portrait: '/covers/artist.webp',
   accent: '#8b5cf6',
   socials: [
     { kind: 'github', label: 'GitHub', href: 'https://github.com/bap-ssbm' },
