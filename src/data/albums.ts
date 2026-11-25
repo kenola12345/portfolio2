@@ -58,7 +58,7 @@ export const albums: Album[] = [
     // 最新の在籍年
     year: 2026,
     accent: '#3d7be0',
-    cover: '/covers/work.svg',
+    cover: '/covers/work.webp',
     // 日本語は履歴書（英語版）をもとにした訳。社名・サービス名以外は表現を調整してよい
     tracks: [
       {
@@ -140,7 +140,7 @@ export const albums: Album[] = [
       ja: '使っている言語・フレームワーク・ツール。',
     },
     accent: '#23a7a0',
-    cover: '/covers/skills.svg',
+    cover: '/covers/skills.webp',
     tracks: [
       {
         slug: 'frontend',
@@ -178,7 +178,7 @@ export const albums: Album[] = [
       ja: 'メール、GitHub、LinkedIn、またはこのサイトから直接メッセージを送れます。',
     },
     accent: '#d9a72b',
-    cover: '/covers/contact.svg',
+    cover: '/covers/contact.webp',
     tracks: [
       {
         slug: 'email',

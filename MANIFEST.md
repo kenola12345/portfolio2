@@ -329,7 +329,7 @@ Files: `src/data/albums.ts` (exports `albums: Album[]` in shelf order), `src/dat
 - **Skills:** Frontend — HTML, CSS, Sass, JavaScript, TypeScript, React, Next.js, Astro · Backend — Node.js · Database — PostgreSQL, MongoDB · Tools — Docker, Claude Code. (Add Three.js once this site ships.)
 - **Work:** filled in from the resume (`Kentaro_Oshimoto_Resume_EN.docx`): AXR (Full Stack Engineer, Nov 2026 – present) and Holon Inc. (Frontend Developer, Jun 2023 – Oct 2026). Japanese text is a translation of the English resume — TODO(owner): review. The phone number from the resume is intentionally NOT on the site.
 - **Contact / socials:** GitHub `kenola12345` (from the resume; the old site had `bap-ssbm`), LinkedIn `kentaro-oshimoto` (from the old `Footer.tsx`), email `ken.oshimoto@gmail.com`. TODO(owner): confirm LinkedIn is still current.
-- **Covers:** Artist = selfie on the pier (`public/covers/artist.webp`, face-centered crop; full photo at `public/images/artist-banner.webp` for the banner). Projects = the retro-computer illustration (`public/covers/projects.webp`). TODO(owner): Work, Skills, Contact covers — placeholder SVGs (accent color + title) until provided.
+- **Covers (`public/covers/*.webp`):** Artist = the pier selfie (face-centred crop; full photo at `public/images/artist-banner.webp` for the banner). Projects = a square crop of the seta-tei.jp screenshot. Work = the retro-computer illustration. Skills = HTML / CSS / JS / TS / React / Next.js badges (simplified drawings). Contact = the email icon in white on gold. Projects/Skills/Contact are produced by `node scripts/generate-covers.mjs`; the Work and Artist images are the files Kentaro supplied. Keep the important part of a cover inside the centre circle (the record label crops to it).
 
 ---
 
@@ -408,7 +408,7 @@ Each phase ends with: `npm run build` passes, the site is checked in the browser
 - [x] Set up Astro 7 + React 19 + Tailwind 4 + Vercel adapter + `@vercel/analytics`. npm.
 - [x] Add three, @react-three/fiber, @react-three/drei, gsap.
 - [x] `globals.css` with tokens (§11) in `@theme` + `wrap` utility for the gutters. Fonts via Google Fonts (`AppLayout.astro`).
-- [x] Data types + seed data (`src/data/`) with placeholder SVG covers in `public/covers/` (§12).
+- [x] Data types + seed data (`src/data/`) with covers in `public/covers/` (§12).
 
 ### Phase 2 — Static pages (done early, together with Phases 3–4 basics)
 - [x] `AppLayout` with `<ClientRouter />`.
