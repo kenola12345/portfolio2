@@ -40,8 +40,19 @@ const year = new Date().getFullYear();
     <section data-stage-home class="relative min-h-svh">
       <!-- 左上の名前と肩書き（小さく）。押すと自己紹介のページへ -->
       <a href={localePath('/artist', lang)} class="home-id pointer-events-auto">
-        <span class="home-id__name menu-text">{t(artist.name)}</span>
-        <span class="home-id__role">{t(artist.tagline)}</span>
+        <!-- レコードプレーヤーのアイコン（台・ターンテーブル・トーンアーム） -->
+        <svg class="home-id__icon" viewBox="0 0 32 32" width="38" height="38" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="2" y="5" width="28" height="22" rx="3.5" />
+          <circle cx="13.5" cy="16" r="7.5" />
+          <circle cx="13.5" cy="16" r="3.6" />
+          <circle cx="13.5" cy="16" r="1" fill="currentColor" stroke="none" />
+          <circle cx="25" cy="9.5" r="1.8" />
+          <path d="M25 11.3V17.5L21.8 21" />
+        </svg>
+        <span class="home-id__text">
+          <span class="home-id__name menu-text">{t(artist.name)}</span>
+          <span class="home-id__role">{t(artist.tagline)}</span>
+        </span>
       </a>
 
       <!-- 見た目には出さない。キーボードで選べる実際のリンク（フォーカスすると 3D のレコードが顔を出す） -->

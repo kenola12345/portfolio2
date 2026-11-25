@@ -299,9 +299,24 @@ html[data-dragging] .stage-root canvas {
   position: absolute;
   top: 1.5rem;
   left: var(--gutter-sp);
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  color: #fff;
+  text-decoration: none;
+}
+.home-id__icon {
+  flex-shrink: 0;
+  opacity: 0.9;
+  transition: transform 0.4s var(--ease-out);
+}
+.home-id:hover .home-id__icon,
+.home-id:focus-visible .home-id__icon {
+  transform: rotate(-6deg) scale(1.06);
+}
+.home-id__text {
   display: grid;
   gap: 0.1rem;
-  text-decoration: none;
 }
 @media (width >= 48rem) {
   .home-id {
