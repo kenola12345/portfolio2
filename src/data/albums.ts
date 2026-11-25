@@ -45,6 +45,82 @@ export const albums: Album[] = [
         ],
         links: [{ label: 'Visit site', href: 'https://www.seta-tei.jp/' }],
       },
+      {
+        slug: 'initia',
+        title: { en: 'INITIA', ja: 'INITIA（イニシア）' },
+        // TODO(owner): 公開年。説明と使用技術は履歴書と公開サイトをもとにしたもの。違っていたら直す
+        tags: ['Next.js','TypeScript','React Three Fiber','GSAP','Framer Motion','Jest'],
+        description: {
+          en: 'Official brand site for INITIA, the housing brand of a major real estate developer: new condominiums, new detached houses and renovation, with property search, renovation and case-study pages, listings from external APIs, and motion and 3D effects.',
+          ja: '大手不動産デベロッパーの住まいブランド「INITIA」の公式ブランドサイト。新築マンション・新築一戸建・リノベーションを紹介し、物件検索やリノベーション・事例ページ、外部 API の物件情報連携、モーションや 3D 表現を実装しました。',
+        },
+        images: [
+          {
+            src: '/projects/initia.jpg',
+            width: 800,
+            height: 499,
+            alt: { en: 'Screenshot of the INITIA website', ja: 'INITIA サイトのスクリーンショット' },
+          },
+        ],
+        links: [{ label: 'Visit site', href: 'https://www.cigr.co.jp/pj/contents/' }],
+      },
+      {
+        slug: 'infinito-hotel',
+        title: { en: 'INFINITO HOTEL & SPA', ja: 'INFINITO HOTEL & SPA 南紀白浜' },
+        // TODO(owner): 公開年。説明と使用技術は履歴書と公開サイトをもとにしたもの。違っていたら直す
+        tags: ['Astro','TypeScript','Tailwind CSS','GitHub Actions','reCAPTCHA'],
+        description: {
+          en: 'Official website for INFINITO HOTEL & SPA in Nanki-Shirahama: hot spring, rooms, cuisine and sightseeing. Available in seven languages, with reCAPTCHA-protected forms and automated staging and production deploys.',
+          ja: '南紀白浜の「INFINITO HOTEL & SPA」の公式サイト。温泉・客室・食事・観光を紹介します。7 言語に対応し、reCAPTCHA 付きのフォームと、ステージング／本番への自動デプロイを備えています。',
+        },
+        images: [
+          {
+            src: '/projects/infinito.jpg',
+            width: 800,
+            height: 499,
+            alt: { en: 'Screenshot of the INFINITO HOTEL & SPA website', ja: 'INFINITO HOTEL & SPA サイトのスクリーンショット' },
+          },
+        ],
+        links: [{ label: 'Visit site', href: 'https://hotel-infinito.co.jp/' }],
+      },
+      {
+        slug: 'initia-lounge-mita',
+        title: { en: 'INITIA LOUNGE Mita', ja: 'イニシアラウンジ三田' },
+        // TODO(owner): 公開年。説明と使用技術は履歴書と公開サイトをもとにしたもの。違っていたら直す
+        tags: ['Astro','Swiper','Panzoom','Vitest'],
+        description: {
+          en: 'Site for INITIA LOUNGE Mita, a housing gallery by Mita Station in Tokyo: the concept room, the visit flow, events and the property lineup, with an event slider and modals and zoomable floor plans.',
+          ja: '三田駅すぐの住まいのギャラリー「イニシアラウンジ三田」のサイト。コンセプトルーム、ご案内の流れ、イベント、ラインアップを紹介し、イベントスライダーとモーダル、拡大できる間取り図を実装しました。',
+        },
+        images: [
+          {
+            src: '/projects/initia-lounge-mita.jpg',
+            width: 800,
+            height: 499,
+            alt: { en: 'Screenshot of the INITIA LOUNGE Mita website', ja: 'イニシアラウンジ三田 サイトのスクリーンショット' },
+          },
+        ],
+        links: [{ label: 'Visit site', href: 'https://www.cigr.co.jp/pj/contents/product/stance/gallery-mita/' }],
+      },
+      {
+        slug: 'one-roof',
+        title: { en: 'ONE ROOF', ja: 'ONE ROOF（ワンルーフ）' },
+        // TODO(owner): 公開年。説明と使用技術は履歴書と公開サイトをもとにしたもの。違っていたら直す
+        tags: ['EJS','SCSS','Barba.js','Google Maps'],
+        description: {
+          en: 'Brand site for ONE ROOF, a line of luxury rental residences in Tokyo and Osaka: more than 20 property pages, a Google Maps property map, page transitions, and Japanese and English versions.',
+          ja: '東京・大阪の高級賃貸レジデンス「ONE ROOF」のブランドサイト。20 ページ以上の物件ページ、Google Maps の物件マップ、ページ遷移の演出、日本語・英語の 2 言語に対応しています。',
+        },
+        images: [
+          {
+            src: '/projects/one-roof.jpg',
+            width: 800,
+            height: 499,
+            alt: { en: 'Screenshot of the ONE ROOF website', ja: 'ONE ROOF サイトのスクリーンショット' },
+          },
+        ],
+        links: [{ label: 'Visit site', href: 'https://one-roof.co.jp/' }],
+      },
     ],
   },
   {

@@ -325,7 +325,7 @@ export interface Artist {
 Files: `src/data/albums.ts` (exports `albums: Album[]` in shelf order), `src/data/artist.ts`, `src/data/ui.ts` (UI strings like "Back to shelf").
 
 ### Seed content (from the current site)
-- **Projects:** `oshimoto.net` → https://www.oshimoto.net/ (image `/projects/oshimotonet.png`); `seta-tei.jp` → https://www.seta-tei.jp/ (image `/projects/seta-tei.png`). TODO(owner): years, descriptions, tags, more projects.
+- **Projects (6 tracks):** `oshimoto.net` and `seta-tei.jp` (own sites, screenshots in `public/projects/*.png`), plus client work added by Kentaro: INITIA (`cigr.co.jp/pj/contents/`), INFINITO HOTEL & SPA (`hotel-infinito.co.jp`), INITIA LOUNGE Mita (`cigr.co.jp/.../gallery-mita/`) and ONE ROOF (`one-roof.co.jp`) — screenshots in `public/projects/*.jpg`. Descriptions and tech tags for the four client sites were inferred from the resume's Holon Inc. entries and each site's public page, not confirmed with Kentaro. TODO(owner): years, and confirm the tags.
 - **Skills:** Frontend — HTML, CSS, Sass, JavaScript, TypeScript, React, Next.js, Astro · Backend — Node.js · Database — PostgreSQL, MongoDB · Tools — Docker, Claude Code. (Add Three.js once this site ships.)
 - **Work:** filled in from the resume (`Kentaro_Oshimoto_Resume_EN.docx`): AXR (Full Stack Engineer, Nov 2026 – present) and Holon Inc. (Frontend Developer, Jun 2023 – Oct 2026). Japanese text is a translation of the English resume — TODO(owner): review. The phone number from the resume is intentionally NOT on the site.
 - **Contact / socials:** GitHub `kenola12345` (from the resume; the old site had `bap-ssbm`), LinkedIn `kentaro-oshimoto` (from the old `Footer.tsx`), email `ken.oshimoto@gmail.com`. TODO(owner): confirm LinkedIn is still current.
