@@ -515,7 +515,13 @@ function Stage3D({ records }: { records: RecordDef[] }) {
       <div
         className="stage-root"
         aria-hidden="true"
-        style={{ position: 'fixed', inset: 0, zIndex: 0, viewTransitionName: 'stage' }}
+        style={
+          isTouchDevice()
+            ? // iOS ではアドレスバー・ツールバーの出入りで fixed の高さが変わり、canvas が作り直されて 3D がずれる。
+              // 高さを最大のビューポート（lvh）に固定して、バーが出入りしても大きさを変えない
+              { position: 'fixed', top: 0, left: 0, width: '100%', height: '100lvh', zIndex: 0, viewTransitionName: 'stage' }
+            : { position: 'fixed', inset: 0, zIndex: 0, viewTransitionName: 'stage' }
+        }
       >
         <Canvas
           camera={{ fov: HOME.fov, near: 0.05, far: 80, position: [0, 0, 8] }}
