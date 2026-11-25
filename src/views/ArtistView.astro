@@ -5,6 +5,7 @@
  */
 import AppLayout from '../layouts/AppLayout.astro';
 import PageHeader from '../components/album/PageHeader.astro';
+import SiteFooter from '../components/ui/SiteFooter.astro';
 import SocialLinks from '../components/ui/SocialLinks.astro';
 import { albums } from '../data/albums';
 import { artist } from '../data/artist';
@@ -16,7 +17,7 @@ const lang = getLang(Astro.url);
 ---
 
 <AppLayout title={`${t(artist.name)} — ${t(ui.artistLabel)}`} accent={artist.accent} glow>
-  <main class="relative z-10 wrap pb-32">
+  <main class="relative z-10 wrap pb-8">
     <PageHeader slug="artist" label={t(ui.artistLabel)} title={t(artist.name)}>
       <p class="mt-3 text-sm md:mt-5 md:text-base">
         <span class="menu-text">✓ {t(ui.verifiedArtist)}</span>
@@ -77,4 +78,5 @@ const lang = getLang(Astro.url);
       </ul>
     </section>
   </main>
+  <SiteFooter />
 </AppLayout>
