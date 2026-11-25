@@ -261,7 +261,7 @@ function HomeScene({ records }: { records: RecordDef[] }) {
     pitch: L.tilt as number,
     yawT: 0,
     pitchT: L.tilt as number,
-    drag: null as { id: number; x: number; y: number } | null,
+    drag: null as { id: number; x: number; y: number; sx: number; sy: number; axis: 'x' | 'y' | null } | null,
     wasHome: true,
   });
 
@@ -275,7 +275,7 @@ function HomeScene({ records }: { records: RecordDef[] }) {
     const o = orbit.current;
     const down = (e: PointerEvent) => {
       if (layout.mode !== 'home' || e.button !== 0) return;
-      o.drag = { id: e.pointerId, x: e.clientX, y: e.clientY };
+      o.drag = { id: e.pointerId, x: e.clientX, y: e.clientY, sx: e.clientX, sy: e.clientY, axis: e.pointerType === 'mouse' ? 'x' : null };
       el.setPointerCapture(e.pointerId);
       document.documentElement.dataset.dragging = '';
       setHover(null);
@@ -283,6 +283,21 @@ function HomeScene({ records }: { records: RecordDef[] }) {
     const move = (e: PointerEvent) => {
       const d = o.drag;
       if (!d || d.id !== e.pointerId) return;
+      // タッチ：最初の動きで向きを決める。縦ならページのスクロール（回転しない）、横ならレコードを回す
+      if (!d.axis) {
+        const tx = Math.abs(e.clientX - d.sx);
+        const ty = Math.abs(e.clientY - d.sy);
+        if (tx + ty < 8) return;
+        if (ty > tx) {
+          o.drag = null;
+          delete document.documentElement.dataset.dragging;
+          if (el.hasPointerCapture(e.pointerId)) el.releasePointerCapture(e.pointerId);
+          flushPendingHover();
+          return;
+        }
+        d.axis = 'x';
+        d.x = d.sx;
+      }
       const dx = e.clientX - d.x;
       const dy = e.clientY - d.y;
       d.x = e.clientX;
