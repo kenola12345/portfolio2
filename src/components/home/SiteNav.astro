@@ -61,25 +61,25 @@ const { links = [
     position: absolute;
     inset: 0 0 auto;
     z-index: 10;
-    height: 92px;
+    height: calc(92 * var(--u));
     padding: 0 var(--gutter);
     display: flex;
     align-items: center;
     justify-content: space-between;
     border-bottom: 1px solid var(--line);
-    font-size: 10px;
+    font-size: 0.625rem;
     letter-spacing: 0.12em;
   }
   .brand {
     display: flex;
-    gap: 12px;
+    gap: calc(12 * var(--u));
     align-items: center;
     line-height: 1.25;
     text-transform: uppercase;
   }
   .brand-mark {
-    width: 38px;
-    height: 38px;
+    width: calc(38 * var(--u));
+    height: calc(38 * var(--u));
     border-radius: 50%;
     background: var(--acid);
     color: var(--ink);
@@ -95,7 +95,7 @@ const { links = [
   }
   .nav-links {
     display: flex;
-    gap: clamp(16px, 2.6vw, 40px);
+    gap: clamp(calc(16 * var(--u)), 2.6vw, calc(40 * var(--u)));
     text-transform: uppercase;
   }
   .nav-links a {
@@ -108,13 +108,13 @@ const { links = [
   .nav-end {
     display: flex;
     align-items: center;
-    gap: 28px;
+    gap: calc(28 * var(--u));
   }
   .lang {
     text-transform: uppercase;
     border: 1px solid var(--line);
-    border-radius: 999px;
-    padding: 6px 12px;
+    border-radius: calc(999 * var(--u));
+    padding: calc(6 * var(--u)) calc(12 * var(--u));
     transition: border-color 0.2s, color 0.2s;
   }
   .lang:hover {
@@ -123,15 +123,15 @@ const { links = [
   }
   .available {
     display: flex;
-    gap: 9px;
+    gap: calc(9 * var(--u));
     align-items: center;
   }
   .available > span {
-    width: 7px;
-    height: 7px;
+    width: calc(7 * var(--u));
+    height: calc(7 * var(--u));
     background: var(--acid);
     border-radius: 50%;
-    box-shadow: 0 0 10px var(--acid);
+    box-shadow: 0 0 calc(10 * var(--u)) var(--acid);
     animation: blink 2s infinite;
   }
   .menu-toggle {
@@ -139,8 +139,8 @@ const { links = [
     text-transform: uppercase;
     letter-spacing: 0.12em;
     border: 1px solid var(--line);
-    border-radius: 999px;
-    padding: 8px 14px;
+    border-radius: calc(999 * var(--u));
+    padding: calc(8 * var(--u)) calc(14 * var(--u));
   }
 
   @media (max-width: 900px) {
@@ -150,16 +150,16 @@ const { links = [
     .nav-links {
       display: none;
       position: absolute;
-      inset: 92px 0 auto;
+      inset: calc(92 * var(--u)) 0 auto;
       flex-direction: column;
       gap: 0;
       background: var(--ink);
       border-bottom: 1px solid var(--line);
-      padding: 8px var(--gutter) 20px;
-      font-size: 13px;
+      padding: calc(8 * var(--u)) var(--gutter) calc(20 * var(--u));
+      font-size: 0.8125rem;
     }
     .nav-links a {
-      padding: 16px 0;
+      padding: calc(16 * var(--u)) 0;
       border-bottom: 1px solid var(--line);
     }
     .site-nav:has(.menu-toggle[aria-expanded='true']) .nav-links {
@@ -168,17 +168,17 @@ const { links = [
   }
   @media (max-width: 620px) {
     .site-nav {
-      padding: 0 20px;
+      padding: 0 calc(20 * var(--u));
     }
     .nav-links {
-      padding-inline: 20px;
+      padding-inline: calc(20 * var(--u));
     }
     .available {
       font-size: 0;
       gap: 0;
     }
     .nav-end {
-      gap: 14px;
+      gap: calc(14 * var(--u));
     }
   }
 </style>

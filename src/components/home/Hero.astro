@@ -24,12 +24,15 @@ const explore = t(home.explore).split('\n');
       <span class="line outline" data-hero="line">{t(h.line2)}</span>
       <span class="line" data-hero="line">{t(h.line3)} <i>{t(h.line3Accent)}</i></span>
     </h1>
-    <p class="intro" data-hero="line">{t(home.intro)}</p>
-    <div class="b-slot"><Breakdancer /></div>
-    <a class="round-link" href="#work" aria-label={explore.join(' ')} data-hero="pop">
+    <!-- 紹介文と、その右隣のブレイクダンサー（PC）。画面の高さが低くても、文字に重ならない -->
+    <div class="intro-row">
+      <p class="intro" data-hero="line">{t(home.intro)}</p>
+      <div class="b-slot"><Breakdancer /></div>
+      <a class="round-link" href="#work" aria-label={explore.join(' ')} data-hero="pop">
       <ArrowIcon />
       <span>{explore[0]}<br />{explore[1]}</span>
     </a>
+    </div>
   </div>
 
   <div class="hero-visual">
@@ -51,7 +54,7 @@ const explore = t(home.explore).split('\n');
   .hero {
     position: relative;
     min-height: 100svh;
-    padding: 145px var(--gutter) 56px;
+    padding: calc(145 * var(--u)) var(--gutter) calc(56 * var(--u));
     display: grid;
     grid-template-columns: 52% 48%;
     overflow: hidden;
@@ -74,20 +77,20 @@ const explore = t(home.explore).split('\n');
   }
   .eyebrow {
     display: flex;
-    gap: 18px;
+    gap: calc(18 * var(--u));
     align-items: center;
     text-transform: uppercase;
-    font-size: 10px;
+    font-size: 0.625rem;
     letter-spacing: 0.14em;
   }
   .eyebrow span {
     color: var(--acid);
   }
   h1 {
-    margin: 10vh 0 32px;
+    margin: 10vh 0 calc(32 * var(--u));
     font-family: var(--font-display);
     font-weight: 800;
-    font-size: clamp(64px, 8.1vw, 136px);
+    font-size: clamp(4rem, 8.1vw, 8.5rem);
     letter-spacing: -0.075em;
     line-height: 0.82;
     white-space: nowrap;
@@ -97,7 +100,7 @@ const explore = t(home.explore).split('\n');
   }
   /* 日本語は 1 文字が大きく、行も詰まると読みにくいので、少し小さくして行間をとる */
   :global(html[lang='ja']) h1 {
-    font-size: clamp(52px, 6.6vw, 112px);
+    font-size: clamp(3.25rem, 6.6vw, 7rem);
     line-height: 1;
     letter-spacing: -0.04em;
   }
@@ -114,27 +117,27 @@ const explore = t(home.explore).split('\n');
     font-style: normal;
   }
   .intro {
-    max-width: 470px;
-    margin-left: 6px;
+    max-width: calc(470 * var(--u));
+    margin-left: calc(6 * var(--u));
     color: var(--muted);
-    font-size: 13px;
+    font-size: 0.8125rem;
     line-height: 1.75;
   }
   .round-link {
-    position: absolute;
+    position: relative;
     z-index: 3;
-    right: 2vw;
-    bottom: -5px;
-    width: 122px;
-    height: 122px;
+    flex: none;
+    margin-left: auto;
+    width: calc(122 * var(--u));
+    height: calc(122 * var(--u));
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 10px;
+    gap: calc(10 * var(--u));
     border: 1px solid #77766e;
     border-radius: 50%;
-    font-size: 9px;
+    font-size: 0.5625rem;
     letter-spacing: 0.08em;
     transition: 0.4s;
   }
@@ -146,23 +149,26 @@ const explore = t(home.explore).split('\n');
   }
   /* 矢印は、文字の上に重ねず、上に並べる（子コンポーネントの svg には scoped の指定が届かないので :global） */
   .round-link :global(svg) {
-    width: 24px;
-    height: 24px;
+    width: calc(24 * var(--u));
+    height: calc(24 * var(--u));
     transition: transform 0.4s var(--ease-out);
   }
   .round-link:hover :global(svg) {
-    transform: translate(3px, -3px);
+    transform: translate(calc(3 * var(--u)), calc(-3 * var(--u)));
   }
   .round-link span {
     text-align: center;
     line-height: 1.4;
   }
-  /* ブレイクダンサー：見出しの下の、左の空いたところ */
+  /* 紹介文の右隣にブレイクダンサーを置く（紹介文より下に絶対配置すると、画面が低いときに文字と重なる） */
+  .intro-row {
+    display: flex;
+    align-items: flex-end;
+    gap: calc(30 * var(--u));
+  }
   .b-slot {
-    position: absolute;
-    left: 10px;
-    bottom: 52px;
-    width: 130px;
+    flex: none;
+    width: calc(130 * var(--u));
   }
   .hero-visual {
     position: relative;
@@ -172,51 +178,52 @@ const explore = t(home.explore).split('\n');
   .scroll-cue {
     position: absolute;
     left: var(--gutter);
-    bottom: 26px;
-    font-size: 8px;
+    bottom: calc(26 * var(--u));
+    font-size: 0.5rem;
     letter-spacing: 0.14em;
     color: #79776f;
   }
   .scroll-cue span {
-    margin-left: 8px;
+    margin-left: calc(8 * var(--u));
     color: var(--acid);
   }
 
   @media (max-width: 900px) {
     .hero {
       grid-template-columns: 1fr;
-      padding-top: 125px;
+      padding-top: calc(125 * var(--u));
     }
     .hero-copy {
       z-index: 3;
     }
     h1 {
-      margin-top: 55px;
-      font-size: clamp(56px, 15vw, 100px);
+      margin-top: calc(55 * var(--u));
+      font-size: clamp(3.5rem, 15vw, 6.25rem);
     }
     /* ボタンはぐるっと外に出さず、紹介文の下に普通に置く（外に出すと、ヒーローの下端で切れる） */
     .round-link {
-      position: relative;
-      right: auto;
-      bottom: auto;
-      margin-top: 36px;
+      margin-left: 0;
+      margin-top: calc(36 * var(--u));
+    }
+    .intro-row {
+      display: block;
     }
     .b-slot {
-      left: auto;
+      position: absolute;
       right: 6%;
       bottom: 0;
-      width: 110px;
+      width: calc(110 * var(--u));
     }
     /* ターンテーブルも、絶対配置をやめて、コピーの下に並べる */
     .hero-visual {
-      height: 400px;
+      height: calc(400 * var(--u));
       margin: 0 -10% 0 0;
     }
   }
   @media (max-width: 620px) {
     .hero {
       min-height: 0;
-      padding-inline: 20px;
+      padding-inline: calc(20 * var(--u));
     }
     h1 {
       /* 「FULL STACK」が 1 行に収まる大きさ（nowrap のため、大きいとはみ出す） */
@@ -236,8 +243,8 @@ const explore = t(home.explore).split('\n');
       margin: 0 -31% 0 -5%;
     }
     .round-link {
-      width: 100px;
-      height: 100px;
+      width: calc(100 * var(--u));
+      height: calc(100 * var(--u));
     }
   }
 </style>

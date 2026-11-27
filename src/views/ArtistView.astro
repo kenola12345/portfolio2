@@ -69,9 +69,9 @@ const lang = getLang(Astro.url);
 <style>
   .profile {
     display: grid;
-    grid-template-columns: minmax(0, 380px) 1fr;
+    grid-template-columns: minmax(0, calc(380 * var(--u))) 1fr;
     gap: 6vw;
-    padding: 110px var(--gutter);
+    padding: calc(110 * var(--u)) var(--gutter);
     background: var(--ink-2);
   }
   .portrait {
@@ -80,10 +80,10 @@ const lang = getLang(Astro.url);
     aspect-ratio: 4 / 5;
     object-fit: cover;
     object-position: 50% 35%;
-    box-shadow: 14px 14px 0 var(--acid);
+    box-shadow: calc(14 * var(--u)) calc(14 * var(--u)) 0 var(--acid);
   }
   .profile h2 {
-    font: 800 clamp(48px, 7vw, 108px) / 0.86 var(--font-display);
+    font: 800 clamp(3rem, 7vw, 6.75rem) / 0.86 var(--font-display);
     letter-spacing: -0.07em;
     text-transform: uppercase;
   }
@@ -92,24 +92,24 @@ const lang = getLang(Astro.url);
     container-type: inline-size;
   }
   .discography h2 {
-    font: 800 clamp(24px, 8cqi, 108px) / 0.86 var(--font-display);
+    font: 800 clamp(1.5rem, 8cqi, 6.75rem) / 0.86 var(--font-display);
     letter-spacing: -0.07em;
     text-transform: uppercase;
   }
   .bio {
-    max-width: 640px;
-    margin: 40px 0;
-    font-size: 14px;
+    max-width: calc(640 * var(--u));
+    margin: calc(40 * var(--u)) 0;
+    font-size: 0.875rem;
     line-height: 1.85;
     color: #aaa79e;
   }
   dl {
     display: grid;
     grid-template-columns: auto 1fr;
-    gap: 14px 28px;
-    max-width: 640px;
+    gap: calc(14 * var(--u)) calc(28 * var(--u));
+    max-width: calc(640 * var(--u));
     margin: 0;
-    font-size: 12px;
+    font-size: 0.75rem;
     line-height: 1.7;
   }
   dt {
@@ -121,24 +121,24 @@ const lang = getLang(Astro.url);
     margin: 0;
   }
   .socials {
-    margin-top: 40px;
+    margin-top: calc(40 * var(--u));
   }
 
   .discography {
-    padding: 110px var(--gutter) 130px;
+    padding: calc(110 * var(--u)) var(--gutter) calc(130 * var(--u));
     background: var(--paper);
     color: var(--ink);
     overflow: hidden;
   }
   .discography header {
-    padding-bottom: 50px;
+    padding-bottom: calc(50 * var(--u));
     border-bottom: 1px solid #aaa69a;
   }
   .eyebrow {
     display: flex;
-    gap: 18px;
-    margin-bottom: 30px;
-    font-size: 10px;
+    gap: calc(18 * var(--u));
+    margin-bottom: calc(30 * var(--u));
+    font-size: 0.625rem;
     letter-spacing: 0.14em;
     text-transform: uppercase;
   }
@@ -149,39 +149,39 @@ const lang = getLang(Astro.url);
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 2.5vw;
-    padding-top: 70px;
+    padding-top: calc(70 * var(--u));
   }
 
   @media (max-width: 900px) {
     .profile {
       grid-template-columns: 1fr;
-      gap: 60px;
+      gap: calc(60 * var(--u));
     }
     .portrait {
-      max-width: 420px;
+      max-width: calc(420 * var(--u));
     }
     .grid {
       grid-template-columns: 1fr 1fr;
-      row-gap: 60px;
+      row-gap: calc(60 * var(--u));
     }
   }
   @media (max-width: 620px) {
     .profile,
     .discography {
-      padding: 80px 20px;
+      padding: calc(80 * var(--u)) calc(20 * var(--u));
     }
     .profile h2 {
       font-size: 14vw;
     }
     dl {
       grid-template-columns: 1fr;
-      gap: 4px;
+      gap: calc(4 * var(--u));
     }
     dd {
-      margin-bottom: 14px;
+      margin-bottom: calc(14 * var(--u));
     }
     .grid {
-      gap: 24px;
+      gap: calc(24 * var(--u));
     }
   }
 </style>

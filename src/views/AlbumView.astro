@@ -65,20 +65,20 @@ const number = String(albums.findIndex((a) => a.slug === album.slug) + 2).padSta
   .play {
     display: inline-flex;
     align-items: center;
-    gap: 14px;
-    padding: 8px 26px 8px 8px;
-    border-radius: 999px;
+    gap: calc(14 * var(--u));
+    padding: calc(8 * var(--u)) calc(26 * var(--u)) calc(8 * var(--u)) calc(8 * var(--u));
+    border-radius: calc(999 * var(--u));
     background: var(--coral);
     color: var(--ink);
-    font-size: 10px;
+    font-size: 0.625rem;
     letter-spacing: 0.14em;
     text-transform: uppercase;
-    box-shadow: 6px 6px 0 var(--paper);
+    box-shadow: calc(6 * var(--u)) calc(6 * var(--u)) 0 var(--paper);
     transition: transform 0.25s, box-shadow 0.25s, background 0.25s;
   }
   .play svg {
     box-sizing: content-box;
-    padding: 14px;
+    padding: calc(14 * var(--u));
     border-radius: 50%;
     background: var(--ink);
     color: var(--coral);
@@ -86,33 +86,33 @@ const number = String(albums.findIndex((a) => a.slug === album.slug) + 2).padSta
   }
   .play:hover {
     background: var(--acid);
-    transform: translate(-2px, -2px);
-    box-shadow: 8px 8px 0 var(--paper);
+    transform: translate(calc(-2 * var(--u)), calc(-2 * var(--u)));
+    box-shadow: calc(8 * var(--u)) calc(8 * var(--u)) 0 var(--paper);
   }
   .play:hover svg {
     color: var(--acid);
   }
   .tracks {
-    padding: 100px var(--gutter) 130px;
+    padding: calc(100 * var(--u)) var(--gutter) calc(130 * var(--u));
     background: var(--ink-2);
   }
   .liner {
-    max-width: 640px;
-    margin-top: 90px;
+    max-width: calc(640 * var(--u));
+    margin-top: calc(90 * var(--u));
   }
   .liner h2 {
-    font: 800 clamp(26px, 3vw, 40px) var(--font-display);
+    font: 800 clamp(1.625rem, 3vw, 2.5rem) var(--font-display);
     letter-spacing: -0.05em;
   }
   .liner p {
-    margin-top: 14px;
-    font-size: 13px;
+    margin-top: calc(14 * var(--u));
+    font-size: 0.8125rem;
     line-height: 1.8;
     color: var(--muted);
   }
   @media (max-width: 620px) {
     .tracks {
-      padding: 70px 20px 90px;
+      padding: calc(70 * var(--u)) calc(20 * var(--u)) calc(90 * var(--u));
     }
   }
 </style>

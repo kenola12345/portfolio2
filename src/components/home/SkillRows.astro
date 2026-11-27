@@ -33,17 +33,17 @@ const max = Math.max(1, ...groups.map((g) => g.count));
 <style>
   .row {
     display: grid;
-    grid-template-columns: 150px 1fr 30px;
+    grid-template-columns: calc(150 * var(--u)) 1fr calc(30 * var(--u));
     align-items: center;
-    gap: 20px;
-    padding: 12px 0;
+    gap: calc(20 * var(--u));
+    padding: calc(12 * var(--u)) 0;
     border-bottom: 1px solid #eeeade18;
-    font-size: 9px;
+    font-size: 0.5625rem;
     letter-spacing: 0.08em;
     text-transform: uppercase;
   }
   .skill-line {
-    height: 2px;
+    height: calc(2 * var(--u));
     background: #393934;
   }
   .skill-line i {
@@ -59,8 +59,8 @@ const max = Math.max(1, ...groups.map((g) => g.count));
   }
   @media (max-width: 620px) {
     .row {
-      grid-template-columns: 120px 1fr 25px;
-      gap: 10px;
+      grid-template-columns: calc(120 * var(--u)) 1fr calc(25 * var(--u));
+      gap: calc(10 * var(--u));
     }
   }
 </style>

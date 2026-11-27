@@ -40,7 +40,7 @@ const { kicker, meta, title, cover, accent, number = '01' } = Astro.props;
     grid-template-columns: 1.15fr 0.85fr;
     align-items: center;
     gap: 4vw;
-    padding: 80px var(--gutter) 90px;
+    padding: calc(80 * var(--u)) var(--gutter) calc(90 * var(--u));
     overflow: hidden;
     background:
       radial-gradient(circle at 78% 50%, color-mix(in srgb, var(--accent) 34%, transparent) 0%, transparent 38%),
@@ -62,10 +62,10 @@ const { kicker, meta, title, cover, accent, number = '01' } = Astro.props;
   }
   .eyebrow {
     display: flex;
-    gap: 18px;
+    gap: calc(18 * var(--u));
     align-items: center;
     text-transform: uppercase;
-    font-size: 10px;
+    font-size: 0.625rem;
     letter-spacing: 0.14em;
   }
   .eyebrow span {
@@ -73,11 +73,11 @@ const { kicker, meta, title, cover, accent, number = '01' } = Astro.props;
     filter: brightness(1.4);
   }
   h1 {
-    margin: 6vh 0 28px;
+    margin: 6vh 0 calc(28 * var(--u));
     font-family: var(--font-display);
     font-weight: 800;
     /* 文字の大きさは、左の列の幅に合わせる（最長の単語 "EXPERIENCE"（約 10.5em）が 1 行に収まる大きさ）。画面幅だと列の幅とずれて、途中で折り返してしまう */
-    font-size: clamp(32px, 9cqi, 96px);
+    font-size: clamp(2rem, 9cqi, 6rem);
     letter-spacing: -0.07em;
     line-height: 0.86;
     text-transform: uppercase;
@@ -91,14 +91,14 @@ const { kicker, meta, title, cover, accent, number = '01' } = Astro.props;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 6px 12px;
+    gap: calc(6 * var(--u)) calc(12 * var(--u));
     color: var(--muted);
-    font-size: 12px;
+    font-size: 0.75rem;
     letter-spacing: 0.04em;
   }
   .byline :global(img) {
-    width: 26px;
-    height: 26px;
+    width: calc(26 * var(--u));
+    height: calc(26 * var(--u));
     border-radius: 50%;
     object-fit: cover;
   }
@@ -109,7 +109,7 @@ const { kicker, meta, title, cover, accent, number = '01' } = Astro.props;
     color: var(--acid);
   }
   .actions {
-    margin-top: 36px;
+    margin-top: calc(36 * var(--u));
   }
 
   /* ジャケットは正方形、レコードは同じ大きさの円（実物と同じ：ジャケットとレコードは同じ寸法）。
@@ -117,7 +117,7 @@ const { kicker, meta, title, cover, accent, number = '01' } = Astro.props;
   .visual {
     position: relative;
     z-index: 1;
-    width: min(100%, 520px);
+    width: min(100%, calc(520 * var(--u)));
     aspect-ratio: 1.32;
     justify-self: center;
   }
@@ -130,7 +130,7 @@ const { kicker, meta, title, cover, accent, number = '01' } = Astro.props;
     aspect-ratio: 1;
     overflow: hidden;
     background: #1a1a17;
-    box-shadow: 14px 14px 0 var(--accent);
+    box-shadow: calc(14 * var(--u)) calc(14 * var(--u)) 0 var(--accent);
   }
   .sleeve img {
     width: 100%;
@@ -147,7 +147,7 @@ const { kicker, meta, title, cover, accent, number = '01' } = Astro.props;
     place-items: center;
     border-radius: 50%;
     background: repeating-radial-gradient(circle, #161614 0 2px, #292925 3px, #111 5px);
-    box-shadow: 0 15px 30px #0006;
+    box-shadow: 0 calc(15 * var(--u)) calc(30 * var(--u)) #0006;
     animation: disc-spin 9s linear infinite;
   }
   .vinyl-disc span {
@@ -166,19 +166,19 @@ const { kicker, meta, title, cover, accent, number = '01' } = Astro.props;
   @media (max-width: 900px) {
     .page-hero {
       grid-template-columns: 1fr;
-      padding: 56px var(--gutter) 70px;
-      gap: 56px;
+      padding: calc(56 * var(--u)) var(--gutter) calc(70 * var(--u));
+      gap: calc(56 * var(--u));
     }
     h1 {
-      margin-top: 40px;
+      margin-top: calc(40 * var(--u));
     }
     .visual {
-      width: min(94%, 440px);
+      width: min(94%, calc(440 * var(--u)));
     }
   }
   @media (max-width: 620px) {
     .page-hero {
-      padding-inline: 20px;
+      padding-inline: calc(20 * var(--u));
     }
     h1 {
       letter-spacing: -0.06em;

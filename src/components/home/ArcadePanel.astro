@@ -232,25 +232,25 @@ const title = t(home.arcade.title).split('\n');
 <style>
   .arcade-panel {
     z-index: 1;
-    width: min(430px, 90%);
-    height: 580px;
-    margin: 85px auto 0;
-    padding: 34px;
+    width: min(calc(430 * var(--u)), 90%);
+    height: calc(580 * var(--u));
+    margin: calc(85 * var(--u)) auto 0;
+    padding: calc(34 * var(--u));
     background: #ddd8ca;
-    transform: perspective(1000px) rotateY(7deg);
-    box-shadow: -25px 25px 0 #090908;
+    transform: perspective(calc(1000 * var(--u))) rotateY(7deg);
+    box-shadow: calc(-25 * var(--u)) calc(25 * var(--u)) 0 #090908;
   }
   .screen {
     position: relative;
     display: block;
     cursor: pointer;
     overflow: hidden;
-    height: 370px;
-    padding: 20px;
+    height: calc(370 * var(--u));
+    padding: calc(20 * var(--u));
     border: 12px solid #2c2c27;
     background-color: #151c18;
     background-image: repeating-linear-gradient(0deg, transparent 0 4px, #b8ff3509 5px);
-    box-shadow: inset 0 0 70px #b8ff3512;
+    box-shadow: inset 0 0 calc(70 * var(--u)) #b8ff3512;
     color: var(--acid);
     text-align: center;
   }
@@ -265,22 +265,22 @@ const title = t(home.arcade.title).split('\n');
   }
   .screen-score {
     position: absolute;
-    top: 17px;
-    left: 17px;
-    font-size: 8px;
+    top: calc(17 * var(--u));
+    left: calc(17 * var(--u));
+    font-size: 0.5rem;
     letter-spacing: 0.15em;
   }
   .space-invader {
-    width: 120px;
-    height: 85px;
-    margin: 45px auto 0;
+    width: calc(120 * var(--u));
+    height: calc(85 * var(--u));
+    margin: calc(45 * var(--u)) auto 0;
     display: grid;
     grid-template-columns: repeat(5, 1fr);
-    gap: 5px;
+    gap: calc(5 * var(--u));
   }
   .space-invader i {
     background: var(--coral);
-    box-shadow: 0 0 10px var(--coral);
+    box-shadow: 0 0 calc(10 * var(--u)) var(--coral);
   }
   /* インベーダーの形に抜く */
   .space-invader i:nth-child(1),
@@ -294,13 +294,13 @@ const title = t(home.arcade.title).split('\n');
   }
   .screen strong {
     display: block;
-    margin-top: 28px;
-    font: 800 33px/1 var(--font-display);
+    margin-top: calc(28 * var(--u));
+    font: 800 2.0625rem/1 var(--font-display);
   }
   .screen small {
     display: block;
-    margin-top: 25px;
-    font-size: 7px;
+    margin-top: calc(25 * var(--u));
+    font-size: 0.4375rem;
     animation: blink 1s infinite;
   }
   /* ゲーム中の画面：canvas は正方形（240×240）をドットのまま拡大する */
@@ -325,32 +325,32 @@ const title = t(home.arcade.title).split('\n');
   }
   .hud {
     position: absolute;
-    top: 8px;
-    left: 10px;
-    right: 62px;
+    top: calc(8 * var(--u));
+    left: calc(10 * var(--u));
+    right: calc(62 * var(--u));
     display: flex;
     justify-content: space-between;
-    font-size: 8px;
+    font-size: 0.5rem;
     letter-spacing: 0.12em;
   }
   .hint {
     position: absolute;
-    bottom: 8px;
+    bottom: calc(8 * var(--u));
     left: 0;
     right: 0;
     text-align: center;
-    font-size: 7px;
+    font-size: 0.4375rem;
     letter-spacing: 0.1em;
     opacity: 0.7;
   }
   .sound {
     position: absolute;
-    top: 4px;
-    right: 32px;
-    width: 26px;
-    height: 26px;
+    top: calc(4 * var(--u));
+    right: calc(32 * var(--u));
+    width: calc(26 * var(--u));
+    height: calc(26 * var(--u));
     color: var(--acid);
-    font-size: 12px;
+    font-size: 0.75rem;
     text-align: center;
   }
   .sound.off {
@@ -359,12 +359,12 @@ const title = t(home.arcade.title).split('\n');
   }
   .exit {
     position: absolute;
-    top: 4px;
-    right: 6px;
-    width: 26px;
-    height: 26px;
+    top: calc(4 * var(--u));
+    right: calc(6 * var(--u));
+    width: calc(26 * var(--u));
+    height: calc(26 * var(--u));
     color: var(--acid);
-    font-size: 12px;
+    font-size: 0.75rem;
     text-align: center;
   }
   .exit:hover {
@@ -390,22 +390,22 @@ const title = t(home.arcade.title).split('\n');
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 14px;
+    gap: calc(14 * var(--u));
     background: #0f1512e6;
     text-align: center;
   }
   .result strong {
-    font: 800 30px/1 var(--font-display);
+    font: 800 1.875rem/1 var(--font-display);
   }
   .result span {
-    font-size: 9px;
+    font-size: 0.5625rem;
     letter-spacing: 0.15em;
   }
   .result button,
   .result a {
-    padding: 9px 16px;
+    padding: calc(9 * var(--u)) calc(16 * var(--u));
     border: 1px solid var(--acid);
-    font-size: 8px;
+    font-size: 0.5rem;
     letter-spacing: 0.14em;
     transition: background 0.2s, color 0.2s;
   }
@@ -416,17 +416,17 @@ const title = t(home.arcade.title).split('\n');
   }
   .controls {
     position: relative;
-    height: 120px;
+    height: calc(120 * var(--u));
   }
   .stick {
     position: absolute;
-    left: 45px;
+    left: calc(45 * var(--u));
     bottom: 0;
-    width: 75px;
-    height: 75px;
+    width: calc(75 * var(--u));
+    height: calc(75 * var(--u));
     border-radius: 50%;
     background: #222;
-    box-shadow: 0 7px 0 #090909;
+    box-shadow: 0 calc(7 * var(--u)) 0 #090909;
     cursor: grab;
     touch-action: none;
     user-select: none;
@@ -435,11 +435,11 @@ const title = t(home.arcade.title).split('\n');
   .stick::after {
     content: '';
     position: absolute;
-    left: 30px;
-    bottom: 32px;
-    width: 15px;
-    height: 90px;
-    border-radius: 10px;
+    left: calc(30 * var(--u));
+    bottom: calc(32 * var(--u));
+    width: calc(15 * var(--u));
+    height: calc(90 * var(--u));
+    border-radius: calc(10 * var(--u));
     background: #333;
     /* レバーは根元を軸に、倒した向きへ傾く */
     transform-origin: 50% 90%;
@@ -448,8 +448,8 @@ const title = t(home.arcade.title).split('\n');
   }
   .btn {
     position: absolute;
-    width: 43px;
-    height: 43px;
+    width: calc(43 * var(--u));
+    height: calc(43 * var(--u));
     border-radius: 50%;
     padding: 0;
     cursor: pointer;
@@ -459,26 +459,26 @@ const title = t(home.arcade.title).split('\n');
     transition: transform 0.06s linear, box-shadow 0.06s linear;
   }
   .btn.heavy {
-    right: 40px;
-    bottom: 28px;
+    right: calc(40 * var(--u));
+    bottom: calc(28 * var(--u));
     background: var(--coral);
-    box-shadow: 0 6px 0 #9a2e21;
+    box-shadow: 0 calc(6 * var(--u)) 0 #9a2e21;
   }
   .btn.light {
-    right: 100px;
-    bottom: 14px;
+    right: calc(100 * var(--u));
+    bottom: calc(14 * var(--u));
     background: var(--acid);
-    box-shadow: 0 6px 0 #618f14;
+    box-shadow: 0 calc(6 * var(--u)) 0 #618f14;
   }
   /* 押している間は、ボタンが沈む */
   .btn.pressed {
-    transform: translateY(5px);
+    transform: translateY(calc(5 * var(--u)));
   }
   .btn.heavy.pressed {
-    box-shadow: 0 1px 0 #9a2e21;
+    box-shadow: 0 calc(1 * var(--u)) 0 #9a2e21;
   }
   .btn.light.pressed {
-    box-shadow: 0 1px 0 #618f14;
+    box-shadow: 0 calc(1 * var(--u)) 0 #618f14;
   }
   @media (max-width: 900px) {
     .arcade-panel {
@@ -487,18 +487,18 @@ const title = t(home.arcade.title).split('\n');
   }
   @media (max-width: 620px) {
     .arcade-panel {
-      height: 500px;
-      padding: 24px;
+      height: calc(500 * var(--u));
+      padding: calc(24 * var(--u));
     }
     .screen {
-      height: 340px;
+      height: calc(340 * var(--u));
     }
     .screen strong {
-      margin-top: 22px;
-      font-size: 26px;
+      margin-top: calc(22 * var(--u));
+      font-size: 1.625rem;
     }
     .space-invader {
-      margin-top: 34px;
+      margin-top: calc(34 * var(--u));
     }
   }
 </style>
