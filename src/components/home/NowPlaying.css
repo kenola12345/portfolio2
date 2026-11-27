@@ -28,7 +28,7 @@
   height: 66px;
   animation: dock-in 0.45s var(--ease-out);
 }
-/* スクロール中は、下へ沈みながら消える（止まったら戻る）。タッチ端末だけで付く */
+/* スクロール中は、下へ沈みながら消える（止まったら戻る） */
 .now-playing.docked {
   transition: opacity 0.22s ease, transform 0.22s ease;
 }
