@@ -27,7 +27,7 @@ export const artist: Artist = {
     },
     {
       label: { en: 'Hobbies', ja: '趣味' },
-      value: { en: 'Breakdancing · Bouldering · Video games', ja: 'ブレイクダンス · ボルダリング · ゲーム' },
+      value: { en: 'Breakdancing · Bouldering · Video games · Reading', ja: 'ブレイクダンス · ボルダリング · ゲーム · 読書' },
     },
     {
       label: { en: 'Education', ja: '学歴' },
@@ -37,7 +37,7 @@ export const artist: Artist = {
       },
     },
   ],
-  banner: '/images/artist-banner.webp',
+  banner: '/images/artist-about.webp',
   portrait: '/covers/artist.webp',
   accent: '#8b5cf6',
   socials: [
