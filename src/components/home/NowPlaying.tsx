@@ -50,6 +50,7 @@ export default function NowPlaying({ kicker, tracks, playLabel, pauseLabel, next
   const [playing, setPlaying] = useState(false);
   const [index, setIndex] = useState(0);
   const [docked, setDocked] = useState(false);
+  const [scrolling, setScrolling] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);
   const slotRef = useRef<HTMLDivElement>(null);
   const track = tracks[index];
@@ -66,6 +67,23 @@ export default function NowPlaying({ kicker, tracks, playLabel, pauseLabel, next
     const observer = new IntersectionObserver(([entry]) => setDocked(!entry.isIntersecting), { threshold: 0.1 });
     observer.observe(slot);
     return () => observer.disconnect();
+  }, []);
+
+  // タッチ端末（iOS など）では、スクロールしているあいだは固定のプレイヤーを隠し、止まったらまた出す
+  // （指で操作している最中に、画面の端に居座って邪魔にならないように）
+  useEffect(() => {
+    if (!window.matchMedia('(hover: none) and (pointer: coarse)').matches) return;
+    let timer = 0;
+    const onScroll = () => {
+      setScrolling(true);
+      window.clearTimeout(timer);
+      timer = window.setTimeout(() => setScrolling(false), 220);
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      window.clearTimeout(timer);
+    };
   }, []);
 
   // 曲が替わったら、再生中のまま読み込み直す
@@ -97,7 +115,7 @@ export default function NowPlaying({ kicker, tracks, playLabel, pauseLabel, next
   const next = () => setIndex((i) => (i + 1) % tracks.length);
 
   const card = (
-    <div className={`now-playing${docked ? ' docked' : ''}`}>
+    <div className={`now-playing${docked ? ' docked' : ''}${docked && scrolling ? ' hidden-while-scrolling' : ''}`}>
       <button type="button" className="play-button" onClick={toggle} aria-label={playing ? pauseLabel : playLabel}>
         {playing ? <PauseIcon /> : <PlayIcon />}
       </button>
