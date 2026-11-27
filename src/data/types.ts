@@ -22,6 +22,8 @@ export interface Track {
   bullets?: L10n[];
   /** width / height は実寸。開閉アニメーションが画像の高さを先に知るために必須 */
   images?: { src: string; alt: L10n; width: number; height: number }[];
+  /** ホームのスライダーのカードに使う画像。守秘のためスクリーンショットを載せない案件で使う（なければ images の 1 枚目） */
+  cover?: { src: string; alt: L10n };
   links?: { label: L10n; href: string }[];
   /** 何枚目のディスクか（1 から）。省略は 1。アルバムに discs があるときだけ使う */
   disc?: number;
