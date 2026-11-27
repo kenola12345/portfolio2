@@ -307,14 +307,20 @@ const title = t(home.arcade.title).split('\n');
   .stage {
     position: absolute;
     inset: 0;
+    display: flex;
+    align-items: center;
     cursor: default;
     touch-action: none;
   }
+  /* 画面（正方形でなくてもよい）の中に、正方形のステージがはみ出さずに収まる大きさで置く。
+     スマホでは画面が縦長になるので、高さではなく幅に合わせる */
   canvas {
     display: block;
-    height: 100%;
+    width: 100%;
+    height: auto;
+    max-height: 100%;
     aspect-ratio: 1;
-    margin: 0 auto;
+    margin: auto;
     image-rendering: pixelated;
   }
   .hud {
