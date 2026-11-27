@@ -26,6 +26,10 @@ export const artist: Artist = {
       value: { en: 'English (native) · Japanese (native)', ja: '英語（ネイティブ）· 日本語（ネイティブ）' },
     },
     {
+      label: { en: 'Hobbies', ja: '趣味' },
+      value: { en: 'Breakdancing · Bouldering · Video games', ja: 'ブレイクダンス · ボルダリング · ゲーム' },
+    },
+    {
       label: { en: 'Education', ja: '学歴' },
       value: {
         en: 'B.A. in Economics, Temple University, Japan Campus (2017–2020) · Economics, El Camino College (2015–2017)',
