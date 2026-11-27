@@ -37,7 +37,7 @@ export const artist: Artist = {
       },
     },
   ],
-  banner: '/images/artist-banner.webp',
+  banner: '/images/artist-about.webp',
   portrait: '/covers/artist.webp',
   accent: '#8b5cf6',
   socials: [
