@@ -1,3 +1,5 @@
+> **Status note:** this manifest describes the first design (a persistent 3D record stage with crystal UI). That design was replaced by the SIDE B design (`src/components/home`, `src/components/album`, `src/layouts/SideBLayout.astro`, `src/styles/side-b.css`). The old files named below (`AppLayout`, `components/stage`, `components/ui`, `globals.css`, `record_player.glb`) no longer exist; they are kept in git history only.
+
 # MANIFEST — Portfolio "Discography" Redesign
 
 > **For Claude:** This is the source of truth for the redesign on branch `redesign/astro`.

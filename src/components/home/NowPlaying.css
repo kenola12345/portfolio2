@@ -76,7 +76,7 @@
   margin-bottom: calc(4 * var(--u));
   font-size: 0.4375rem;
   letter-spacing: 0.16em;
-  color: #6c6b64;
+  color: var(--muted-on-paper);
 }
 .now-playing__text strong {
   display: block;
@@ -90,7 +90,7 @@
   margin-top: calc(2 * var(--u));
   font-style: normal;
   font-size: 0.5rem;
-  color: #6c6b64;
+  color: var(--muted-on-paper);
 }
 .equalizer {
   height: calc(24 * var(--u));
