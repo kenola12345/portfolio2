@@ -48,9 +48,10 @@ export const home: HomeCopy = {
     line3Accent: { en: 'TOKYO.', ja: '開発。' },
   },
   intro: {
-    en: 'Bilingual English–Japanese engineer building production web apps for real estate, hospitality, healthcare and consumer brands.',
-    ja: '日英バイリンガルのエンジニア。不動産・ホスピタリティ・ヘルスケア・コンシューマーブランドの Web アプリを、企画から公開まで開発しています。',
+    en: 'Bilingual English–Japanese engineer in Tokyo, building websites where great design and smooth animation come first.',
+    ja: '東京を拠点とする日英バイリンガルのエンジニア。美しいデザインと、なめらかなアニメーションにこだわったウェブサイトを作っています。',
   },
+
   explore: { en: 'EXPLORE\nTHE WORK', ja: '制作実績\nを見る' },
   nowSpinning: { en: 'NOW SPINNING', ja: '再生中' },
   scrollCue: { en: 'SCROLL TO FLIP THE RECORD', ja: 'スクロールでレコードを回す' },
