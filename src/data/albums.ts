@@ -326,8 +326,14 @@ export const albums: Album[] = [
       {
         slug: 'tools',
         title: { en: 'Tools', ja: 'ツール' },
-        meta: { en: '12 items', ja: '12 件' },
-        tags: ['Git', 'GitHub', 'GitHub Actions', 'Netlify', 'Vite', 'webpack', 'Gulp', 'Babel', 'Biome', 'ESLint', 'Figma', 'Claude Code'],
+        meta: { en: '11 items', ja: '11 件' },
+        tags: ['Git', 'GitHub', 'GitHub Actions', 'Netlify', 'Vite', 'webpack', 'Gulp', 'Babel', 'Biome', 'ESLint', 'Claude Code'],
+      },
+      {
+        slug: 'design',
+        title: { en: 'Design', ja: 'デザイン' },
+        meta: { en: '3 items', ja: '3 件' },
+        tags: ['Figma', 'Photoshop', 'Adobe XD'],
       },
       {
         slug: 'testing',
