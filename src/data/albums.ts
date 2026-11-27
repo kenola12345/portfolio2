@@ -10,8 +10,8 @@ export const albums: Album[] = [
     type: 'ALBUM',
     title: { en: 'Projects', ja: '制作実績' },
     blurb: {
-      en: "Websites and apps I've designed and built, with screenshots and links.",
-      ja: '自分で設計・開発したウェブサイトやアプリの紹介（スクリーンショットとリンク付き）。',
+      en: "Websites and apps I've built, with screenshots and links.",
+      ja: '開発を担当したウェブサイトやアプリの紹介（スクリーンショットとリンク付き）。',
     },
     // TODO(owner): 最新プロジェクトの年
     accent: '#e0533d',

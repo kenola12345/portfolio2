@@ -4,6 +4,7 @@
  * 3D（Turntable）と再生ボタン（NowPlaying）は React のアイランド。
  */
 import ArrowIcon from './ArrowIcon.astro';
+import Breakdancer from './Breakdancer.astro';
 import NowPlaying from './NowPlaying';
 import Turntable from './Turntable';
 import { music } from '../../data/music';
@@ -24,6 +25,7 @@ const explore = t(home.explore).split('\n');
       <span class="line" data-hero="line">{t(h.line3)} <i>{t(h.line3Accent)}</i></span>
     </h1>
     <p class="intro" data-hero="line">{t(home.intro)}</p>
+    <div class="b-slot"><Breakdancer /></div>
     <a class="round-link" href="#work" aria-label={explore.join(' ')} data-hero="pop">
       <ArrowIcon />
       <span>{explore[0]}<br />{explore[1]}</span>
@@ -155,6 +157,13 @@ const explore = t(home.explore).split('\n');
     text-align: center;
     line-height: 1.4;
   }
+  /* ブレイクダンサー：見出しの下の、左の空いたところ */
+  .b-slot {
+    position: absolute;
+    left: 10px;
+    bottom: 52px;
+    width: 130px;
+  }
   .hero-visual {
     position: relative;
     z-index: 1;
@@ -194,6 +203,12 @@ const explore = t(home.explore).split('\n');
       right: auto;
       left: 0;
       bottom: -145px;
+    }
+    .b-slot {
+      left: auto;
+      right: 4%;
+      bottom: -170px;
+      width: 130px;
     }
   }
   @media (max-width: 620px) {

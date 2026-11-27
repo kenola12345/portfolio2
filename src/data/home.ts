@@ -45,7 +45,7 @@ export const home: HomeCopy = {
     line1: { en: 'FULL STACK', ja: 'フルスタック' },
     line2: { en: 'ENGINEER', ja: 'エンジニア' },
     line3: { en: 'IN', ja: '東京で' },
-    line3Accent: { en: 'TOKYO.', ja: '開発。' },
+    line3Accent: { en: 'TOKYO', ja: '開発。' },
   },
   intro: {
     en: 'Bilingual English–Japanese engineer in Tokyo, building websites with great design and smooth animation, all in service of a better user experience.',
@@ -65,8 +65,8 @@ export const home: HomeCopy = {
     title: { en: 'FEATURED', ja: '代表的な' },
     titleAccent: { en: 'RELEASES', ja: '制作実績' },
     lead: {
-      en: "Each project is a new record: a site or app I designed and built, from first sketch to launch.",
-      ja: '1 つ 1 つの制作実績が 1 枚のレコード。構想から公開まで、デザインと開発を担当したサイトやアプリです。',
+      en: 'Each project is a new record: a site or app I built, from first commit to launch.',
+      ja: '1 つ 1 つの制作実績が 1 枚のレコード。最初のコードから公開まで、開発を担当したサイトやアプリです。',
     },
     all: { en: 'All projects', ja: '制作実績をすべて見る' },
     view: { en: 'View', ja: '詳しく見る' },
@@ -77,7 +77,7 @@ export const home: HomeCopy = {
   about: {
     eyebrow: { en: 'Behind the decks', ja: 'ステージの裏側' },
     title: { en: 'CODE WITH', ja: 'リズムで' },
-    titleAccent: { en: 'RHYTHM.', ja: 'コードを。' },
+    titleAccent: { en: 'RHYTHM', ja: 'コードを。' },
     skillsTitle: { en: 'Skills', ja: 'スキル' },
     more: { en: 'Full story', ja: '詳しい自己紹介' },
   },
@@ -100,7 +100,7 @@ export const home: HomeCopy = {
   contact: {
     kicker: { en: 'GOT A PROJECT\nIN MIND?', ja: 'お仕事の\nご相談は？' },
     cta: { en: "LET'S MAKE", ja: '一緒に作ろう' },
-    ctaAccent: { en: 'SOME NOISE.', ja: 'ご連絡を。' },
+    ctaAccent: { en: 'SOME NOISE', ja: 'ご連絡を。' },
     top: { en: 'BACK TO TOP ↑', ja: 'ページの先頭へ ↑' },
   },
   nav: {
