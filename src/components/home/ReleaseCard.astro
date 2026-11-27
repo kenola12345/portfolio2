@@ -15,12 +15,14 @@ interface Props {
   /** レコード中央のラベルの色 */
   color: string;
   viewLabel: string;
+  /** スクロールで現れる動き（流れるレールの中では不要なので切れる） */
+  reveal?: boolean;
 }
 
-const { index, title, type, cover, alt, href, color, viewLabel } = Astro.props;
+const { index, title, type, cover, alt, href, color, viewLabel, reveal = true } = Astro.props;
 ---
 
-<article class="project" data-reveal>
+<article class="project" data-reveal={reveal ? '' : undefined}>
   <a class="card-link" href={href} aria-label={`${viewLabel}: ${title}`}>
     <div class="sleeve-wrap">
       <div class="vinyl-disc" style={`--label: ${color}`}><span></span></div>

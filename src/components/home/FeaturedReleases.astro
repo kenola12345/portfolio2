@@ -13,7 +13,10 @@ const t = useT(Astro.url);
 const lang = getLang(Astro.url);
 
 const projects = albums.find((a) => a.slug === 'projects');
-const featured = (projects?.tracks ?? []).filter((track) => track.images?.length).slice(0, 3);
+// 画像のある制作実績をすべて、横に流れ続けるレールに並べる
+const featured = (projects?.tracks ?? []).filter((track) => track.images?.length);
+// 切れ目なく繰り返すため、同じ並びを 2 回並べる（2 回目は読み上げ・フォーカスの対象外）
+const loop = [0, 1];
 const color = projects?.accent ?? '#ff5c45';
 
 // 残りのアルバムへのリンク
@@ -29,21 +32,31 @@ const others = albums.filter((a) => a.slug !== 'projects');
     <p class="lead">{t(home.work.lead)}</p>
   </header>
 
-  <div class="record-grid">
-    {
-      featured.map((track, i) => (
-        <ReleaseCard
-          index={i}
-          title={t(track.title)}
-          type={(track.tags ?? []).slice(0, 3).join(' · ')}
-          cover={track.images![0].src}
-          alt={t(track.images![0].alt)}
-          href={localePath(`/albums/projects#${track.slug}`, lang)}
-          color={color}
-          viewLabel={t(home.work.view)}
-        />
-      ))
-    }
+  <!-- 制作実績のレコードが右から左へ流れ続ける。ホバー・フォーカスで止まる -->
+  <div class="marquee" data-reveal>
+    <div class="track" style={`--n: ${featured.length}`}>
+      {
+        loop.map((copy) => (
+          <div class="set" aria-hidden={copy ? 'true' : undefined} inert={copy ? true : undefined}>
+            {featured.map((track, i) => (
+              <div class="slot">
+                <ReleaseCard
+                  index={i}
+                  title={t(track.title)}
+                  type={(track.tags ?? []).slice(0, 3).join(' · ')}
+                  cover={track.images![0].src}
+                  alt={copy ? '' : t(track.images![0].alt)}
+                  href={localePath(`/albums/projects#${track.slug}`, lang)}
+                  color={color}
+                  viewLabel={t(home.work.view)}
+                  reveal={false}
+                />
+              </div>
+            ))}
+          </div>
+        ))
+      }
+    </div>
   </div>
 
   <nav class="more" aria-label={t(home.pages.title)} data-reveal>
@@ -62,7 +75,8 @@ const others = albums.filter((a) => a.slug !== 'projects');
 
 <style>
   .work {
-    padding: 120px var(--gutter) 140px;
+    --work-pad: var(--gutter);
+    padding: 120px var(--work-pad) 140px;
     background: var(--paper);
     color: var(--ink);
     overflow: hidden;
@@ -104,11 +118,37 @@ const others = albums.filter((a) => a.slug !== 'projects');
     line-height: 1.7;
     color: #5d5b55;
   }
-  .record-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 2.5vw;
-    padding-top: 70px;
+  /* 流れるレール：画面の端まで広げ、両端はふわっと消す。1 組ぶん（-50%）動いたら最初に戻るので、切れ目が見えない */
+  .marquee {
+    --card-w: clamp(280px, 30vw, 520px);
+    --gap: 2.5vw;
+    margin: 70px calc(var(--work-pad) * -1) 0;
+    overflow: hidden;
+    padding: 0 0 6px;
+    -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 6%, #000 94%, transparent 100%);
+    mask-image: linear-gradient(90deg, transparent 0, #000 6%, #000 94%, transparent 100%);
+  }
+  .track {
+    display: flex;
+    width: max-content;
+    animation: slide calc(var(--n) * 7s) linear infinite;
+    will-change: transform;
+  }
+  .marquee:hover .track,
+  .marquee:focus-within .track {
+    animation-play-state: paused;
+  }
+  .set {
+    display: flex;
+  }
+  .slot {
+    flex: 0 0 var(--card-w);
+    margin-right: var(--gap);
+  }
+  @keyframes slide {
+    to {
+      transform: translateX(-50%);
+    }
   }
   .more {
     display: flex;
@@ -153,14 +193,15 @@ const others = albums.filter((a) => a.slug !== 'projects');
       align-items: flex-start;
       gap: 30px;
     }
-    .record-grid {
-      grid-template-columns: 1fr 1fr;
-      row-gap: 60px;
-    }
   }
   @media (max-width: 620px) {
     .work {
-      padding: 85px 20px;
+      --work-pad: 20px;
+      padding: 85px var(--work-pad);
+    }
+    .marquee {
+      --card-w: 78vw;
+      --gap: 18px;
     }
     .section-header {
       display: block;
@@ -173,9 +214,6 @@ const others = albums.filter((a) => a.slug !== 'projects');
       /* 「FEATURED」などの 8 文字が 1 行に収まる大きさ */
       font-size: 12vw;
       letter-spacing: -0.06em;
-    }
-    .record-grid {
-      grid-template-columns: 1fr;
     }
   }
 </style>
