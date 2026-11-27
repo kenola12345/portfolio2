@@ -30,16 +30,10 @@ const title = t(home.arcade.title).split('\n');
     <div class="stage" data-stage hidden>
       <canvas data-canvas aria-label="Platformer game"></canvas>
       <p class="hud"><span data-hud-score>SCORE 000000</span><span data-hud-lives></span></p>
-      <p class="hint">{t(home.arcade.controls)}</p>
+      <p class="hint hint-keys">{t(home.arcade.controlsKeys)}</p>
+      <p class="hint hint-touch">{t(home.arcade.controlsTouch)}</p>
       <button type="button" class="sound" data-sound aria-pressed="false" aria-label={t(home.arcade.sound)}>♪</button>
       <button type="button" class="exit" data-exit aria-label={t(home.arcade.exit)}>✕</button>
-
-      <!-- スマホ用のボタン -->
-      <div class="touch" aria-hidden="false">
-        <button type="button" data-key="left" aria-label={t(home.arcade.left)}>◀</button>
-        <button type="button" data-key="right" aria-label={t(home.arcade.right)}>▶</button>
-        <button type="button" data-key="jump" class="jump" aria-label={t(home.arcade.jump)}>▲</button>
-      </div>
 
       <!-- クリア・ゲームオーバーの表示 -->
       <div class="result" data-result hidden>
@@ -50,11 +44,16 @@ const title = t(home.arcade.title).split('\n');
       </div>
     </div>
   </div>
-  <div class="controls" aria-hidden="true"><span></span><b></b><i></i></div>
+  <!-- 筐体のスティックとボタンが、そのまま操作になる（左右・ジャンプ / 強攻撃 / 弱攻撃）。マウスでも指でも動く -->
+  <div class="controls">
+    <div class="stick" data-stick role="group" aria-label={t(home.arcade.stick)}></div>
+    <button type="button" class="btn heavy" data-key="heavy" aria-label={t(home.arcade.heavy)}></button>
+    <button type="button" class="btn light" data-key="light" aria-label={t(home.arcade.light)}></button>
+  </div>
 </div>
 
 <script>
-  import { createGame, type Game } from './arcade-game';
+  import { createGame, type Game, type InputKey } from './arcade-game';
   import { isMuted, play, setMuted, unlockAudio } from './arcade-sound';
 
   const panel = document.querySelector<HTMLElement>('.arcade-panel');
@@ -69,7 +68,7 @@ const title = t(home.arcade.title).split('\n');
     const hudLives = panel.querySelector<HTMLElement>('[data-hud-lives]')!;
     const resultTitle = panel.querySelector<HTMLElement>('[data-result-title]')!;
     const resultScore = panel.querySelector<HTMLElement>('[data-result-score]')!;
-    const KEYS: Record<string, 'left' | 'right' | 'jump'> = {
+    const KEYS: Record<string, InputKey> = {
       ArrowLeft: 'left',
       a: 'left',
       A: 'left',
@@ -80,7 +79,16 @@ const title = t(home.arcade.title).split('\n');
       w: 'jump',
       W: 'jump',
       ' ': 'jump',
+      j: 'light',
+      J: 'light',
+      z: 'light',
+      Z: 'light',
+      k: 'heavy',
+      K: 'heavy',
+      x: 'heavy',
+      X: 'heavy',
     };
+    const ALL_KEYS: InputKey[] = ['left', 'right', 'jump', 'light', 'heavy'];
 
     let game: Game | null = null;
     let playing = false;
@@ -162,13 +170,14 @@ const title = t(home.arcade.title).split('\n');
     };
     window.addEventListener('keydown', onKey(true));
     window.addEventListener('keyup', onKey(false));
-    window.addEventListener('blur', () => (['left', 'right', 'jump'] as const).forEach((k) => game?.setInput(k, false)));
+    window.addEventListener('blur', () => ALL_KEYS.forEach((k) => game?.setInput(k, false)));
 
-    // タッチのボタン
+    // 筐体のボタン（赤 = 強、緑 = 弱）：押している間だけ入力。ゲーム中でなければ何もしない
     panel.querySelectorAll<HTMLElement>('[data-key]').forEach((btn) => {
-      const key = btn.dataset.key as 'left' | 'right' | 'jump';
+      const key = btn.dataset.key as InputKey;
       const set = (down: boolean) => (e: Event) => {
         e.preventDefault();
+        btn.classList.toggle('pressed', down);
         game?.setInput(key, down);
       };
       btn.addEventListener('pointerdown', set(true));
@@ -177,6 +186,37 @@ const title = t(home.arcade.title).split('\n');
       btn.addEventListener('pointerleave', set(false));
       btn.addEventListener('contextmenu', (e) => e.preventDefault());
     });
+
+    // 筐体のスティック：左右に倒すと移動、上に倒すとジャンプ。倒した向きにレバーが傾く
+    const stick = panel.querySelector<HTMLElement>('[data-stick]');
+    if (stick) {
+      const apply = (e: PointerEvent) => {
+        const r = stick.getBoundingClientRect();
+        const dx = e.clientX - (r.left + r.width / 2);
+        const dy = e.clientY - (r.top + r.height / 2);
+        const dead = r.width * 0.16;
+        game?.setInput('left', dx < -dead);
+        game?.setInput('right', dx > dead);
+        game?.setInput('jump', dy < -r.height * 0.28);
+        const tilt = Math.max(-1, Math.min(1, dx / (r.width / 2))) * 28;
+        stick.style.setProperty('--tilt', `${tilt}deg`);
+      };
+      const release = () => {
+        (['left', 'right', 'jump'] as const).forEach((k) => game?.setInput(k, false));
+        stick.style.setProperty('--tilt', '0deg');
+      };
+      stick.addEventListener('pointerdown', (e) => {
+        e.preventDefault();
+        stick.setPointerCapture(e.pointerId);
+        apply(e);
+      });
+      stick.addEventListener('pointermove', (e) => {
+        if (stick.hasPointerCapture(e.pointerId)) apply(e);
+      });
+      stick.addEventListener('pointerup', release);
+      stick.addEventListener('pointercancel', release);
+      stick.addEventListener('contextmenu', (e) => e.preventDefault());
+    }
 
     // 画面から外れたり、タブが隠れたら一時停止
     const pause = (p: boolean) => playing && game?.setPaused(p);
@@ -320,37 +360,16 @@ const title = t(home.arcade.title).split('\n');
   .exit:hover {
     color: var(--coral);
   }
-  /* スマホ用ボタン：マウスのある端末では出さない */
-  .touch {
+  /* 操作のヒント：キーボードの端末ではキー、タッチ端末では「筐体のスティックとボタンで」と出す */
+  .hint-touch {
     display: none;
   }
   @media (hover: none) and (pointer: coarse) {
-    .hint {
+    .hint-keys {
       display: none;
     }
-    .touch {
-      position: absolute;
-      left: 8px;
-      right: 8px;
-      bottom: 4px;
-      display: flex;
-      gap: 8px;
-    }
-    .touch button {
-      width: 46px;
-      height: 32px;
-      border: 1px solid #b8ff3566;
-      background: #b8ff3514;
-      color: var(--acid);
-      font-size: 14px;
-      text-align: center;
-      touch-action: none;
-      user-select: none;
-      -webkit-user-select: none;
-    }
-    .touch .jump {
-      margin-left: auto;
-      width: 64px;
+    .hint-touch {
+      display: block;
     }
   }
   .result {
@@ -389,7 +408,7 @@ const title = t(home.arcade.title).split('\n');
     position: relative;
     height: 120px;
   }
-  .controls > span {
+  .stick {
     position: absolute;
     left: 45px;
     bottom: 0;
@@ -398,8 +417,12 @@ const title = t(home.arcade.title).split('\n');
     border-radius: 50%;
     background: #222;
     box-shadow: 0 7px 0 #090909;
+    cursor: grab;
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
   }
-  .controls > span::after {
+  .stick::after {
     content: '';
     position: absolute;
     left: 30px;
@@ -408,23 +431,44 @@ const title = t(home.arcade.title).split('\n');
     height: 90px;
     border-radius: 10px;
     background: #333;
+    /* レバーは根元を軸に、倒した向きへ傾く */
+    transform-origin: 50% 90%;
+    transform: rotate(var(--tilt, 0deg));
+    transition: transform 0.08s linear;
   }
-  .controls b,
-  .controls i {
+  .btn {
     position: absolute;
-    right: 40px;
-    bottom: 28px;
     width: 43px;
     height: 43px;
     border-radius: 50%;
+    padding: 0;
+    cursor: pointer;
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+    transition: transform 0.06s linear, box-shadow 0.06s linear;
+  }
+  .btn.heavy {
+    right: 40px;
+    bottom: 28px;
     background: var(--coral);
     box-shadow: 0 6px 0 #9a2e21;
   }
-  .controls i {
+  .btn.light {
     right: 100px;
     bottom: 14px;
     background: var(--acid);
     box-shadow: 0 6px 0 #618f14;
+  }
+  /* 押している間は、ボタンが沈む */
+  .btn.pressed {
+    transform: translateY(5px);
+  }
+  .btn.heavy.pressed {
+    box-shadow: 0 1px 0 #9a2e21;
+  }
+  .btn.light.pressed {
+    box-shadow: 0 1px 0 #618f14;
   }
   @media (max-width: 900px) {
     .arcade-panel {
