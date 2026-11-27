@@ -16,6 +16,8 @@
   --gutter: 4vw;
   --font-display: 'Syne', 'Noto Sans JP', sans-serif;
   --font-mono: 'DM Mono', 'Noto Sans JP', monospace;
+  /* 小文字まじりの見出し用。Syne は g や y のしっぽが横に切れた形なので、ふつうの形のこのフォントを使う */
+  --font-title: 'Space Grotesk', 'Noto Sans JP', sans-serif;
   --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
   /* 長さの基準（1 単位）。スマホ・タブレット（900px 以下）では 1px のまま。
      PC では、デザインの幅 1440px に対する画面幅の割合になる（calc(50 * var(--u)) = calc(50 / 1440 * 100vw)）。

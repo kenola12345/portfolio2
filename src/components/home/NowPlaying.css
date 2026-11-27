@@ -80,7 +80,7 @@
 }
 .now-playing__text strong {
   display: block;
-  font: 700 0.6875rem var(--font-display);
+  font: 700 0.6875rem var(--font-title);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
