@@ -1,0 +1,324 @@
+---
+/**
+ * 代表的な制作実績（紙色の背景のセクション）。Projects アルバムの先頭 3 件をレコード風のカードで並べ、
+ * それぞれ該当のトラックへ、下のリンクで残りのアルバム（Work / Skills / Contact）へつなぐ。
+ */
+import ReleaseCard from './ReleaseCard.astro';
+import ArrowIcon from './ArrowIcon.astro';
+import { albums } from '../../data/albums';
+import { home } from '../../data/home';
+import { getLang, localePath, useT } from '../../lib/i18n';
+
+const t = useT(Astro.url);
+const lang = getLang(Astro.url);
+
+const projects = albums.find((a) => a.slug === 'projects');
+// 画像のある制作実績をすべて、横に流れ続けるレールに並べる
+const featured = (projects?.tracks ?? []).filter((track) => track.images?.length);
+// 切れ目なく繰り返すため、同じ並びを 2 回並べる（2 回目は読み上げ・フォーカスの対象外）
+const loop = [0, 1];
+const color = projects?.accent ?? '#ff5c45';
+
+// 残りのアルバムへのリンク
+const others = albums.filter((a) => a.slug !== 'projects');
+---
+
+<section class="work" id="work">
+  <header class="section-header" data-reveal>
+    <div>
+      <p class="eyebrow"><span>02</span> {t(home.work.eyebrow)}</p>
+      <h2>{t(home.work.title)}<br /><i>{t(home.work.titleAccent)}</i></h2>
+    </div>
+    <p class="lead">{t(home.work.lead)}</p>
+  </header>
+
+  <!-- 制作実績のレコードが右から左へ流れ続ける。ホバー・フォーカスで止まる -->
+  <div class="marquee" data-reveal>
+    <div class="track" style={`--n: ${featured.length}`}>
+      {
+        loop.map((copy) => (
+          <div class="set" aria-hidden={copy ? 'true' : undefined} inert={copy ? true : undefined}>
+            {featured.map((track, i) => (
+              <div class="slot">
+                <ReleaseCard
+                  index={i}
+                  title={t(track.title)}
+                  type={(track.tags ?? []).slice(0, 3).join(' · ')}
+                  cover={track.images![0].src}
+                  alt={copy ? '' : t(track.images![0].alt)}
+                  href={localePath(`/albums/projects#${track.slug}`, lang)}
+                  color={color}
+                  viewLabel={t(home.work.view)}
+                  reveal={false}
+                />
+              </div>
+            ))}
+          </div>
+        ))
+      }
+    </div>
+  </div>
+
+  <nav class="more" aria-label={t(home.pages.title)} data-reveal>
+    <a class="more-link primary" href={localePath('/albums/projects', lang)}>
+      {t(home.work.all)} <ArrowIcon />
+    </a>
+    {
+      others.map((album) => (
+        <a class="more-link" href={localePath(`/albums/${album.slug}`, lang)}>
+          {t(album.title)}
+        </a>
+      ))
+    }
+  </nav>
+</section>
+
+
+<script>
+  /**
+   * 制作実績のスライダー：自動で左へ流れ続け、マウスやタッチでつかんで動かせる（離すと勢いが残って止まる）。
+   * 位置は JS で transform に書く。端まで行ったら、同じ並びの 1 組ぶん戻して切れ目なくつなぐ。
+   * ホバー・フォーカス中は止まる（タッチ端末ではホバーしないので、触れていないときは流れ続ける）。
+   */
+  const marquee = document.querySelector<HTMLElement>('.marquee');
+  const track = marquee?.querySelector<HTMLElement>('.track');
+
+  if (marquee && track) {
+    track.style.animation = 'none'; // CSS の流れる動き（JS が動かないときの代わり）をやめて、JS で動かす
+    let x = 0;
+    let setW = track.scrollWidth / 2;
+    let velocity = 0; // ドラッグを離したあとの勢い（px/秒）
+    let hover = false;
+    let visible = false;
+    let drag: { id: number; startX: number; startOffset: number; lastX: number; lastT: number; moved: boolean } | null = null;
+    let last = performance.now();
+
+    const speed = () => setW / ((Number(track.style.getPropertyValue('--n')) || 6) * 7); // 1 組を 1 周する速さ（px/秒）
+    const wrap = () => {
+      if (!setW) return;
+      x = ((x % setW) - setW) % setW; // (-setW, 0]
+    };
+    const measure = () => {
+      setW = track.scrollWidth / 2;
+    };
+    new ResizeObserver(measure).observe(track);
+    new IntersectionObserver(([e]) => (visible = e.isIntersecting)).observe(marquee);
+
+    marquee.addEventListener('mouseenter', () => (hover = true));
+    marquee.addEventListener('mouseleave', () => (hover = false));
+    marquee.addEventListener('focusin', () => (hover = true));
+    marquee.addEventListener('focusout', () => (hover = false));
+
+    marquee.addEventListener('pointerdown', (e) => {
+      if (e.button !== 0) return;
+      drag = { id: e.pointerId, startX: e.clientX, startOffset: x, lastX: e.clientX, lastT: performance.now(), moved: false };
+      velocity = 0;
+    });
+    marquee.addEventListener('pointermove', (e) => {
+      if (!drag || e.pointerId !== drag.id) return;
+      const dx = e.clientX - drag.startX;
+      if (!drag.moved && Math.abs(dx) > 5) {
+        drag.moved = true;
+        // 動かし始めてからつかむ（最初からつかむと、カードのリンクを押せなくなるため）
+        marquee.setPointerCapture(e.pointerId);
+        marquee.dataset.dragging = '';
+      }
+      if (!drag.moved) return;
+      const now = performance.now();
+      const dt = Math.max(now - drag.lastT, 1) / 1000;
+      velocity = Math.max(-2200, Math.min(2200, (e.clientX - drag.lastX) / dt)); // 勢いは上限をつける
+      drag.lastX = e.clientX;
+      drag.lastT = now;
+      x = drag.startOffset + dx;
+      wrap();
+      track.style.transform = `translate3d(${x}px,0,0)`;
+    });
+    const end = (e: PointerEvent) => {
+      if (!drag || e.pointerId !== drag.id) return;
+      if (drag.moved) {
+        // ドラッグのあとに、カードのリンクが押されたことにならないようにする
+        marquee.addEventListener('click', (ev) => ev.preventDefault(), { capture: true, once: true });
+        if (marquee.hasPointerCapture(e.pointerId)) marquee.releasePointerCapture(e.pointerId);
+      }
+      delete marquee.dataset.dragging;
+      drag = null;
+    };
+    marquee.addEventListener('pointerup', end);
+    marquee.addEventListener('pointercancel', end);
+    // 画像やリンクがブラウザのドラッグ（ゴースト画像）にならないようにする
+    marquee.addEventListener('dragstart', (e) => e.preventDefault());
+
+    const tick = (now: number) => {
+      requestAnimationFrame(tick);
+      const dt = Math.min((now - last) / 1000, 0.05);
+      last = now;
+      if (!visible || drag?.moved) return;
+      // 勢いは少しずつ減る。そのあと、ホバー中でなければ自動で流れる
+      if (Math.abs(velocity) > 5) {
+        x += velocity * dt;
+        velocity *= Math.exp(-dt * 3.5);
+      } else {
+        velocity = 0;
+        if (!hover) x -= speed() * dt;
+      }
+      wrap();
+      track.style.transform = `translate3d(${x}px,0,0)`;
+    };
+    requestAnimationFrame(tick);
+  }
+</script>
+
+<style>
+  .work {
+    --work-pad: var(--gutter);
+    padding: 120px var(--work-pad) 140px;
+    background: var(--paper);
+    color: var(--ink);
+    overflow: hidden;
+  }
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    padding-bottom: 55px;
+    border-bottom: 1px solid #aaa69a;
+  }
+  .eyebrow {
+    display: flex;
+    gap: 18px;
+    align-items: center;
+    text-transform: uppercase;
+    font-size: 10px;
+    letter-spacing: 0.14em;
+  }
+  .eyebrow span {
+    color: var(--coral);
+  }
+  h2 {
+    margin-top: 35px;
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: clamp(58px, 8vw, 118px);
+    letter-spacing: -0.075em;
+    line-height: 0.82;
+  }
+  h2 i {
+    color: var(--coral);
+    font-style: normal;
+  }
+  .lead {
+    width: 350px;
+    margin-bottom: 10px;
+    font-size: 11px;
+    line-height: 1.7;
+    color: #5d5b55;
+  }
+  /* 流れるレール：画面の端まで広げる。1 組ぶん（-50%）動いたら最初に戻るので、切れ目が見えない */
+  .marquee {
+    --card-w: clamp(280px, 30vw, 520px);
+    --gap: 2.5vw;
+    margin: 70px calc(var(--work-pad) * -1) 0;
+    overflow: hidden;
+    padding: 0 0 6px;
+  }
+  .track {
+    display: flex;
+    width: max-content;
+    animation: slide calc(var(--n) * 7s) linear infinite;
+    will-change: transform;
+  }
+  .marquee:hover .track,
+  .marquee:focus-within .track {
+    animation-play-state: paused;
+  }
+  .marquee {
+    cursor: grab;
+    touch-action: pan-y;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  .marquee[data-dragging] {
+    cursor: grabbing;
+  }
+  .marquee :global(img) {
+    -webkit-user-drag: none;
+  }
+  .set {
+    display: flex;
+  }
+  .slot {
+    flex: 0 0 var(--card-w);
+    margin-right: var(--gap);
+  }
+  @keyframes slide {
+    to {
+      transform: translateX(-50%);
+    }
+  }
+  .more {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 80px;
+    padding-top: 28px;
+    border-top: 1px solid #aaa69a;
+  }
+  .more-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 20px;
+    border: 1px solid var(--ink);
+    border-radius: 999px;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    transition: background 0.25s, color 0.25s, transform 0.25s;
+  }
+  .more-link :global(svg) {
+    width: 14px;
+  }
+  .more-link:hover {
+    background: var(--ink);
+    color: var(--paper);
+    transform: translateY(-2px);
+  }
+  .more-link.primary {
+    background: var(--ink);
+    color: var(--paper);
+  }
+  .more-link.primary:hover {
+    background: var(--coral);
+    border-color: var(--coral);
+    color: var(--ink);
+  }
+
+  @media (max-width: 900px) {
+    .section-header {
+      align-items: flex-start;
+      gap: 30px;
+    }
+  }
+  @media (max-width: 620px) {
+    .work {
+      --work-pad: 20px;
+      padding: 85px var(--work-pad);
+    }
+    .marquee {
+      --card-w: 78vw;
+      --gap: 18px;
+    }
+    .section-header {
+      display: block;
+    }
+    .lead {
+      width: auto;
+      margin-top: 35px;
+    }
+    h2 {
+      /* 「FEATURED」などの 8 文字が 1 行に収まる大きさ */
+      font-size: 12vw;
+      letter-spacing: -0.06em;
+    }
+  }
+</style>

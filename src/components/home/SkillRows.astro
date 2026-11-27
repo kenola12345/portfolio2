@@ -1,0 +1,66 @@
+---
+/**
+ * スキルの一覧。Skills アルバムの各グループ（言語・フレームワークなど）を 1 行ずつ出す。
+ * 棒の長さは、そのグループの項目数の多さ（習熟度ではない）。数字は項目数。
+ */
+import { albums } from '../../data/albums';
+import { useT } from '../../lib/i18n';
+
+const t = useT(Astro.url);
+const groups = (albums.find((a) => a.slug === 'skills')?.tracks ?? [])
+  .map((track) => ({
+    slug: track.slug,
+    title: t(track.title),
+    count: (track.tags ?? track.bullets ?? []).length,
+  }))
+  .filter((g) => g.count > 0)
+  .slice(0, 6);
+const max = Math.max(1, ...groups.map((g) => g.count));
+---
+
+<div class="skills">
+  {
+    groups.map((g) => (
+      <div class="row" data-reveal>
+        <span>{g.title}</span>
+        <div class="skill-line"><i style={`--w: ${Math.round((g.count / max) * 100)}%`} /></div>
+        <small>{String(g.count).padStart(2, '0')}</small>
+      </div>
+    ))
+  }
+</div>
+
+<style>
+  .row {
+    display: grid;
+    grid-template-columns: 150px 1fr 30px;
+    align-items: center;
+    gap: 20px;
+    padding: 12px 0;
+    border-bottom: 1px solid #eeeade18;
+    font-size: 9px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .skill-line {
+    height: 2px;
+    background: #393934;
+  }
+  .skill-line i {
+    display: block;
+    width: var(--w);
+    height: 100%;
+    background: var(--coral);
+    transform-origin: left;
+  }
+  small {
+    color: #77756d;
+    text-align: right;
+  }
+  @media (max-width: 620px) {
+    .row {
+      grid-template-columns: 120px 1fr 25px;
+      gap: 10px;
+    }
+  }
+</style>

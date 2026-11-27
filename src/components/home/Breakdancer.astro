@@ -1,0 +1,78 @@
+---
+/**
+ * ブレイクダンスのフリーズ（片手で体を支えるポーズ。Nike freeze）のイラスト。SVG、自作。
+ * 線画で、サイトの蛍光色に合わせている。ポーズを決めるときに「ポン」と弾み、そのあと手のひらを軸に
+ * ゆっくり揺れ続ける。飾りなので、スクリーンリーダーには読ませない。
+ */
+---
+
+<div class="b-boy" aria-hidden="true" data-hero="pop">
+  <svg viewBox="0 0 200 220" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <ellipse class="shadow" cx="96" cy="211" rx="30" ry="4" />
+    <!-- 手のひらを床について、そこを軸に揺れる -->
+    <g class="body">
+      <!-- 脚（上にのびた脚と、曲げた脚） -->
+      <path d="M150 112 102 92 46 60" class="line" stroke-width="10" />
+      <path d="M150 112 178 58 148 42" class="line" stroke-width="10" />
+      <!-- スニーカー -->
+      <path d="M46 60 30 46" class="shoe" stroke-width="12" />
+      <path d="M148 42 130 48" class="shoe" stroke-width="12" />
+      <!-- 胴 -->
+      <path d="M100 150 150 112" class="line" stroke-width="18" />
+      <!-- 頭（腕のそばに寄せる） -->
+      <circle cx="72" cy="140" r="12" class="line" stroke-width="6" />
+      <!-- 空いている腕：肘を曲げて頭にそえる -->
+      <path d="M104 146 84 116 66 128" class="line" stroke-width="6" />
+      <!-- 体を支える腕：手のひらは床 -->
+      <path d="M100 150 96 205" class="line" stroke-width="8" />
+      <path d="M86 207 108 207" class="line" stroke-width="5" />
+    </g>
+  </svg>
+</div>
+
+<style>
+  /* 置き場所は、使う側（Hero）が決める。ここでは幅いっぱいに出すだけ */
+  .b-boy {
+    width: 100%;
+    pointer-events: none;
+  }
+  svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    overflow: visible;
+  }
+  .line {
+    stroke: var(--acid);
+  }
+  .shoe {
+    stroke: var(--coral);
+  }
+  .shadow {
+    fill: #00000066;
+    stroke: none;
+  }
+  /* 床についた手のひら（下の中央）を軸にする */
+  .body {
+    transform-box: view-box;
+    transform-origin: 96px 207px;
+    animation:
+      freeze-in 0.7s cubic-bezier(0.3, 1.6, 0.5, 1) both,
+      sway 3.2s ease-in-out 0.7s infinite;
+  }
+  @keyframes freeze-in {
+    from {
+      transform: rotate(-70deg) scale(0.85);
+      opacity: 0;
+    }
+  }
+  @keyframes sway {
+    0%,
+    100% {
+      transform: rotate(-2.5deg);
+    }
+    50% {
+      transform: rotate(3deg);
+    }
+  }
+</style>

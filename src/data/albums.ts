@@ -10,8 +10,8 @@ export const albums: Album[] = [
     type: 'ALBUM',
     title: { en: 'Projects', ja: '制作実績' },
     blurb: {
-      en: "Websites and apps I've designed and built, with screenshots and links.",
-      ja: '自分で設計・開発したウェブサイトやアプリの紹介（スクリーンショットとリンク付き）。',
+      en: "Websites and apps I've built, with screenshots and links.",
+      ja: '開発を担当したウェブサイトやアプリの紹介（スクリーンショットとリンク付き）。',
     },
     // TODO(owner): 最新プロジェクトの年
     accent: '#e0533d',
@@ -40,10 +40,10 @@ export const albums: Album[] = [
         slug: 'seta-tei',
         title: { en: 'seta-tei.jp', ja: 'seta-tei.jp' },
         // TODO(owner): 公開年。説明と使用技術は履歴書をもとにしたもの
-        tags: ['React', 'Tailwind CSS'],
+        tags: ['React', 'Tailwind CSS', 'Firebase'],
         description: {
-          en: 'Official website for HAYAMA Setatei, a French restaurant in Hayama, Japan. I designed and built the site in Japanese and English, and added an email system for reservation inquiries, which increased the number of reservations.',
-          ja: '葉山のフレンチレストラン「HAYAMA せた亭」の公式サイト。日本語・英語の 2 言語でデザインから開発までを担当し、予約のお問い合わせをメールで受け付ける仕組みを導入して、予約数の増加につなげました。',
+          en: 'Official website for HAYAMA Setatei, a French restaurant in Hayama, Japan. I designed and built the site in Japanese and English, and added a Firebase backend and an email system for reservation inquiries, which increased the number of reservations.',
+          ja: '葉山のフレンチレストラン「HAYAMA せた亭」の公式サイト。日本語・英語の 2 言語でデザインから開発までを担当し、Firebase のバックエンドと、予約のお問い合わせをメールで受け付ける仕組みを導入して、予約数の増加につなげました。',
         },
         images: [
           {
@@ -326,8 +326,14 @@ export const albums: Album[] = [
       {
         slug: 'tools',
         title: { en: 'Tools', ja: 'ツール' },
-        meta: { en: '12 items', ja: '12 件' },
-        tags: ['Git', 'GitHub', 'GitHub Actions', 'Netlify', 'Vite', 'webpack', 'Gulp', 'Babel', 'Biome', 'ESLint', 'Figma', 'Claude Code'],
+        meta: { en: '11 items', ja: '11 件' },
+        tags: ['Git', 'GitHub', 'GitHub Actions', 'Netlify', 'Vite', 'webpack', 'Gulp', 'Babel', 'Biome', 'ESLint', 'Claude Code'],
+      },
+      {
+        slug: 'design',
+        title: { en: 'Design', ja: 'デザイン' },
+        meta: { en: '3 items', ja: '3 件' },
+        tags: ['Figma', 'Photoshop', 'Adobe XD'],
       },
       {
         slug: 'testing',

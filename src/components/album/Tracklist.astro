@@ -6,7 +6,6 @@
 import type { Album, Track } from '../../data/types';
 import { ui } from '../../data/ui';
 import { useT } from '../../lib/i18n';
-import FlipText from '../ui/FlipText.astro';
 
 interface Props {
   tracks: Track[];
@@ -34,113 +33,326 @@ const groups = Array.from({ length: discCount }, (_, d) => {
 const isExternal = (href: string) => /^https?:\/\//.test(href);
 ---
 
-<div class="mt-8 flex flex-col gap-8">
+<div class="tracklist">
   {
     groups.map((group) => (
       <section aria-label={group.title ? `${t(ui.disc)} ${group.disc}: ${t(group.title)}` : undefined}>
         {group.title && (
-          <h2 class="mb-3 flex items-center gap-3 px-1">
-            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" class="text-muted" aria-hidden="true">
-              <circle cx="12" cy="12" r="9.5" />
-              <circle cx="12" cy="12" r="3.2" />
-            </svg>
-            <span class="text-xs uppercase tracking-[0.18em] text-muted">
+          <h2 class="disc-title">
+            <span class="disc-icon" aria-hidden="true" />
+            <span class="disc-no">
               {t(ui.disc)} {group.disc}
             </span>
-            <span class="menu-text text-base md:text-lg">{t(group.title)}</span>
+            <span class="disc-name">{t(group.title)}</span>
           </h2>
         )}
-        <ol class="flex flex-col gap-2.5">
-          {group.items.map(({ track, index: i, number }) => (
-      <li class="enter" style={`--i:${i + 3}`}>
-        <details data-track id={track.slug} class="crystal group scroll-mt-6" style="--crystal-radius: 18px">
-          <summary class="grid cursor-pointer list-none grid-cols-[2rem_1fr_1rem] items-center gap-3 px-4 py-3.5 md:grid-cols-[2.5rem_1fr_auto_1rem] md:px-5 [&::-webkit-details-marker]:hidden">
-            <span class="relative text-center text-sm text-muted">
-              <span class="transition-opacity group-hover:opacity-0 group-open:opacity-0">{number}</span>
-              <svg
-                class="absolute inset-0 m-auto opacity-0 transition-opacity group-hover:opacity-100 group-open:opacity-100"
-                viewBox="0 0 24 24"
-                width="16"
-                height="16"
-                fill="currentColor"
-                aria-hidden="true"
-              >
-                <path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5z" />
-              </svg>
-            </span>
-            <span class="min-w-0">
-              <!-- スマホ：長い肩書き・社名は折り返して全部見せる。PC：閉じているときだけ省略し、開いたら全部見せる -->
-              <span class="menu-text block break-words text-base md:truncate md:text-lg md:group-open:overflow-visible md:group-open:whitespace-normal">{t(track.title)}</span>
-              {track.meta && <span class="mt-0.5 block text-xs text-muted md:hidden">{t(track.meta)}</span>}
-            </span>
-            <span class="hidden text-sm text-muted md:block">{track.meta ? t(track.meta) : ''}</span>
-            <svg
-              class="text-muted transition-transform duration-300 group-open:rotate-180"
-              viewBox="0 0 24 24"
-              width="16"
-              height="16"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2.5"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              aria-hidden="true"
-            >
-              <path d="m6 9 6 6 6-6" />
-            </svg>
-          </summary>
+        <ol>
+          {group.items.map(({ track, number }) => (
+            <li data-reveal>
+              <details data-track id={track.slug}>
+                <summary>
+                  <span class="no">{String(number).padStart(2, '0')}</span>
+                  <span class="title">
+                    <span class="name">{t(track.title)}</span>
+                    {track.meta && <span class="meta-sp">{t(track.meta)}</span>}
+                  </span>
+                  <span class="meta-pc">{track.meta ? t(track.meta) : ''}</span>
+                  <span class="plus" aria-hidden="true" />
+                </summary>
 
-          <div data-track-body class="px-4 pb-5 pt-1 md:pl-[4.5rem] md:pr-5">
-            {track.description && <p class="max-w-2xl text-sm leading-relaxed md:text-base">{t(track.description)}</p>}
-            {track.bullets && (
-              <ul class="mt-3 list-disc space-y-1 pl-5 text-sm md:text-base">
-                {track.bullets.map((b) => (
-                  <li>{t(b)}</li>
-                ))}
-              </ul>
-            )}
-            {track.images?.map((img) => (
-              <img
-                class="mt-4 h-auto w-full max-w-xl rounded-card"
-                src={img.src}
-                alt={t(img.alt)}
-                width={img.width}
-                height={img.height}
-                loading="lazy"
-                decoding="async"
-              />
-            ))}
-            {track.tags && (
-              <ul class="mt-4 flex flex-wrap gap-2">
-                {track.tags.map((tag) => (
-                  <li class="rounded-full bg-white/10 px-3 py-1 text-xs md:text-sm">{tag}</li>
-                ))}
-              </ul>
-            )}
-            {track.links && (
-              <p class="mt-4 flex flex-wrap gap-2.5">
-                {track.links.map((link) => (
-                  <a
-                    class="crystal menu-text inline-block px-4 py-2 text-sm"
-                    style="--crystal-radius: 999px"
-                    href={link.href}
-                    target={isExternal(link.href) ? '_blank' : undefined}
-                    rel={isExternal(link.href) ? 'noreferrer' : undefined}
-                  >
-                    <FlipText>{t(link.label)} ↗</FlipText>
-                  </a>
-                ))}
-              </p>
-            )}
-          </div>
-        </details>
-      </li>
+                <div data-track-body class="body">
+                  {track.description && <p class="desc">{t(track.description)}</p>}
+                  {track.bullets && (
+                    <ul class="bullets">
+                      {track.bullets.map((b) => (
+                        <li>{t(b)}</li>
+                      ))}
+                    </ul>
+                  )}
+                  {track.images?.map((img) => (
+                    <img
+                      class="shot"
+                      src={img.src}
+                      alt={t(img.alt)}
+                      width={img.width}
+                      height={img.height}
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  ))}
+                  {track.tags && (
+                    <ul class="tags">
+                      {track.tags.map((tag) => (
+                        <li>{tag}</li>
+                      ))}
+                    </ul>
+                  )}
+                  {track.links && (
+                    <p class="links">
+                      {track.links.map((link) => (
+                        <Fragment>
+                        {link.href.startsWith('mailto:') && (
+                          <button type="button" class="copy" data-copy={link.href.replace('mailto:', '')} data-done={t(ui.copied)}>
+                            <span>{t(ui.copyEmail)}</span>
+                          </button>
+                        )}
+                        <a
+                          href={link.href}
+                          target={isExternal(link.href) ? '_blank' : undefined}
+                          rel={isExternal(link.href) ? 'noreferrer' : undefined}
+                        >
+                          {t(link.label)} ↗
+                        </a>
+                        </Fragment>
+                      ))}
+                    </p>
+                  )}
+                </div>
+              </details>
+            </li>
           ))}
         </ol>
       </section>
     ))
   }
 </div>
+
+<style>
+  .tracklist {
+    display: flex;
+    flex-direction: column;
+    gap: 64px;
+  }
+  ol {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border-bottom: 1px solid var(--line);
+  }
+  .disc-title {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 18px;
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+  .disc-icon {
+    width: 18px;
+    height: 18px;
+    border: 1.5px solid var(--acid);
+    border-radius: 50%;
+    position: relative;
+  }
+  .disc-icon::after {
+    content: '';
+    position: absolute;
+    inset: 4px;
+    border: 1.5px solid var(--acid);
+    border-radius: 50%;
+  }
+  .disc-no {
+    color: var(--acid);
+  }
+  .disc-name {
+    font: 800 clamp(22px, 2.6vw, 34px) var(--font-display);
+    letter-spacing: -0.04em;
+    text-transform: none;
+  }
+
+  details {
+    border-top: 1px solid var(--line);
+    scroll-margin-top: 24px;
+    transition: background 0.3s;
+  }
+  details[open],
+  details:hover {
+    background: #eeeade08;
+  }
+  summary {
+    display: grid;
+    grid-template-columns: 56px 1fr auto 28px;
+    align-items: center;
+    gap: 12px;
+    padding: 26px 8px;
+    list-style: none;
+    cursor: pointer;
+  }
+  summary::-webkit-details-marker {
+    display: none;
+  }
+  .no {
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: #77756d;
+    transition: color 0.2s;
+  }
+  details:hover .no,
+  details[open] .no {
+    color: var(--acid);
+  }
+  .title {
+    min-width: 0;
+  }
+  .name {
+    display: block;
+    /* 行の高さに余裕を持たせる（1.1 だと、g や y の下のしっぽが切れる） */
+    font: 700 clamp(20px, 2.4vw, 32px) / 1.4 var(--font-display);
+    margin-block: -0.12em;
+    letter-spacing: -0.04em;
+    overflow-wrap: anywhere;
+    transition: transform 0.4s var(--ease-out), color 0.2s;
+  }
+  details:hover .name {
+    transform: translateX(8px);
+  }
+  details[open] .name {
+    color: var(--acid);
+  }
+  .meta-sp {
+    display: none;
+    margin-top: 6px;
+    font-size: 9px;
+    letter-spacing: 0.08em;
+    color: #77756d;
+  }
+  .meta-pc {
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    color: #77756d;
+  }
+  /* + が × に回る */
+  .plus {
+    position: relative;
+    width: 18px;
+    height: 18px;
+    justify-self: end;
+    transition: transform 0.4s var(--ease-out);
+  }
+  .plus::before,
+  .plus::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    height: 1.5px;
+    background: currentColor;
+  }
+  .plus::after {
+    transform: rotate(90deg);
+  }
+  details[open] .plus {
+    transform: rotate(135deg);
+    color: var(--coral);
+  }
+
+  .body {
+    padding: 4px 56px 36px 68px;
+  }
+  .desc {
+    /* カードの幅いっぱいに広げる（右側が空かないように） */
+    font-size: 13px;
+    line-height: 1.8;
+    color: var(--muted);
+  }
+  .bullets {
+    margin: 14px 0 0;
+    padding-left: 18px;
+    font-size: 13px;
+    line-height: 1.8;
+    color: var(--muted);
+  }
+  .shot {
+    display: block;
+    width: 100%;
+    max-width: 640px;
+    height: auto;
+    margin-top: 22px;
+    box-shadow: 10px 10px 0 var(--coral);
+  }
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 28px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .tags li {
+    padding: 7px 12px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    font-size: 9px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 22px;
+  }
+  .links a {
+    padding: 12px 20px;
+    border-radius: 999px;
+    background: var(--paper);
+    color: var(--ink);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    transition: background 0.25s, transform 0.25s;
+  }
+  /* コピーボタン：メールアドレスをクリップボードへ（押すと「コピーしました」に変わる） */
+  .copy {
+    padding: 12px 20px;
+    border-radius: 999px;
+    background: var(--acid);
+    color: var(--ink);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    transition: background 0.25s, transform 0.25s;
+  }
+  .copy:hover {
+    background: var(--paper);
+    transform: translateY(-2px);
+  }
+  .copy[data-copied] {
+    background: var(--coral);
+  }
+  .links a:hover {
+    background: var(--acid);
+    transform: translateY(-2px);
+  }
+
+  @media (max-width: 900px) {
+    .meta-pc {
+      display: none;
+    }
+    .meta-sp {
+      display: block;
+    }
+    summary {
+      grid-template-columns: 40px 1fr 28px;
+    }
+    .body {
+      padding-left: 48px;
+    }
+  }
+  @media (max-width: 620px) {
+    summary {
+      padding: 22px 0;
+    }
+    .body {
+      padding: 0 0 30px;
+    }
+    .shot {
+      box-shadow: 6px 6px 0 var(--coral);
+    }
+  }
+</style>
 
 <script>
   /**
@@ -216,6 +428,35 @@ const isExternal = (href: string) => /^https?:\/\//.test(href);
     else select(details);
   });
 
+  // メールアドレスのコピー：押すとクリップボードに入れ、少しのあいだ「コピーしました」と出す
+  document.addEventListener('click', async (e) => {
+    const btn = (e.target as Element).closest<HTMLButtonElement>('button[data-copy]');
+    if (!btn) return;
+    const text = btn.dataset.copy ?? '';
+    try {
+      await navigator.clipboard.writeText(text);
+    } catch {
+      // クリップボード API が使えない環境（古いブラウザ・http）では、選択してコピーする
+      const area = document.createElement('textarea');
+      area.value = text;
+      area.style.position = 'fixed';
+      area.style.opacity = '0';
+      document.body.appendChild(area);
+      area.select();
+      document.execCommand('copy');
+      area.remove();
+    }
+    const label = btn.querySelector('span')!;
+    const original = btn.dataset.label ?? label.textContent ?? '';
+    btn.dataset.label = original;
+    label.textContent = btn.dataset.done ?? '';
+    btn.setAttribute('data-copied', '');
+    window.setTimeout(() => {
+      label.textContent = original;
+      btn.removeAttribute('data-copied');
+    }, 1800);
+  });
+
   // 再生ボタン：最初のトラックを開く。すでに開いていれば次のトラックへ進む
   document.addEventListener('click', (e) => {
     if (!(e.target as Element).closest('[data-play]')) return;
@@ -235,5 +476,6 @@ const isExternal = (href: string) => /^https?:\/\//.test(href);
     if (el instanceof HTMLDetailsElement) select(el);
   }
   document.addEventListener('astro:page-load', openFromHash);
+  openFromHash();
   window.addEventListener('hashchange', openFromHash);
 </script>

@@ -1,0 +1,109 @@
+---
+/**
+ * SNS へのリンク（アイコン付きのボタン）。アイコンは public/icons の SVG を、文字と同じ色で塗って出す。
+ * variant: 'footer' = 緑の背景の上（黒いボタン）、'profile' = 暗い背景の上（枠線のボタン）
+ */
+import { artist } from '../../data/artist';
+import type { SocialKind } from '../../data/types';
+import { useT } from '../../lib/i18n';
+
+interface Props {
+  variant?: 'footer' | 'profile';
+  /** 出すものと順番。省略すると全部 */
+  kinds?: SocialKind[];
+}
+
+const { variant = 'profile', kinds } = Astro.props;
+const t = useT(Astro.url);
+
+const icons: Record<SocialKind, string> = {
+  github: '/icons/github.svg',
+  linkedin: '/icons/linkedIn.svg',
+  email: '/icons/gmail.svg',
+};
+
+const items = (kinds ?? artist.socials.map((s) => s.kind))
+  .map((kind) => artist.socials.find((s) => s.kind === kind))
+  .filter((s): s is NonNullable<typeof s> => Boolean(s));
+---
+
+<p class={`socials ${variant}`}>
+  {
+    items.map((s) => (
+      <a href={s.href} target={s.href.startsWith('http') ? '_blank' : undefined} rel="noreferrer">
+        <span class="icon" style={`--icon: url(${icons[s.kind]})`} aria-hidden="true" />
+        {t(s.label)}
+      </a>
+    ))
+  }
+</p>
+
+<style>
+  .socials {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  a {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 24px 14px 18px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    transition: background 0.25s, color 0.25s, border-color 0.25s, transform 0.25s, box-shadow 0.25s;
+  }
+  .icon {
+    width: 20px;
+    height: 20px;
+    background: currentColor;
+    -webkit-mask: var(--icon) center / contain no-repeat;
+    mask: var(--icon) center / contain no-repeat;
+    transition: transform 0.35s var(--ease-out);
+  }
+  a:hover {
+    transform: translate(-2px, -2px);
+  }
+  a:hover .icon {
+    transform: rotate(-8deg) scale(1.12);
+  }
+
+  /* 緑の背景の上：黒い塗りの、大きめのボタン */
+  .footer a {
+    padding: 18px 32px 18px 24px;
+    font-size: 13px;
+    gap: 14px;
+    background: var(--ink);
+    color: var(--acid);
+    box-shadow: 4px 4px 0 var(--ink);
+  }
+  .footer .icon {
+    width: 26px;
+    height: 26px;
+  }
+  .footer a:hover {
+    background: var(--paper);
+    color: var(--ink);
+    box-shadow: 6px 6px 0 var(--ink);
+  }
+
+  /* 暗い背景の上：蛍光色の枠のボタン */
+  .profile a {
+    border: 1px solid var(--acid);
+    color: var(--acid);
+  }
+  .profile a:hover {
+    background: var(--acid);
+    color: var(--ink);
+    box-shadow: 4px 4px 0 var(--coral);
+  }
+
+  @media (max-width: 620px) {
+    a {
+      padding: 12px 20px 12px 16px;
+    }
+  }
+</style>

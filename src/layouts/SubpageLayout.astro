@@ -1,0 +1,40 @@
+---
+/**
+ * サブページ（各アルバム・自己紹介）の共通の枠：SideBLayout に、ナビ（現在のページを強調）と
+ * 下部の連絡先フッターを足したもの。中身（ヒーローやトラックリスト）は slot に入れる。
+ */
+import SideBLayout from './SideBLayout.astro';
+import SiteNav from '../components/home/SiteNav.astro';
+import ContactFooter from '../components/home/ContactFooter.astro';
+import { albums } from '../data/albums';
+import { ui } from '../data/ui';
+import { getLang, localePath, useT } from '../lib/i18n';
+
+interface Props {
+  title?: string;
+  description?: string;
+  /** 'artist' または アルバムの slug。ナビでこのページを強調する */
+  current: string;
+}
+
+const { title, description, current } = Astro.props;
+const t = useT(Astro.url);
+const lang = getLang(Astro.url);
+
+const links = [
+  { href: localePath('/artist', lang), label: t(ui.navArtist), current: current === 'artist' },
+  ...albums.map((album) => ({
+    href: localePath(`/albums/${album.slug}`, lang),
+    label: t(album.title),
+    current: current === album.slug,
+  })),
+];
+---
+
+<SideBLayout title={title} description={description}>
+  <SiteNav links={links} overlay={false} />
+  <main>
+    <slot />
+  </main>
+  <ContactFooter />
+</SideBLayout>
