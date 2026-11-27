@@ -76,6 +76,8 @@ export async function submitScore(entry: Entry): Promise<void> {
 /** 上位 10 件。同点の並びをそろえるため、点数の上位 50 件を取ってから、時間で並べ直す */
 export async function topEntries(count = 10): Promise<Entry[]> {
   if (useMock()) return readMock().sort(byRank).slice(0, count);
+  // 設定がないときは、記録がないものとして空のランキングを見せる
+  if (!leaderboardEnabled()) return [];
   const { db, fs } = await getDb();
   const snap = await fs.getDocs(fs.query(fs.collection(db, COLLECTION), fs.orderBy('score', 'desc'), fs.limit(50)));
   return snap.docs

@@ -27,7 +27,7 @@ const t = useT(Astro.url);
     <div class="attract" data-attract>
       <!-- 見本：ステージに 2 人のキャラ（本番と同じ絵）。遊べるゲームだと一目で分かるように -->
       <canvas class="preview" data-preview aria-hidden="true"></canvas>
-      <button type="button" class="board-open" data-board-open hidden>{t(home.arcade.showBoard)}</button>
+      <button type="button" class="board-open" data-board-open>{t(home.arcade.showBoard)}</button>
       <!-- 目立たせたいので、ボタンの形にして、光の輪が広がり続ける -->
       <span class="cta">
         <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5z" /></svg>
@@ -59,7 +59,7 @@ const t = useT(Astro.url);
         </form>
         <div class="row" data-result-actions>
           <button type="button" data-again>{t(home.arcade.again)}</button>
-          <button type="button" data-board-open-result hidden>{t(home.arcade.showBoard)}</button>
+          <button type="button" data-board-open-result>{t(home.arcade.showBoard)}</button>
         </div>
         <a href="#contact" data-collab>{t(home.arcade.start)} ↗</a>
       </div>
@@ -146,8 +146,6 @@ const t = useT(Astro.url);
     let boardReturn: HTMLElement | null = null;
     let lastSaved: Entry | null = null;
 
-    const enabled = leaderboardEnabled();
-    boardOpeners.forEach((b) => (b.hidden = !enabled));
 
     // 表示はすべて textContent（名前は他の人が入れた文字なので、HTML として扱わない）
     const renderBoard = (rows: Entry[]) => {
