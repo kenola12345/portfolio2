@@ -4,13 +4,13 @@
  * メール・SNS はアーティストデータから出す。
  */
 import ArrowIcon from './ArrowIcon.astro';
+import SocialLinks from './SocialLinks.astro';
 import { artist } from '../../data/artist';
 import { home } from '../../data/home';
 import { useT } from '../../lib/i18n';
 
 const t = useT(Astro.url);
 const email = artist.socials.find((s) => s.kind === 'email');
-const socials = artist.socials.filter((s) => s.kind !== 'email');
 const kicker = t(home.contact.kicker).split('\n');
 const year = new Date().getFullYear();
 ---
@@ -24,11 +24,10 @@ const year = new Date().getFullYear();
       </a>
     )
   }
+  <!-- GitHub と LinkedIn は、アイコン付きの大きなボタンで目立たせる -->
+  <SocialLinks variant="footer" kinds={['github', 'linkedin']} />
   <div class="footer-bottom">
     <span>© {year} {t(artist.name).toUpperCase()}</span>
-    <div>
-      {socials.map((s) => <a href={s.href} target="_blank" rel="noreferrer">{t(s.label).toUpperCase()}</a>)}
-    </div>
     <a class="top" href="#home">{t(home.contact.top)}</a>
   </div>
 </footer>
@@ -46,7 +45,7 @@ const year = new Date().getFullYear();
   .big {
     position: relative;
     display: block;
-    margin: 75px 0 100px;
+    margin: 75px 0 56px;
     font: 800 clamp(48px, 7.6vw, 130px) / 0.84 var(--font-display);
     letter-spacing: -0.08em;
     white-space: nowrap;
@@ -69,14 +68,11 @@ const year = new Date().getFullYear();
   .footer-bottom {
     display: flex;
     justify-content: space-between;
+    margin-top: 80px;
     padding-top: 20px;
     border-top: 1px solid var(--ink);
     font-size: 8px;
     letter-spacing: 0.1em;
-  }
-  .footer-bottom div {
-    display: flex;
-    gap: 35px;
   }
   .footer-bottom a:hover {
     text-decoration: underline;
@@ -96,11 +92,6 @@ const year = new Date().getFullYear();
     }
     .footer-bottom {
       flex-wrap: wrap;
-      gap: 20px;
-    }
-    .footer-bottom div {
-      order: 3;
-      width: 100%;
       gap: 20px;
     }
   }
