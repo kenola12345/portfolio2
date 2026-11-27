@@ -13,7 +13,6 @@ import { useT } from '../../lib/i18n';
 const t = useT(Astro.url);
 const h = home.headline;
 const explore = t(home.explore).split('\n');
-const stamp = t(home.stamp).split('\n');
 ---
 
 <section class="hero" id="home">
@@ -41,7 +40,6 @@ const stamp = t(home.stamp).split('\n');
       pauseLabel={t(home.pause)}
       nextLabel={t(home.next)}
     />
-    <div class="edition-stamp" data-hero="pop">{stamp[0]}<br />{stamp[1]}<br /><b>33⅓</b></div>
   </div>
 
   <p class="scroll-cue">{t(home.scrollCue)} <span>↓</span></p>
@@ -154,25 +152,6 @@ const stamp = t(home.stamp).split('\n');
     z-index: 1;
     min-width: 0;
   }
-  .edition-stamp {
-    position: absolute;
-    right: 0;
-    top: 5%;
-    width: 90px;
-    height: 90px;
-    display: grid;
-    place-content: center;
-    border: 1px solid #eeeade80;
-    border-radius: 50%;
-    text-align: center;
-    font-size: 7px;
-    line-height: 1.4;
-    transform: rotate(9deg);
-  }
-  .edition-stamp b {
-    color: var(--acid);
-    font: 800 23px var(--font-display);
-  }
   .scroll-cue {
     position: absolute;
     left: var(--gutter);
@@ -230,9 +209,6 @@ const stamp = t(home.stamp).split('\n');
     }
     .hero-visual {
       inset: 46% -31% 0 -5%;
-    }
-    .edition-stamp {
-      display: none;
     }
     .round-link {
       width: 95px;

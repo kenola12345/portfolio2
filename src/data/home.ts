@@ -7,7 +7,6 @@ interface HomeCopy {
   explore: L10n;
   nowSpinning: L10n;
   scrollCue: L10n;
-  stamp: L10n;
   play: L10n;
   pause: L10n;
   next: L10n;
@@ -55,7 +54,6 @@ export const home: HomeCopy = {
   explore: { en: 'EXPLORE\nTHE WORK', ja: '制作実績\nを見る' },
   nowSpinning: { en: 'NOW SPINNING', ja: '再生中' },
   scrollCue: { en: 'SCROLL TO FLIP THE RECORD', ja: 'スクロールでレコードを回す' },
-  stamp: { en: 'PORTFOLIO\nEDITION', ja: 'ポート\nフォリオ' },
   play: { en: 'Play music', ja: '音楽を再生' },
   pause: { en: 'Pause music', ja: '音楽を一時停止' },
   next: { en: 'Next track', ja: '次の曲' },
