@@ -128,7 +128,17 @@ function navMenu() {
   document.addEventListener('keydown', (e) => e.key === 'Escape' && set(false));
 }
 
+/** 外部サイトへのリンクは、すべて新しいタブで開く（書き忘れがあっても、ここで揃える） */
+function externalLinks() {
+  document.querySelectorAll<HTMLAnchorElement>('a[href^="http"]').forEach((a) => {
+    if (new URL(a.href, location.href).origin === location.origin) return;
+    a.target = '_blank';
+    a.rel = 'noopener noreferrer';
+  });
+}
+
 heroIntro();
+externalLinks();
 scrollReveals();
 pageWipe();
 navMenu();
