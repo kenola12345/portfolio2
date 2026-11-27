@@ -13,6 +13,13 @@ interface Props {
  * - ポインターに合わせて台がわずかに傾く
  * - スクロールすると、スクロールした分だけレコードが速く回る（"SCROLL TO FLIP THE RECORD"）
  */
+/** トーンアームの角度（y 軸まわり）。REST = 盤の外で休んでいる、PLAY = 針が盤の溝に乗っている */
+const ARM_REST = -0.55;
+const ARM_PLAY = 0.03;
+/** 針が盤の外にあるとき持ち上げ、溝に乗るときは下ろす（y の高さ） */
+const ARM_Y_UP = 0.5;
+const ARM_Y_DOWN = 0.12;
+
 export default function Turntable({ label }: Props) {
   const mountRef = useRef<HTMLDivElement>(null);
 
@@ -90,7 +97,7 @@ export default function Turntable({ label }: Props) {
     // トーンアーム
     const arm = new THREE.Group();
     arm.position.set(2.65, 0.25, -1.75);
-    arm.rotation.y = -0.55;
+    arm.rotation.y = ARM_REST;
     arm.add(
       new THREE.Mesh(
         new THREE.CylinderGeometry(0.35, 0.42, 0.55, 32),
@@ -172,6 +179,8 @@ export default function Turntable({ label }: Props) {
     let frame = 0;
     let spin = 0;
     let speed = 0; // 滑らかに加減速させる
+    let armAngle = ARM_REST;
+    let played = 0; // 再生している時間（秒）。針が少しずつ内側へ進むのに使う
     const animate = () => {
       const now = performance.now();
       const dt = Math.min((now - last) / 1000, 0.05);
@@ -181,6 +190,14 @@ export default function Turntable({ label }: Props) {
       scrollSpin *= Math.exp(-dt * 3);
       spin += speed * dt + scrollSpin;
       record.rotation.y = spin;
+      // 再生を押すと、アームが盤の上へ回って針が下り、止めると持ち上がって盤の外へ戻る
+      if (playing) played += dt;
+      const drift = Math.min(0.12, played * 0.0006);
+      const armTarget = playing ? ARM_PLAY + drift : ARM_REST;
+      armAngle += (armTarget - armAngle) * Math.min(1, dt * (playing ? 2.2 : 3));
+      arm.rotation.y = armAngle;
+      const onRecord = Math.min(1, Math.max(0, (armAngle - ARM_REST) / (ARM_PLAY - ARM_REST)));
+      arm.position.y = ARM_Y_UP + (ARM_Y_DOWN - ARM_Y_UP) * onRecord * onRecord;
       group.rotation.x += (pointerY * 0.06 - group.rotation.x) * 0.035;
       group.rotation.y += (pointerX * 0.09 - group.rotation.y) * 0.035;
       group.position.y = Math.sin(time * 0.8) * 0.05;
