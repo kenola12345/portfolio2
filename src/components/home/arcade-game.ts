@@ -13,7 +13,38 @@ export const VIEW = 240;
 
 /** 本ステージ（床）と、空中の足場（下からすり抜けて、上に乗れる） */
 const STAGE = { x0: 40, x1: 200, y: 168 };
-const SOFT = { x0: 94, x1: 146, y: 118 };
+interface Platform {
+  x0: number;
+  x1: number;
+  y: number;
+}
+
+/** ステージの形（空中の足場の配置）。ラウンドごとに変わる。足場は下からすり抜けられ、「下」で降りられる */
+const LAYOUTS: { name: string; plats: Platform[]; color: string }[] = [
+  // 1. 真ん中に 1 つ
+  { name: 'MIDDLE', plats: [{ x0: 94, x1: 146, y: 118 }], color: '#b8ff35' },
+  // 2. 左右に 1 つずつ
+  {
+    name: 'SIDES',
+    plats: [
+      { x0: 50, x1: 98, y: 124 },
+      { x0: 142, x1: 190, y: 124 },
+    ],
+    color: '#ff5c45',
+  },
+  // 3. 真ん中と左右の 3 つ（スマブラのバトルフィールド）
+  {
+    name: 'BATTLEFIELD',
+    plats: [
+      { x0: 50, x1: 96, y: 128 },
+      { x0: 144, x1: 190, y: 128 },
+      { x0: 96, x1: 144, y: 92 },
+    ],
+    color: '#7157ff',
+  },
+  // 4. 足場なし（終点）
+  { name: 'FLAT', plats: [], color: '#ff2e63' },
+];
 /** この外に出たらやられる（画面よりずっと外） */
 const BLAST = { left: -60, right: 300, top: -110, bottom: 300 };
 
@@ -127,13 +158,15 @@ interface Opponent {
   scale: number;
   kbMul: number;
   dmgMul: number;
+  /** ステージの形（LAYOUTS の番号） */
+  layout: number;
 }
 
 const OPPONENTS: Opponent[] = [
-  { name: 'CPU 1', stocks: 2, react: 26, aggr: 0.45, color: C.coral, dark: '#9a2e21', scale: 1, kbMul: 1, dmgMul: 0.9 },
-  { name: 'CPU 2', stocks: 2, react: 17, aggr: 0.62, color: C.paper, dark: '#8a877d', scale: 1, kbMul: 1, dmgMul: 1 },
-  { name: 'CPU 3', stocks: 2, react: 11, aggr: 0.78, color: C.violet, dark: '#3a2a99', scale: 1, kbMul: 0.95, dmgMul: 1.1 },
-  { name: 'BOSS', stocks: 3, react: 7, aggr: 0.9, color: '#ff2e63', dark: '#7a0f2e', scale: 1.28, kbMul: 0.72, dmgMul: 1.35 },
+  { name: 'CPU 1', stocks: 2, react: 26, aggr: 0.45, color: C.coral, dark: '#9a2e21', scale: 1, kbMul: 1, dmgMul: 0.9, layout: 0 },
+  { name: 'CPU 2', stocks: 2, react: 17, aggr: 0.62, color: C.paper, dark: '#8a877d', scale: 1, kbMul: 1, dmgMul: 1, layout: 1 },
+  { name: 'CPU 3', stocks: 2, react: 11, aggr: 0.78, color: C.violet, dark: '#3a2a99', scale: 1, kbMul: 0.95, dmgMul: 1.1, layout: 2 },
+  { name: 'BOSS', stocks: 3, react: 7, aggr: 0.9, color: '#ff2e63', dark: '#7a0f2e', scale: 1.28, kbMul: 0.72, dmgMul: 1.35, layout: 3 },
 ];
 
 interface Particle {
@@ -168,6 +201,9 @@ export function createGame(canvas: HTMLCanvasElement, events: GameEvents): Game 
   let acc = 0;
   let paused = false;
   let particles: Particle[] = [];
+  /** いまのラウンドの足場と、その色 */
+  let plats: Platform[] = LAYOUTS[0].plats;
+  let accent: string = LAYOUTS[0].color;
 
   const rand = () => Math.random();
 
@@ -221,6 +257,8 @@ export function createGame(canvas: HTMLCanvasElement, events: GameEvents): Game 
     c.dmgMul = o.dmgMul;
     c.ai = { next: 0, hold: noInput() };
     cpu = c;
+    plats = LAYOUTS[o.layout].plats;
+    accent = LAYOUTS[o.layout].color;
     const p = player!;
     p.percent = 0;
     place(p, 88, 1);
@@ -245,6 +283,10 @@ export function createGame(canvas: HTMLCanvasElement, events: GameEvents): Game 
   // ---------- 判定 ----------
   type Box = { x: number; y: number; w: number; h: number };
   const overlap = (a: Box, b: Box) => a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y;
+
+  /** 足元にある空中の足場（なければ null） */
+  const platformUnder = (f: Fighter): Platform | null =>
+    plats.find((pl) => Math.abs(f.y - pl.y) <= 0.5 && f.x > pl.x0 && f.x < pl.x1) ?? null;
 
   const hurtbox = (f: Fighter): Box => ({ x: f.x - f.w / 2, y: f.y - f.h, w: f.w, h: f.h });
 
@@ -301,7 +343,7 @@ export function createGame(canvas: HTMLCanvasElement, events: GameEvents): Game 
         f.face = dir > 0 ? 1 : -1;
       }
       // 空中の足場の上で「下」を押すと、足場をすり抜けて降りる
-      if (inp.down && f.onGround && f.y <= SOFT.y + 0.5 && f.y >= SOFT.y - 0.5 && f.x > SOFT.x0 && f.x < SOFT.x1) {
+      if (inp.down && f.onGround && platformUnder(f)) {
         f.drop = 14;
         f.onGround = false;
         f.vy = Math.max(f.vy, 1);
@@ -347,8 +389,8 @@ export function createGame(canvas: HTMLCanvasElement, events: GameEvents): Game 
     // 足場に乗る（上から降りてきたときだけ。下からはすり抜ける）
     f.onGround = false;
     if (f.vy >= 0) {
-      for (const p of [STAGE, SOFT]) {
-        if (p === SOFT && f.drop > 0) continue; // すり抜け中
+      for (const p of [STAGE, ...plats]) {
+        if (p !== STAGE && f.drop > 0) continue; // すり抜け中
         const over = f.x + f.w / 2 > p.x0 && f.x - f.w / 2 < p.x1;
         if (over && prevY <= p.y + 0.5 && f.y >= p.y) {
           f.y = p.y;
@@ -414,7 +456,7 @@ export function createGame(canvas: HTMLCanvasElement, events: GameEvents): Game 
     }
     if (p.y < c.y - 34 && rand() < 0.35 * o.aggr) h.jump = true;
     // 空中の足場に乗っていて、相手が下にいるときは、「下」を押して足場から降りる（ときどき、理由なく降りることもある）
-    const onSoft = c.onGround && Math.abs(c.y - SOFT.y) < 1;
+    const onSoft = c.onGround && !!platformUnder(c);
     if (onSoft && ((p.y > c.y + 20 && rand() < 0.5 + o.aggr * 0.5) || rand() < 0.05)) h.down = true;
     // 場の端から落ちない
     if ((h.right && edgeRight) || (h.left && edgeLeft)) {
@@ -444,7 +486,7 @@ export function createGame(canvas: HTMLCanvasElement, events: GameEvents): Game 
   function respawn(f: Fighter) {
     f.percent = 0;
     place(f, 120, f.face);
-    f.y = SOFT.y - 60;
+    f.y = 20;
     f.onGround = false;
     f.invuln = 110;
   }
@@ -612,13 +654,15 @@ export function createGame(canvas: HTMLCanvasElement, events: GameEvents): Game 
     // 本ステージ
     g.fillStyle = C.ground;
     g.fillRect(STAGE.x0, STAGE.y, STAGE.x1 - STAGE.x0, 38);
-    g.fillStyle = C.groundTop;
+    g.fillStyle = accent;
     g.fillRect(STAGE.x0, STAGE.y, STAGE.x1 - STAGE.x0, 2);
     // 空中の足場
-    g.fillStyle = C.platform;
-    g.fillRect(SOFT.x0, SOFT.y, SOFT.x1 - SOFT.x0, 5);
-    g.fillStyle = C.groundTop;
-    g.fillRect(SOFT.x0, SOFT.y, SOFT.x1 - SOFT.x0, 2);
+    for (const pl of plats) {
+      g.fillStyle = C.platform;
+      g.fillRect(pl.x0, pl.y, pl.x1 - pl.x0, 5);
+      g.fillStyle = accent;
+      g.fillRect(pl.x0, pl.y, pl.x1 - pl.x0, 2);
+    }
 
     if (c && p) {
       drawFighter(c);
