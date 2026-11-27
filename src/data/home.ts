@@ -30,7 +30,7 @@ interface HomeCopy {
     jump: L10n;
     sound: L10n;
   };
-  contact: { kicker: L10n; cta: L10n; ctaAccent: L10n; top: L10n };
+  contact: { kicker: L10n; cta: L10n; ctaAccent: L10n; top: L10n; stack: L10n };
   nav: { work: L10n; about: L10n; contact: L10n; menu: L10n; sayHello: L10n };
 }
 
@@ -102,6 +102,10 @@ export const home: HomeCopy = {
     cta: { en: "LET'S MAKE", ja: '一緒に作ろう' },
     ctaAccent: { en: 'SOME NOISE', ja: 'ご連絡を。' },
     top: { en: 'BACK TO TOP ↑', ja: 'ページの先頭へ ↑' },
+    stack: {
+      en: 'DESIGNED IN FIGMA · BUILT WITH ASTRO, REACT, TYPESCRIPT, THREE.JS AND GSAP · HOSTED ON VERCEL',
+      ja: 'FIGMA でデザイン · ASTRO、REACT、TYPESCRIPT、THREE.JS、GSAP で開発 · VERCEL でホスティング',
+    },
   },
   nav: {
     work: { en: 'Selected work', ja: '制作実績' },
