@@ -1,4 +1,5 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { createPortal } from 'react-dom';
 import './NowPlaying.css';
 
 interface Track {
@@ -74,27 +75,38 @@ export default function NowPlaying({ kicker, tracks, playLabel, pauseLabel, next
 
   const next = () => setIndex((i) => (i + 1) % tracks.length);
 
+  const card = (
+    <div className={`now-playing${docked ? ' docked' : ''}`}>
+      <button type="button" className="play-button" onClick={toggle} aria-label={playing ? pauseLabel : playLabel}>
+        {playing ? 'Ⅱ' : '▶'}
+      </button>
+      <div className="now-playing__text">
+        <span>{kicker}</span>
+        <strong>{track.title}</strong>
+        <em>{track.artist}</em>
+      </div>
+      <button type="button" className="next-button" onClick={next} aria-label={nextLabel}>
+        ⏭
+      </button>
+      <div className={`equalizer${playing ? ' playing' : ''}`} aria-hidden="true">
+        {[1, 2, 3, 4, 5].map((bar) => (
+          <i key={bar} />
+        ))}
+      </div>
+    </div>
+  );
+
+  /**
+   * 固定表示のカードは <body> 直下に出す。ヒーローの中に置いたままだと、ヒーローの重なりの順番（z-index）に
+   * 閉じ込められて、あとのセクションの下に隠れてしまうため。audio はここ（常に同じ場所）に置くので、
+   * カードの出し入れで音が途切れない
+   */
+  const place = (node: ReactNode) => (docked && typeof document !== 'undefined' ? createPortal(node, document.body) : node);
+
   return (
     <div className="np-slot" ref={slotRef}>
-      <div className={`now-playing${docked ? ' docked' : ''}`}>
-        <audio ref={audioRef} preload="none" onEnded={next} />
-        <button type="button" className="play-button" onClick={toggle} aria-label={playing ? pauseLabel : playLabel}>
-          {playing ? 'Ⅱ' : '▶'}
-        </button>
-        <div className="now-playing__text">
-          <span>{kicker}</span>
-          <strong>{track.title}</strong>
-          <em>{track.artist}</em>
-        </div>
-        <button type="button" className="next-button" onClick={next} aria-label={nextLabel}>
-          ⏭
-        </button>
-        <div className={`equalizer${playing ? ' playing' : ''}`} aria-hidden="true">
-          {[1, 2, 3, 4, 5].map((bar) => (
-            <i key={bar} />
-          ))}
-        </div>
-      </div>
+      <audio ref={audioRef} preload="none" onEnded={next} />
+      {place(card)}
     </div>
   );
 }

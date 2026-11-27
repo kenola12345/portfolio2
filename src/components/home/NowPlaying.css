@@ -22,7 +22,8 @@
 .now-playing.docked {
   position: fixed;
   inset: auto 16px 16px auto;
-  z-index: 60;
+  /* ワイプ（100）の下、ほかのどのセクションより上 */
+  z-index: 90;
   width: min(340px, calc(100vw - 32px));
   height: 66px;
   animation: dock-in 0.45s var(--ease-out);
