@@ -6,7 +6,6 @@ import { home } from '../../data/home';
 import { useT } from '../../lib/i18n';
 
 const t = useT(Astro.url);
-const title = t(home.arcade.title).split('\n');
 ---
 
 <div
@@ -19,12 +18,14 @@ const title = t(home.arcade.title).split('\n');
   <!-- 画面をクリック（または Enter）でゲーム開始 -->
   <div class="screen" role="button" tabindex="0" aria-label={t(home.arcade.play)} data-arcade-screen>
     <div class="attract" data-attract>
-      <span class="screen-score">{t(home.arcade.score)}</span>
-      <div class="space-invader" aria-hidden="true">
-        {Array.from({ length: 15 }, () => <i />)}
-      </div>
-      <strong>{title[0]}<br />{title[1]}</strong>
-      <small>{t(home.arcade.play)}</small>
+      <!-- 見本：ステージに 2 人のキャラ（本番と同じ絵）。遊べるゲームだと一目で分かるように -->
+      <canvas class="preview" data-preview aria-hidden="true"></canvas>
+      <span></span>
+      <!-- 目立たせたいので、ボタンの形にして、光の輪が広がり続ける -->
+      <span class="cta">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5z" /></svg>
+        {t(home.arcade.play)}
+      </span>
     </div>
 
     <div class="stage" data-stage hidden>
@@ -93,6 +94,12 @@ const title = t(home.arcade.title).split('\n');
     };
     const ALL_KEYS: InputKey[] = ['left', 'right', 'jump', 'down', 'light', 'heavy'];
 
+    // 開始前の見本の絵（フォントが読み込まれてから描く）
+    const previewCanvas = panel.querySelector<HTMLCanvasElement>('[data-preview]');
+    const previewGame = previewCanvas ? createGame(previewCanvas, { onEnd: () => {} }) : null;
+    const drawPreview = () => previewGame?.preview();
+    void document.fonts.ready.then(drawPreview);
+
     let game: Game | null = null;
     let playing = false;
 
@@ -129,6 +136,7 @@ const title = t(home.arcade.title).split('\n');
       result!.hidden = true;
       attract!.hidden = false;
       screen!.setAttribute('role', 'button');
+      drawPreview();
       screen!.focus({ preventScroll: true });
     }
 
@@ -154,10 +162,17 @@ const title = t(home.arcade.title).split('\n');
       setMuted(!isMuted());
       showSound();
     });
-    panel.querySelector('[data-exit]')?.addEventListener('click', end);
+    // 終了ボタンのクリックが、下の画面（クリックで開始）へ伝わって、すぐ再開してしまわないように止める
+    panel.querySelector('[data-exit]')?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      end();
+    });
     panel.querySelector('[data-again]')?.addEventListener('click', begin);
     // 「一緒に作ろう」のリンクを押したら、ゲームは終わらせて連絡先へ
-    panel.querySelector('[data-collab]')?.addEventListener('click', end);
+    panel.querySelector('[data-collab]')?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      end();
+    });
 
     // キーボード：ゲーム中だけ。矢印・スペースでページがスクロールしないようにする
     const onKey = (down: boolean) => (e: KeyboardEvent) => {
@@ -308,38 +323,56 @@ const title = t(home.arcade.title).split('\n');
     font-size: 0.5rem;
     letter-spacing: 0.15em;
   }
-  .space-invader {
-    width: calc(120 * var(--u));
-    height: calc(85 * var(--u));
-    margin: calc(45 * var(--u)) auto 0;
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: calc(5 * var(--u));
+  .attract {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: calc(34 * var(--u)) calc(16 * var(--u)) calc(26 * var(--u));
   }
-  .space-invader i {
-    background: var(--coral);
-    box-shadow: 0 0 calc(10 * var(--u)) var(--coral);
+  /* 見本のステージ：画面いっぱいに、ドットのまま拡大して敷く */
+  .preview {
+    position: absolute;
+    inset: 0;
+    margin: auto;
+    width: 100%;
+    height: auto;
+    max-height: 100%;
+    aspect-ratio: 1;
+    image-rendering: pixelated;
   }
-  /* インベーダーの形に抜く */
-  .space-invader i:nth-child(1),
-  .space-invader i:nth-child(5),
-  .space-invader i:nth-child(7),
-  .space-invader i:nth-child(9),
-  .space-invader i:nth-child(11),
-  .space-invader i:nth-child(13),
-  .space-invader i:nth-child(15) {
-    opacity: 0;
+  /* 「クリックで遊べる」ことが分かるように、大きなボタンにして、光の輪を広げ続ける */
+  .cta {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: calc(10 * var(--u));
+    padding: calc(12 * var(--u)) calc(22 * var(--u));
+    border-radius: 999px;
+    background: var(--acid);
+    color: var(--ink);
+    font: 700 0.8125rem var(--font-mono);
+    letter-spacing: 0.14em;
+    animation: cta-pulse 1.6s ease-out infinite;
   }
-  .screen strong {
-    display: block;
-    margin-top: calc(28 * var(--u));
-    font: 800 2.0625rem/1 var(--font-display);
+  .screen:hover .cta {
+    background: var(--paper);
   }
-  .screen small {
-    display: block;
-    margin-top: calc(25 * var(--u));
-    font-size: 0.4375rem;
-    animation: blink 1s infinite;
+  @keyframes cta-pulse {
+    0% {
+      box-shadow: 0 0 0 0 #b8ff35cc;
+      transform: scale(1);
+    }
+    55% {
+      box-shadow: 0 0 0 calc(14 * var(--u)) #b8ff3500;
+      transform: scale(1.04);
+    }
+    100% {
+      box-shadow: 0 0 0 0 #b8ff3500;
+      transform: scale(1);
+    }
   }
   /* ゲーム中の画面：canvas は正方形（240×240）をドットのまま拡大する */
   .stage {
@@ -530,13 +563,6 @@ const title = t(home.arcade.title).split('\n');
     }
     .screen {
       height: calc(340 * var(--u));
-    }
-    .screen strong {
-      margin-top: calc(22 * var(--u));
-      font-size: 1.625rem;
-    }
-    .space-invader {
-      margin-top: calc(34 * var(--u));
     }
   }
   /* スマホ・タブレット：スティックを左端へ、ボタンを右へ寄せて、指が当たらないように離す */

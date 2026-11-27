@@ -82,6 +82,8 @@ export interface Game {
   setPaused: (paused: boolean) => void;
   /** テスト用 */
   snapshot: () => Snapshot;
+  /** 開始前の見本：ステージに 2 人のキャラを立たせて、1 枚だけ描く（バナーは出さない） */
+  preview: () => void;
   /** テスト用：1 フレームだけ進める */
   step: () => void;
 }
@@ -749,6 +751,11 @@ export function createGame(canvas: HTMLCanvasElement, events: GameEvents): Game 
     setPaused(pz) {
       paused = pz;
       last = performance.now();
+    },
+    preview() {
+      reset();
+      phase = 'fight';
+      draw();
     },
     step() {
       tick();
