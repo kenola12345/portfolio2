@@ -83,7 +83,11 @@ const FLAG_X = 1640;
 
 export type GameState = 'ready' | 'playing' | 'won' | 'over';
 
+export type SoundName = 'jump' | 'coin' | 'stomp' | 'hurt' | 'win' | 'over';
+
 export interface GameEvents {
+  /** 効果音を鳴らすタイミング */
+  onSound?: (name: SoundName) => void;
   /** クリアまたはゲームオーバーになったとき */
   onEnd: (result: 'won' | 'over', score: number) => void;
   /** スコア・ライフの表示を更新するとき */
@@ -147,6 +151,7 @@ export function createGame(canvas: HTMLCanvasElement, events: GameEvents): Game 
 
   function loseLife() {
     lives -= 1;
+    events.onSound?.(lives <= 0 ? 'over' : 'hurt');
     events.onHud?.(score, lives);
     if (lives <= 0) {
       state = 'over';
@@ -179,6 +184,7 @@ export function createGame(canvas: HTMLCanvasElement, events: GameEvents): Game 
     jumpHeld = input.jump;
     if (jumpBuffer > 0 && coyote > 0) {
       player.vy = -300;
+      events.onSound?.('jump');
       coyote = 0;
       jumpBuffer = 0;
       player.onGround = false;
@@ -235,6 +241,7 @@ export function createGame(canvas: HTMLCanvasElement, events: GameEvents): Game 
           e.alive = false;
           player.vy = -200;
           score += 200;
+          events.onSound?.('stomp');
           events.onHud?.(score, lives);
         } else if (invincible <= 0) {
           loseLife();
@@ -247,6 +254,7 @@ export function createGame(canvas: HTMLCanvasElement, events: GameEvents): Game 
       if (!c.taken && Math.abs(player.x + player.w / 2 - c.x) < 9 && Math.abs(player.y + player.h / 2 - c.y) < 10) {
         c.taken = true;
         score += 100;
+        events.onSound?.('coin');
         events.onHud?.(score, lives);
       }
     }
@@ -254,6 +262,7 @@ export function createGame(canvas: HTMLCanvasElement, events: GameEvents): Game 
     if (player.x + player.w >= FLAG_X) {
       score += lives * 500; // 残りライフのボーナス
       state = 'won';
+      events.onSound?.('win');
       events.onHud?.(score, lives);
       events.onEnd('won', score);
       return;

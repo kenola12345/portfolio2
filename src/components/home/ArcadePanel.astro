@@ -31,6 +31,7 @@ const title = t(home.arcade.title).split('\n');
       <canvas data-canvas aria-label="Platformer game"></canvas>
       <p class="hud"><span data-hud-score>SCORE 000000</span><span data-hud-lives></span></p>
       <p class="hint">{t(home.arcade.controls)}</p>
+      <button type="button" class="sound" data-sound aria-pressed="false" aria-label={t(home.arcade.sound)}>♪</button>
       <button type="button" class="exit" data-exit aria-label={t(home.arcade.exit)}>✕</button>
 
       <!-- スマホ用のボタン -->
@@ -54,6 +55,7 @@ const title = t(home.arcade.title).split('\n');
 
 <script>
   import { createGame, type Game } from './arcade-game';
+  import { isMuted, play, setMuted, unlockAudio } from './arcade-sound';
 
   const panel = document.querySelector<HTMLElement>('.arcade-panel');
   const screen = panel?.querySelector<HTMLElement>('[data-arcade-screen]');
@@ -90,8 +92,10 @@ const title = t(home.arcade.title).split('\n');
     };
 
     function begin() {
+      unlockAudio(); // 音は、クリックなどの操作の中でないと出せない
       game ??= createGame(canvas!, {
         onHud: setHud,
+        onSound: play,
         onEnd: (kind, score) => {
           resultTitle.textContent = kind === 'won' ? panel!.dataset.win! : panel!.dataset.over!;
           resultScore.textContent = `SCORE ${pad(score)}`;
@@ -128,6 +132,16 @@ const title = t(home.arcade.title).split('\n');
         e.preventDefault();
         begin();
       }
+    });
+    const soundBtn = panel.querySelector<HTMLElement>('[data-sound]')!;
+    const showSound = () => {
+      soundBtn.classList.toggle('off', isMuted());
+      soundBtn.setAttribute('aria-pressed', String(!isMuted()));
+    };
+    showSound();
+    soundBtn.addEventListener('click', () => {
+      setMuted(!isMuted());
+      showSound();
     });
     panel.querySelector('[data-exit]')?.addEventListener('click', end);
     panel.querySelector('[data-again]')?.addEventListener('click', begin);
@@ -263,7 +277,7 @@ const title = t(home.arcade.title).split('\n');
     position: absolute;
     top: 8px;
     left: 10px;
-    right: 40px;
+    right: 62px;
     display: flex;
     justify-content: space-between;
     font-size: 8px;
@@ -278,6 +292,20 @@ const title = t(home.arcade.title).split('\n');
     font-size: 7px;
     letter-spacing: 0.1em;
     opacity: 0.7;
+  }
+  .sound {
+    position: absolute;
+    top: 4px;
+    right: 32px;
+    width: 26px;
+    height: 26px;
+    color: var(--acid);
+    font-size: 12px;
+    text-align: center;
+  }
+  .sound.off {
+    opacity: 0.4;
+    text-decoration: line-through;
   }
   .exit {
     position: absolute;

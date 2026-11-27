@@ -28,6 +28,7 @@ interface HomeCopy {
     left: L10n;
     right: L10n;
     jump: L10n;
+    sound: L10n;
   };
   contact: { kicker: L10n; cta: L10n; ctaAccent: L10n; top: L10n };
   nav: { work: L10n; about: L10n; contact: L10n; menu: L10n; sayHello: L10n };
@@ -93,6 +94,7 @@ export const home: HomeCopy = {
     left: { en: 'Move left', ja: '左へ移動' },
     right: { en: 'Move right', ja: '右へ移動' },
     jump: { en: 'Jump', ja: 'ジャンプ' },
+    sound: { en: 'Sound on/off', ja: '効果音のオン・オフ' },
   },
   contact: {
     kicker: { en: 'GOT A PROJECT\nIN MIND?', ja: 'お仕事の\nご相談は？' },
