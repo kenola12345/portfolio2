@@ -40,10 +40,10 @@ export const albums: Album[] = [
         slug: 'seta-tei',
         title: { en: 'seta-tei.jp', ja: 'seta-tei.jp' },
         // TODO(owner): 公開年。説明と使用技術は履歴書をもとにしたもの
-        tags: ['React', 'Tailwind CSS'],
+        tags: ['React', 'Tailwind CSS', 'Firebase'],
         description: {
-          en: 'Official website for HAYAMA Setatei, a French restaurant in Hayama, Japan. I designed and built the site in Japanese and English, and added an email system for reservation inquiries, which increased the number of reservations.',
-          ja: '葉山のフレンチレストラン「HAYAMA せた亭」の公式サイト。日本語・英語の 2 言語でデザインから開発までを担当し、予約のお問い合わせをメールで受け付ける仕組みを導入して、予約数の増加につなげました。',
+          en: 'Official website for HAYAMA Setatei, a French restaurant in Hayama, Japan. I designed and built the site in Japanese and English, and added a Firebase backend and an email system for reservation inquiries, which increased the number of reservations.',
+          ja: '葉山のフレンチレストラン「HAYAMA せた亭」の公式サイト。日本語・英語の 2 言語でデザインから開発までを担当し、Firebase のバックエンドと、予約のお問い合わせをメールで受け付ける仕組みを導入して、予約数の増加につなげました。',
         },
         images: [
           {
