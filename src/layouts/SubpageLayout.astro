@@ -6,9 +6,7 @@
 import SideBLayout from './SideBLayout.astro';
 import SiteNav from '../components/home/SiteNav.astro';
 import ContactFooter from '../components/home/ContactFooter.astro';
-import { albums } from '../data/albums';
-import { ui } from '../data/ui';
-import { getLang, localePath, useT } from '../lib/i18n';
+import { pageNavLinks } from '../lib/navLinks';
 
 interface Props {
   title?: string;
@@ -18,17 +16,7 @@ interface Props {
 }
 
 const { title, description, current } = Astro.props;
-const t = useT(Astro.url);
-const lang = getLang(Astro.url);
-
-const links = [
-  { href: localePath('/artist', lang), label: t(ui.navArtist), current: current === 'artist' },
-  ...albums.map((album) => ({
-    href: localePath(`/albums/${album.slug}`, lang),
-    label: t(album.title),
-    current: current === album.slug,
-  })),
-];
+const links = pageNavLinks(Astro.url, current);
 ---
 
 <SideBLayout title={title} description={description}>
