@@ -56,80 +56,48 @@ export const albums: Album[] = [
         links: [{ label: { en: 'Visit site', ja: 'サイトを見る' }, href: 'https://www.seta-tei.jp/' }],
       },
       {
-        slug: 'initia',
-        title: { en: 'INITIA', ja: 'INITIA（イニシア）' },
-        // TODO(owner): 公開年。説明と使用技術は履歴書と公開サイトをもとにしたもの。違っていたら直す
+        slug: 'real-estate-brand-site',
+        title: { en: 'Real estate brand site', ja: '不動産ブランドサイト' },
+        // 守秘のため、クライアント名・スクリーンショット・リンクは載せない
         tags: ['Next.js','TypeScript','React Three Fiber','GSAP','Framer Motion','Jest'],
         description: {
-          en: 'Official brand site for INITIA, the housing brand of a major real estate developer: new condominiums, new detached houses and renovation, with property search, renovation and case-study pages, listings from external APIs, and motion and 3D effects.',
-          ja: '大手不動産デベロッパーの住まいブランド「INITIA」の公式ブランドサイトです。新築マンション、新築一戸建て、リノベーションを紹介しており、物件検索、リノベーション・事例ページ、外部 API との物件情報連携、モーションや 3D 表現を実装しました。',
+          en: 'Official brand site for the housing brand of a major real estate developer: new condominiums, new detached houses and renovation, with property search, renovation and case-study pages, listings from external APIs, and motion and 3D effects.',
+          ja: '大手不動産デベロッパーの住まいブランドの公式ブランドサイトです。新築マンション、新築一戸建て、リノベーションを紹介しており、物件検索、リノベーション・事例ページ、外部 API との物件情報連携、モーションや 3D 表現を実装しました。',
         },
-        images: [
-          {
-            src: '/projects/initia.jpg',
-            width: 800,
-            height: 499,
-            alt: { en: 'Screenshot of the INITIA website', ja: 'INITIA サイトのスクリーンショット' },
-          },
-        ],
-        links: [{ label: { en: 'Visit site', ja: 'サイトを見る' }, href: 'https://www.cigr.co.jp/pj/contents/' }],
+        cover: { src: '/projects/anon-real-estate.webp', alt: { en: 'Abstract illustration of a row of buildings', ja: 'ビルが並ぶ抽象的なイラスト' } },
       },
       {
-        slug: 'infinito-hotel',
-        title: { en: 'INFINITO HOTEL & SPA', ja: 'INFINITO HOTEL & SPA 南紀白浜' },
-        // TODO(owner): 公開年。説明と使用技術は履歴書と公開サイトをもとにしたもの。違っていたら直す
+        slug: 'resort-hotel-site',
+        title: { en: 'Resort hotel site', ja: 'リゾートホテル公式サイト' },
+        // 守秘のため、クライアント名・スクリーンショット・リンクは載せない
         tags: ['Astro','TypeScript','Tailwind CSS','GitHub Actions','reCAPTCHA'],
         description: {
-          en: 'Official website for INFINITO HOTEL & SPA in Nanki-Shirahama: hot spring, rooms, cuisine and sightseeing. Available in seven languages, with reCAPTCHA-protected forms and automated staging and production deploys.',
-          ja: '南紀白浜の「INFINITO HOTEL & SPA」の公式サイトです。温泉、客室、お食事、観光情報を紹介しています。7 言語に対応し、reCAPTCHA を導入したフォームや、ステージング環境・本番環境への自動デプロイを備えています。',
+          en: 'Official website for a resort hotel in Japan: hot spring, rooms, cuisine and sightseeing. Available in seven languages, with reCAPTCHA-protected forms and automated staging and production deploys.',
+          ja: '日本のリゾートホテルの公式サイトです。温泉、客室、お食事、観光情報を紹介しています。7 言語に対応し、reCAPTCHA を導入したフォームや、ステージング環境・本番環境への自動デプロイを備えています。',
         },
-        images: [
-          {
-            src: '/projects/infinito.jpg',
-            width: 800,
-            height: 499,
-            alt: { en: 'Screenshot of the INFINITO HOTEL & SPA website', ja: 'INFINITO HOTEL & SPA サイトのスクリーンショット' },
-          },
-        ],
-        links: [{ label: { en: 'Visit site', ja: 'サイトを見る' }, href: 'https://hotel-infinito.co.jp/' }],
+        cover: { src: '/projects/anon-resort-hotel.webp', alt: { en: 'Abstract illustration of a sun over waves', ja: '波の上の太陽の抽象的なイラスト' } },
       },
       {
-        slug: 'initia-lounge-mita',
-        title: { en: 'INITIA LOUNGE Mita', ja: 'イニシアラウンジ三田' },
-        // TODO(owner): 公開年。説明と使用技術は履歴書と公開サイトをもとにしたもの。違っていたら直す
+        slug: 'housing-gallery-site',
+        title: { en: 'Housing gallery site', ja: '住まいのギャラリーサイト' },
+        // 守秘のため、クライアント名・スクリーンショット・リンクは載せない
         tags: ['Astro','Swiper','Panzoom','Vitest'],
         description: {
-          en: 'Site for INITIA LOUNGE Mita, a housing gallery by Mita Station in Tokyo: the concept room, the visit flow, events and the property lineup, with an event slider and modals and zoomable floor plans.',
-          ja: '三田駅近くの住まいのギャラリー「イニシアラウンジ三田」のサイトです。コンセプトルーム、ご来場の流れ、イベント、物件ラインアップを紹介し、イベントスライダーやモーダル、拡大して見られる間取り図を実装しました。',
+          en: 'Site for a housing gallery in Tokyo: the concept room, the visit flow, events and the property lineup, with an event slider and modals and zoomable floor plans.',
+          ja: '東京の住まいのギャラリーのサイトです。コンセプトルーム、ご来場の流れ、イベント、物件ラインアップを紹介し、イベントスライダーやモーダル、拡大して見られる間取り図を実装しました。',
         },
-        images: [
-          {
-            src: '/projects/initia-lounge-mita.jpg',
-            width: 800,
-            height: 499,
-            alt: { en: 'Screenshot of the INITIA LOUNGE Mita website', ja: 'イニシアラウンジ三田 サイトのスクリーンショット' },
-          },
-        ],
-        links: [{ label: { en: 'Visit site', ja: 'サイトを見る' }, href: 'https://www.cigr.co.jp/pj/contents/product/stance/gallery-mita/' }],
+        cover: { src: '/projects/anon-housing-gallery.webp', alt: { en: 'Abstract illustration of a floor plan in a frame', ja: '額縁に入った間取り図の抽象的なイラスト' } },
       },
       {
-        slug: 'one-roof',
-        title: { en: 'ONE ROOF', ja: 'ONE ROOF（ワンルーフ）' },
-        // TODO(owner): 公開年。説明と使用技術は履歴書と公開サイトをもとにしたもの。違っていたら直す
+        slug: 'luxury-rental-site',
+        title: { en: 'Luxury rental residence site', ja: '高級賃貸レジデンスのブランドサイト' },
+        // 守秘のため、クライアント名・スクリーンショット・リンクは載せない
         tags: ['EJS','SCSS','Barba.js','Google Maps'],
         description: {
-          en: 'Brand site for ONE ROOF, a line of luxury rental residences in Tokyo and Osaka: more than 20 property pages, a Google Maps property map, page transitions, and Japanese and English versions.',
-          ja: '東京・大阪の高級賃貸レジデンス「ONE ROOF」のブランドサイトです。20 ページ以上の物件ページ、Google Maps を使った物件マップ、ページ遷移の演出を実装し、日本語・英語の 2 言語に対応しています。',
+          en: 'Brand site for a line of luxury rental residences in Tokyo and Osaka: more than 20 property pages, a Google Maps property map, page transitions, and Japanese and English versions.',
+          ja: '東京・大阪の高級賃貸レジデンスのブランドサイトです。20 ページ以上の物件ページ、Google Maps を使った物件マップ、ページ遷移の演出を実装し、日本語・英語の 2 言語に対応しています。',
         },
-        images: [
-          {
-            src: '/projects/one-roof.jpg',
-            width: 800,
-            height: 499,
-            alt: { en: 'Screenshot of the ONE ROOF website', ja: 'ONE ROOF サイトのスクリーンショット' },
-          },
-        ],
-        links: [{ label: { en: 'Visit site', ja: 'サイトを見る' }, href: 'https://one-roof.co.jp/' }],
+        cover: { src: '/projects/anon-luxury-rental.webp', alt: { en: 'Abstract illustration of overlapping rooflines', ja: '重なる屋根の抽象的なイラスト' } },
       },
     ],
   },

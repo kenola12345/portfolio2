@@ -10,7 +10,7 @@ None. The record player and the vinyl records from the earlier design were remov
 ## Images — please confirm you have the right to use them
 - **Contact cover** (`public/covers/contact.webp`): the "news coo" bird illustration supplied by Kentaro. Artist and rights not recorded here.
 - **Work Experience cover** (`public/covers/work.webp`): an anime frame supplied by Kentaro. Source and rights not recorded here.
-- **Project screenshots** (`public/projects/*`): pages of sites built for clients (INITIA, INFINITO HOTEL & SPA, INITIA LOUNGE Mita, ONE ROOF, seta-tei.jp) and Kentaro's own sites. Confirm the clients are happy for the screenshots to be shown.
+- **Project screenshots** (`public/projects/*`): pages of Kentaro's own sites. Client projects are shown anonymously, with generated illustrations instead of screenshots. Confirm the clients are happy for the screenshots to be shown.
 - **Artist photo** (`public/covers/artist.webp`, `public/images/artist-banner.webp`, `public/og.png`): Kentaro's own photo.
 
 ## Music (home "Now spinning" player)

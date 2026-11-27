@@ -14,7 +14,9 @@ const lang = getLang(Astro.url);
 
 const projects = albums.find((a) => a.slug === 'projects');
 // 画像のある制作実績をすべて、横に流れ続けるレールに並べる
-const featured = (projects?.tracks ?? []).filter((track) => track.images?.length);
+// カードの画像は cover（守秘のため抽象イラストにしている案件）か、スクリーンショットの 1 枚目
+const imageOf = (track: NonNullable<typeof projects>['tracks'][number]) => track.cover ?? track.images?.[0];
+const featured = (projects?.tracks ?? []).filter((track) => imageOf(track));
 // 切れ目なく繰り返すため、同じ並びを 2 回並べる（2 回目は読み上げ・フォーカスの対象外）
 const loop = [0, 1];
 const color = projects?.accent ?? '#ff5c45';
@@ -44,8 +46,8 @@ const others = albums.filter((a) => a.slug !== 'projects');
                   index={i}
                   title={t(track.title)}
                   type={(track.tags ?? []).slice(0, 3).join(' · ')}
-                  cover={track.images![0].src}
-                  alt={copy ? '' : t(track.images![0].alt)}
+                  cover={imageOf(track)!.src}
+                  alt={copy ? '' : t(imageOf(track)!.alt)}
                   href={localePath(`/albums/projects#${track.slug}`, lang)}
                   color={color}
                   viewLabel={t(home.work.view)}
