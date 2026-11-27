@@ -71,7 +71,7 @@ export interface GameEvents {
   /** 得点・ライフの表示を更新するとき */
   onHud?: (score: number, lives: number) => void;
   /** クリアまたはゲームオーバーになったとき */
-  onEnd: (result: 'won' | 'over', score: number) => void;
+  onEnd: (result: 'won' | 'over', score: number, timeMs: number) => void;
 }
 
 export interface Game {
@@ -517,7 +517,7 @@ export function createGame(canvas: HTMLCanvasElement, events: GameEvents): Game 
           events.onHud?.(score, p.stocks);
           events.onSound?.('win');
           state = 'won';
-          events.onEnd('won', score);
+          events.onEnd('won', score, Math.round((frame * 1000) / 60));
         } else {
           startRound();
         }
@@ -562,7 +562,7 @@ export function createGame(canvas: HTMLCanvasElement, events: GameEvents): Game 
       phaseT = 0;
       events.onSound?.('over');
       state = 'over';
-      events.onEnd('over', score);
+      events.onEnd('over', score, Math.round((frame * 1000) / 60));
     }
 
     for (const q of particles) {
