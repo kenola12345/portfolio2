@@ -56,6 +56,17 @@ export const albums: Album[] = [
         links: [{ label: { en: 'Visit site', ja: 'サイトを見る' }, href: 'https://www.seta-tei.jp/' }],
       },
       {
+        slug: 'ecommerce-site',
+        title: { en: 'E-commerce site', ja: 'EC サイト' },
+        // 守秘のため、店名・スクリーンショット・リンクは載せない
+        tags: ['React', 'Node.js', 'PostgreSQL', 'Prisma'],
+        description: {
+          en: 'E-commerce website built by a team of three engineers and one designer. I built the product detail pages with React, and an add-to-cart API with Node.js and PostgreSQL that connects through to the checkout.',
+          ja: 'エンジニア 3 名・デザイナー 1 名のチームで開発した EC サイトです。React で商品詳細ページを、Node.js・PostgreSQL でカート追加 API を実装し、チェックアウトまでつなげました。',
+        },
+        cover: { src: '/projects/anon-ecommerce.webp', alt: { en: 'Abstract illustration of a shopping cart and boxes', ja: 'カートと箱の抽象的なイラスト' } },
+      },
+      {
         slug: 'real-estate-brand-site',
         title: { en: 'Real estate brand site', ja: '不動産ブランドサイト' },
         // 守秘のため、クライアント名・スクリーンショット・リンクは載せない
@@ -192,15 +203,15 @@ export const albums: Album[] = [
         slug: 'freelance',
         title: { en: 'Freelance Web Engineer', ja: 'フリーランス（Web エンジニア）' },
         meta: { en: 'Jan 2023 — May 2023', ja: '2023年1月 — 2023年5月' },
-        tags: ['React', 'TypeScript', 'Node.js', 'PostgreSQL', 'Firebase'],
+        tags: ['React', 'TypeScript', 'Node.js', 'PostgreSQL', 'Prisma', 'Firebase'],
         description: {
           en: 'Tokyo, Japan. Contract development of an e-commerce site and a restaurant website.',
           ja: '東京。EC サイトとレストラン公式サイトの受託開発。',
         },
         bullets: [
           {
-            en: 'E-commerce site for a jade jewelry store (team of 3 engineers and 1 designer): built product detail pages with React and TypeScript, and an add-to-cart API with Node.js and PostgreSQL connected through to checkout.',
-            ja: '翡翠ジュエリー EC サイト（エンジニア 3 名・デザイナー 1 名）。React・TypeScript で商品詳細ページを実装し、Node.js・PostgreSQL でカート追加 API を作成して、チェックアウトまでつなげました。',
+            en: 'E-commerce site (team of 3 engineers and 1 designer): built product detail pages with React and TypeScript, and an add-to-cart API with Node.js and PostgreSQL connected through to checkout.',
+            ja: 'EC サイト（エンジニア 3 名・デザイナー 1 名）。React・TypeScript で商品詳細ページを実装し、Node.js・PostgreSQL でカート追加 API を作成して、チェックアウトまでつなげました。',
           },
           {
             en: 'Restaurant website renewal (solo): rebuilt a WordPress site in React, and built a reservation system with Node.js and Firebase, including an admin function for the owner to block out dates.',

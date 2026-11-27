@@ -30,6 +30,12 @@ const covers = {
       + `<path d="M280 300 H 640 V 520 H 920 V 740 H 280 Z M 640 520 V 740 M 460 300 V 520 H 280" fill="none" stroke="${PAPER}" stroke-width="5"/>`
       + `<rect x="700" y="340" width="150" height="110" fill="#7157ff" opacity="0.7"/>`;
   } },
+  'anon-ecommerce': { color: '#ff5c45', label: 'E-COMMERCE', art: () => {
+    // カートと商品の箱
+    return `<path d="M200 300 H 330 L 420 700 H 900 L 980 420 H 360" fill="none" stroke="#ff5c45" stroke-width="12" stroke-linejoin="round" stroke-linecap="round"/>`
+      + `<circle cx="470" cy="800" r="46" fill="${INK2}" stroke="#ff5c45" stroke-width="10"/><circle cx="850" cy="800" r="46" fill="${INK2}" stroke="#ff5c45" stroke-width="10"/>`
+      + `<rect x="470" y="470" width="130" height="130" fill="${INK2}" stroke="${PAPER}" stroke-width="5"/><rect x="630" y="500" width="130" height="100" fill="${INK2}" stroke="${PAPER}" stroke-width="5"/><rect x="790" y="450" width="100" height="150" fill="${INK2}" stroke="${PAPER}" stroke-width="5"/>`;
+  } },
   'anon-luxury-rental': { color: '#eeeade', label: 'LUXURY RENTAL', art: () => {
     // 屋根の形を重ねる
     return Array.from({ length: 5 }, (_, i) => `<path d="M ${100 + i * 40} ${900 - i * 60} L 600 ${280 + i * 70} L ${1100 - i * 40} ${900 - i * 60} Z" fill="${i % 2 ? INK2 : INK}" stroke="${PAPER}" stroke-width="4" opacity="${1 - i * 0.12}"/>`).join('');
