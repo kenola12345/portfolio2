@@ -175,14 +175,41 @@ const title = t(home.arcade.title).split('\n');
     window.addEventListener('keyup', onKey(false));
     window.addEventListener('blur', () => ALL_KEYS.forEach((k) => game?.setInput(k, false)));
 
+    // スティックやボタンを押さえているあいだは、指を上下に動かしてもページがスクロールしないようにする。
+    // iOS では touch-action だけだと効かないことがあるので、touchmove を止める（押さえている間だけ登録する）
+    const blockScroll = (e: TouchEvent) => {
+      if (e.cancelable) e.preventDefault();
+    };
+    let holds = 0;
+    // 指が離れたのに pointerup が届かなかったときの保険：すべての指が離れたら、全部の「押さえている」を解く
+    const releasers: (() => void)[] = [];
+    const releaseAll = (e: TouchEvent) => {
+      if (e.touches.length === 0) releasers.forEach((fn) => fn());
+    };
+    document.addEventListener('touchend', releaseAll);
+    document.addEventListener('touchcancel', releaseAll);
+    const hold = (on: boolean) => {
+      holds = Math.max(0, holds + (on ? 1 : -1));
+      if (on && holds === 1) document.addEventListener('touchmove', blockScroll, { passive: false });
+      if (!on && holds === 0) document.removeEventListener('touchmove', blockScroll);
+    };
+
     // 筐体のボタン（赤 = 強、緑 = 弱）：押している間だけ入力。ゲーム中でなければ何もしない
     panel.querySelectorAll<HTMLElement>('[data-key]').forEach((btn) => {
       const key = btn.dataset.key as InputKey;
+      let held = false;
       const set = (down: boolean) => (e: Event) => {
         e.preventDefault();
         btn.classList.toggle('pressed', down);
         game?.setInput(key, down);
+        if (down !== held) {
+          held = down;
+          hold(down);
+        }
       };
+      releasers.push(() => {
+        if (held) set(false)(new Event('release'));
+      });
       btn.addEventListener('pointerdown', set(true));
       btn.addEventListener('pointerup', set(false));
       btn.addEventListener('pointercancel', set(false));
@@ -205,18 +232,29 @@ const title = t(home.arcade.title).split('\n');
         const tilt = Math.max(-1, Math.min(1, dx / (r.width / 2))) * 28;
         stick.style.setProperty('--tilt', `${tilt}deg`);
       };
+      let stickHeld = false;
       const release = () => {
         (['left', 'right', 'jump', 'down'] as const).forEach((k) => game?.setInput(k, false));
         stick.style.setProperty('--tilt', '0deg');
+        if (stickHeld) {
+          stickHeld = false;
+          hold(false);
+        }
       };
       stick.addEventListener('pointerdown', (e) => {
         e.preventDefault();
+        if (!stickHeld) {
+          stickHeld = true;
+          hold(true);
+        }
         stick.setPointerCapture(e.pointerId);
         apply(e);
       });
       stick.addEventListener('pointermove', (e) => {
         if (stick.hasPointerCapture(e.pointerId)) apply(e);
       });
+      releasers.push(release);
+      stick.addEventListener('lostpointercapture', release);
       stick.addEventListener('pointerup', release);
       stick.addEventListener('pointercancel', release);
       stick.addEventListener('contextmenu', (e) => e.preventDefault());
@@ -499,6 +537,18 @@ const title = t(home.arcade.title).split('\n');
     }
     .space-invader {
       margin-top: calc(34 * var(--u));
+    }
+  }
+  /* スマホ・タブレット：スティックを左端へ、ボタンを右へ寄せて、指が当たらないように離す */
+  @media (max-width: 900px) {
+    .stick {
+      left: 0;
+    }
+    .btn.heavy {
+      right: calc(6 * var(--u));
+    }
+    .btn.light {
+      right: calc(66 * var(--u));
     }
   }
 </style>
