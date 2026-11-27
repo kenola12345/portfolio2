@@ -14,13 +14,20 @@ const t = useT(Astro.url);
   data-lives={t(home.arcade.lives)}
   data-win={t(home.arcade.win)}
   data-over={t(home.arcade.over)}
+  data-time={t(home.arcade.time)}
+  data-saving={t(home.arcade.saving)}
+  data-save={t(home.arcade.save)}
+  data-save-error={t(home.arcade.saveError)}
+  data-loading={t(home.arcade.loading)}
+  data-empty={t(home.arcade.empty)}
+  data-load-error={t(home.arcade.loadError)}
 >
   <!-- 画面をクリック（または Enter）でゲーム開始 -->
   <div class="screen" role="button" tabindex="0" aria-label={t(home.arcade.play)} data-arcade-screen>
     <div class="attract" data-attract>
       <!-- 見本：ステージに 2 人のキャラ（本番と同じ絵）。遊べるゲームだと一目で分かるように -->
       <canvas class="preview" data-preview aria-hidden="true"></canvas>
-      <span></span>
+      <button type="button" class="board-open" data-board-open hidden>{t(home.arcade.showBoard)}</button>
       <!-- 目立たせたいので、ボタンの形にして、光の輪が広がり続ける -->
       <span class="cta">
         <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5z" /></svg>
@@ -40,9 +47,30 @@ const t = useT(Astro.url);
       <div class="result" data-result hidden>
         <strong data-result-title></strong>
         <span data-result-score></span>
-        <button type="button" data-again>{t(home.arcade.again)}</button>
+        <!-- 勝ったときだけ：名前を入れてランキングに登録 -->
+        <form class="entry" data-entry hidden>
+          <label for="arcade-name">{t(home.arcade.enterName)}</label>
+          <input id="arcade-name" type="text" maxlength="12" autocomplete="nickname" autocapitalize="characters" spellcheck="false" data-name />
+          <p class="error" data-entry-error role="alert" hidden>{t(home.arcade.saveError)}</p>
+          <div class="row">
+            <button type="submit" data-save>{t(home.arcade.save)}</button>
+            <button type="button" data-skip>{t(home.arcade.skip)}</button>
+          </div>
+        </form>
+        <div class="row" data-result-actions>
+          <button type="button" data-again>{t(home.arcade.again)}</button>
+          <button type="button" data-board-open-result hidden>{t(home.arcade.showBoard)}</button>
+        </div>
         <a href="#contact" data-collab>{t(home.arcade.start)} ↗</a>
       </div>
+    </div>
+
+    <!-- ランキング（スタート画面からも、クリア後にも開ける） -->
+    <div class="board" data-board hidden role="dialog" aria-modal="true" aria-labelledby="arcade-board-title">
+      <strong id="arcade-board-title">{t(home.arcade.boardTitle)}</strong>
+      <p class="board-note" data-board-note role="status"></p>
+      <ol class="board-list" data-board-list></ol>
+      <button type="button" class="board-close" data-board-close>{t(home.arcade.close)}</button>
     </div>
   </div>
   <!-- 筐体のスティックとボタンが、そのまま操作になる（左右・ジャンプ / 強攻撃 / 弱攻撃）。マウスでも指でも動く -->
@@ -56,6 +84,7 @@ const t = useT(Astro.url);
 <script>
   import { createGame, type Game, type InputKey } from './arcade-game';
   import { isMuted, play, setMuted, unlockAudio } from './arcade-sound';
+  import { cleanName, leaderboardEnabled, submitScore, topEntries, type Entry } from '../../lib/leaderboard';
 
   const panel = document.querySelector<HTMLElement>('.arcade-panel');
   const screen = panel?.querySelector<HTMLElement>('[data-arcade-screen]');
@@ -103,7 +132,116 @@ const t = useT(Astro.url);
     let game: Game | null = null;
     let playing = false;
 
+    // ---- ランキング ----
+    const entryForm = panel.querySelector<HTMLFormElement>('[data-entry]')!;
+    const nameInput = panel.querySelector<HTMLInputElement>('[data-name]')!;
+    const saveBtn = panel.querySelector<HTMLButtonElement>('[data-save]')!;
+    const entryError = panel.querySelector<HTMLElement>('[data-entry-error]')!;
+    const resultActions = panel.querySelector<HTMLElement>('[data-result-actions]')!;
+    const board = panel.querySelector<HTMLElement>('[data-board]')!;
+    const boardList = panel.querySelector<HTMLElement>('[data-board-list]')!;
+    const boardNote = panel.querySelector<HTMLElement>('[data-board-note]')!;
+    const boardOpeners = panel.querySelectorAll<HTMLElement>('[data-board-open], [data-board-open-result]');
+    let pending: Entry | null = null;
+    let boardReturn: HTMLElement | null = null;
+    let lastSaved: Entry | null = null;
+
+    const enabled = leaderboardEnabled();
+    boardOpeners.forEach((b) => (b.hidden = !enabled));
+
+    // 表示はすべて textContent（名前は他の人が入れた文字なので、HTML として扱わない）
+    const renderBoard = (rows: Entry[]) => {
+      boardList.replaceChildren();
+      let mine = lastSaved ? rows.findIndex((r) => r.name === lastSaved!.name && r.score === lastSaved!.score && r.timeMs === lastSaved!.timeMs) : -1;
+      rows.forEach((r, i) => {
+        const li = document.createElement('li');
+        if (i === mine) li.className = 'me';
+        const cells = [String(i + 1), r.name, pad(r.score), fmtTime(r.timeMs)];
+        cells.forEach((text, c) => {
+          const span = document.createElement('span');
+          span.textContent = text;
+          span.className = ['rank', 'who', 'pts', 'clock'][c];
+          li.append(span);
+        });
+        boardList.append(li);
+      });
+    };
+
+    async function openBoard(from: HTMLElement | null) {
+      boardReturn = from;
+      board.hidden = false;
+      boardList.replaceChildren();
+      boardNote.textContent = panel!.dataset.loading!;
+      board.querySelector<HTMLElement>('[data-board-close]')?.focus();
+      try {
+        const rows = await topEntries(10);
+        if (board.hidden) return;
+        boardNote.textContent = rows.length ? '' : panel!.dataset.empty!;
+        renderBoard(rows);
+      } catch {
+        if (!board.hidden) boardNote.textContent = panel!.dataset.loadError!;
+      }
+    }
+    function closeBoard() {
+      board.hidden = true;
+      (boardReturn ?? screen)!.focus({ preventScroll: true });
+    }
+    boardOpeners.forEach((b) =>
+      b.addEventListener('click', (e) => {
+        e.stopPropagation();
+        void openBoard(b);
+      }),
+    );
+    board.querySelector('[data-board-close]')?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      closeBoard();
+    });
+    // 画面全体が「クリックで開始」なので、ランキングの中のクリックは外へ伝えない
+    board.addEventListener('click', (e) => e.stopPropagation());
+    entryForm.addEventListener('click', (e) => e.stopPropagation());
+
+    const finishEntry = () => {
+      entryForm.hidden = true;
+      resultActions.hidden = false;
+      panel!.querySelector<HTMLElement>('[data-again]')?.focus();
+    };
+    entryForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const name = cleanName(nameInput.value);
+      if (!pending || !name) {
+        nameInput.focus();
+        return;
+      }
+      saveBtn.disabled = true;
+      saveBtn.textContent = panel!.dataset.saving!;
+      entryError.hidden = true;
+      try {
+        await submitScore({ ...pending, name });
+        lastSaved = { ...pending, name };
+        pending = null;
+        try {
+          localStorage.setItem('arcade-name', name);
+        } catch {}
+        finishEntry();
+        void openBoard(panel!.querySelector<HTMLElement>('[data-again]'));
+      } catch {
+        entryError.hidden = false;
+        saveBtn.disabled = false;
+        saveBtn.textContent = panel!.dataset.save!;
+      }
+    });
+    panel.querySelector('[data-skip]')?.addEventListener('click', () => {
+      pending = null;
+      finishEntry();
+    });
+
     const pad = (n: number) => String(n).padStart(6, '0');
+    /** ミリ秒を「1:23.4」の形に */
+    const fmtTime = (ms: number) => {
+      const t = Math.round(ms / 100) / 10;
+      const m = Math.floor(t / 60);
+      return `${m}:${(t - m * 60).toFixed(1).padStart(4, '0')}`;
+    };
     const setHud = (score: number, lives: number) => {
       hudScore.textContent = `SCORE ${pad(score)}`;
       hudLives.textContent = `${panel.dataset.lives} ${'♥'.repeat(Math.max(lives, 0))}`;
@@ -114,14 +252,36 @@ const t = useT(Astro.url);
       game ??= createGame(canvas!, {
         onHud: setHud,
         onSound: play,
-        onEnd: (kind, score) => {
+        onEnd: (kind: 'won' | 'over', score: number, timeMs: number) => {
           resultTitle.textContent = kind === 'won' ? panel!.dataset.win! : panel!.dataset.over!;
-          resultScore.textContent = `SCORE ${pad(score)}`;
+          resultScore.textContent =
+            kind === 'won' ? `SCORE ${pad(score)} · ${panel!.dataset.time} ${fmtTime(timeMs)}` : `SCORE ${pad(score)}`;
           result!.hidden = false;
-          panel!.querySelector<HTMLElement>('[data-again]')?.focus();
+          // 勝ったら、名前を入れてランキングに登録できる（登録するか、やめるまで、次の操作は出さない）
+          if (kind === 'won' && leaderboardEnabled()) {
+            pending = { name: '', score, timeMs };
+            entryForm.hidden = false;
+            resultActions.hidden = true;
+            entryError.hidden = true;
+            saveBtn.disabled = false;
+            saveBtn.textContent = panel!.dataset.save!;
+            try {
+              nameInput.value = localStorage.getItem('arcade-name') ?? '';
+            } catch {
+              nameInput.value = '';
+            }
+            nameInput.focus();
+            nameInput.select();
+          } else {
+            panel!.querySelector<HTMLElement>('[data-again]')?.focus();
+          }
         },
       });
       result!.hidden = true;
+      board.hidden = true;
+      entryForm.hidden = true;
+      resultActions.hidden = false;
+      pending = null;
       attract!.hidden = true;
       stage!.hidden = false;
       screen!.removeAttribute('role');
@@ -134,6 +294,10 @@ const t = useT(Astro.url);
       playing = false;
       stage!.hidden = true;
       result!.hidden = true;
+      board.hidden = true;
+      entryForm.hidden = true;
+      resultActions.hidden = false;
+      pending = null;
       attract!.hidden = false;
       screen!.setAttribute('role', 'button');
       drawPreview();
@@ -176,7 +340,12 @@ const t = useT(Astro.url);
 
     // キーボード：ゲーム中だけ。矢印・スペースでページがスクロールしないようにする
     const onKey = (down: boolean) => (e: KeyboardEvent) => {
-      if (!playing) return;
+      if (!board.hidden) {
+        if (e.key === 'Escape' && down) closeBoard();
+        return;
+      }
+      // 名前を入力しているあいだは、ゲームのキーとして扱わない（文字がそのまま入る）
+      if (!playing || e.target instanceof HTMLInputElement) return;
       if (e.key === 'Escape' && down) {
         end();
         return;
@@ -313,7 +482,13 @@ const t = useT(Astro.url);
   }
   .attract[hidden],
   .stage[hidden],
-  .result[hidden] {
+  .result[hidden],
+  .board[hidden],
+  .entry[hidden],
+  .board-open[hidden],
+  [data-board-open-result][hidden],
+  .result .row[hidden],
+  .error[hidden] {
     display: none;
   }
   .screen-score {
@@ -482,6 +657,129 @@ const t = useT(Astro.url);
   }
   .result button:hover,
   .result a:hover {
+    background: var(--acid);
+    color: var(--ink);
+  }
+  /* 「ランキング」ボタン：スタート画面の上のほう */
+  .board-open {
+    position: relative;
+    z-index: 1;
+    padding: calc(6 * var(--u)) calc(12 * var(--u));
+    border: 1px solid var(--acid);
+    background: #0f1512cc;
+    color: var(--acid);
+    font-size: 0.5rem;
+    letter-spacing: 0.14em;
+    transition: background 0.2s, color 0.2s;
+  }
+  .board-open:hover {
+    background: var(--acid);
+    color: var(--ink);
+  }
+  .result .row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: calc(8 * var(--u));
+  }
+  /* 名前の入力 */
+  .entry {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: calc(8 * var(--u));
+    width: 100%;
+    padding-inline: calc(20 * var(--u));
+  }
+  .entry label {
+    font-size: 0.5rem;
+    letter-spacing: 0.15em;
+  }
+  .entry input {
+    width: min(100%, calc(170 * var(--u)));
+    padding: calc(7 * var(--u)) calc(10 * var(--u));
+    border: 1px solid var(--acid);
+    background: #0b100e;
+    color: var(--acid);
+    font: 700 0.75rem var(--font-mono);
+    letter-spacing: 0.12em;
+    text-align: center;
+    text-transform: uppercase;
+  }
+  .entry input:focus-visible {
+    outline: 2px solid var(--acid);
+    outline-offset: 2px;
+  }
+  .entry .error {
+    color: var(--coral);
+    font-size: 0.5rem;
+    letter-spacing: 0.06em;
+  }
+  .entry button:disabled {
+    opacity: 0.6;
+    cursor: wait;
+  }
+  /* ランキング */
+  .board {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: calc(8 * var(--u));
+    padding: calc(14 * var(--u)) calc(16 * var(--u));
+    background: #0f1512;
+    cursor: default;
+  }
+  .board strong {
+    font: 800 1.125rem/1 var(--font-display);
+    letter-spacing: 0.06em;
+  }
+  .board-note {
+    min-height: 1em;
+    font-size: 0.5rem;
+    letter-spacing: 0.1em;
+  }
+  .board-list {
+    flex: 1;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    overflow-y: auto;
+    list-style: none;
+    font-size: 0.5625rem;
+    letter-spacing: 0.08em;
+  }
+  /* li と中の文字は、スクリプトで作るので、:global で指定する */
+  .board-list :global(li) {
+    display: grid;
+    grid-template-columns: 1.6em 1fr auto auto;
+    gap: calc(8 * var(--u));
+    padding: calc(3 * var(--u)) calc(6 * var(--u));
+    text-align: left;
+  }
+  .board-list :global(li.me) {
+    background: var(--acid);
+    color: var(--ink);
+  }
+  .board-list :global(.who) {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .board-list :global(.clock) {
+    min-width: 3.6em;
+    text-align: right;
+  }
+  .board-close {
+    padding: calc(7 * var(--u)) calc(16 * var(--u));
+    border: 1px solid var(--acid);
+    font-size: 0.5rem;
+    letter-spacing: 0.14em;
+    transition: background 0.2s, color 0.2s;
+  }
+  .board-close:hover {
     background: var(--acid);
     color: var(--ink);
   }

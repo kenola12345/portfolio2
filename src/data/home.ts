@@ -30,6 +30,20 @@ interface HomeCopy {
     light: L10n;
     heavy: L10n;
     sound: L10n;
+    time: L10n;
+    enterName: L10n;
+    save: L10n;
+    skip: L10n;
+    saving: L10n;
+    saveError: L10n;
+    showBoard: L10n;
+    boardTitle: L10n;
+    loading: L10n;
+    empty: L10n;
+    loadError: L10n;
+    close: L10n;
+    rank: L10n;
+    player: L10n;
   };
   contact: { kicker: L10n; cta: L10n; ctaAccent: L10n; top: L10n; stack: L10n };
   nav: { work: L10n; about: L10n; contact: L10n; menu: L10n; sayHello: L10n };
@@ -98,6 +112,20 @@ export const home: HomeCopy = {
     light: { en: 'Light attack', ja: '弱攻撃' },
     heavy: { en: 'Heavy attack', ja: '強攻撃' },
     sound: { en: 'Sound on/off', ja: '効果音のオン・オフ' },
+    time: { en: 'TIME', ja: 'タイム' },
+    enterName: { en: 'ENTER YOUR NAME', ja: '名前を入力' },
+    save: { en: 'SAVE SCORE', ja: 'ランキングに登録' },
+    skip: { en: 'SKIP', ja: '登録しない' },
+    saving: { en: 'SAVING…', ja: '登録中…' },
+    saveError: { en: 'Could not save. Try again.', ja: '登録できませんでした。もう一度お試しください。' },
+    showBoard: { en: 'LEADERBOARD', ja: 'ランキング' },
+    boardTitle: { en: 'TOP 10', ja: 'トップ 10' },
+    loading: { en: 'LOADING…', ja: '読み込み中…' },
+    empty: { en: 'NO SCORES YET', ja: 'まだ記録がありません' },
+    loadError: { en: 'Could not load the leaderboard.', ja: 'ランキングを読み込めませんでした。' },
+    close: { en: 'CLOSE', ja: '閉じる' },
+    rank: { en: 'Rank', ja: '順位' },
+    player: { en: 'Player', ja: '名前' },
   },
   contact: {
     kicker: { en: 'GOT A PROJECT\nIN MIND?', ja: 'お仕事の\nご相談は？' },
