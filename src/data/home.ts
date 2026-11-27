@@ -103,8 +103,8 @@ export const home: HomeCopy = {
     ctaAccent: { en: 'SOME NOISE', ja: 'ご連絡を。' },
     top: { en: 'BACK TO TOP ↑', ja: 'ページの先頭へ ↑' },
     stack: {
-      en: 'DESIGNED IN FIGMA · BUILT WITH ASTRO, REACT, TYPESCRIPT, THREE.JS AND GSAP · HOSTED ON VERCEL',
-      ja: 'FIGMA でデザイン · ASTRO、REACT、TYPESCRIPT、THREE.JS、GSAP で開発 · VERCEL でホスティング',
+      en: 'THIS WEBSITE WAS DESIGNED IN FIGMA, BUILT WITH ASTRO, REACT, TYPESCRIPT, THREE.JS AND GSAP, AND HOSTED ON VERCEL.',
+      ja: 'このサイトは、FIGMA でデザインし、ASTRO、REACT、TYPESCRIPT、THREE.JS、GSAP で開発して、VERCEL で公開しています。',
     },
   },
   nav: {
