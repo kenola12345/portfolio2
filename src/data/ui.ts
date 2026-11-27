@@ -26,5 +26,7 @@ export const ui = {
   menuHandle: { en: 'Menu', ja: 'メニュー' },
   menuHandleLabel: { en: 'Show the menu', ja: 'メニューを表示' },
   pagesNav: { en: 'Pages', ja: 'ページ' },
+  copyEmail: { en: 'Copy email', ja: 'メールアドレスをコピー' },
+  copied: { en: 'Copied!', ja: 'コピーしました' },
   navArtist: { en: 'About me', ja: '自己紹介' },
 } satisfies Record<string, L10n>;

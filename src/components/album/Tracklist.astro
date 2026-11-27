@@ -90,6 +90,12 @@ const isExternal = (href: string) => /^https?:\/\//.test(href);
                   {track.links && (
                     <p class="links">
                       {track.links.map((link) => (
+                        <Fragment>
+                        {link.href.startsWith('mailto:') && (
+                          <button type="button" class="copy" data-copy={link.href.replace('mailto:', '')} data-done={t(ui.copied)}>
+                            <span>{t(ui.copyEmail)}</span>
+                          </button>
+                        )}
                         <a
                           href={link.href}
                           target={isExternal(link.href) ? '_blank' : undefined}
@@ -97,6 +103,7 @@ const isExternal = (href: string) => /^https?:\/\//.test(href);
                         >
                           {t(link.label)} ↗
                         </a>
+                        </Fragment>
                       ))}
                     </p>
                   )}
@@ -295,6 +302,24 @@ const isExternal = (href: string) => /^https?:\/\//.test(href);
     text-transform: uppercase;
     transition: background 0.25s, transform 0.25s;
   }
+  /* コピーボタン：メールアドレスをクリップボードへ（押すと「コピーしました」に変わる） */
+  .copy {
+    padding: 12px 20px;
+    border-radius: 999px;
+    background: var(--acid);
+    color: var(--ink);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    transition: background 0.25s, transform 0.25s;
+  }
+  .copy:hover {
+    background: var(--paper);
+    transform: translateY(-2px);
+  }
+  .copy[data-copied] {
+    background: var(--coral);
+  }
   .links a:hover {
     background: var(--acid);
     transform: translateY(-2px);
@@ -399,6 +424,35 @@ const isExternal = (href: string) => /^https?:\/\//.test(href);
     const details = summary.parentElement as HTMLDetailsElement;
     if (details.open) setOpen(details, false);
     else select(details);
+  });
+
+  // メールアドレスのコピー：押すとクリップボードに入れ、少しのあいだ「コピーしました」と出す
+  document.addEventListener('click', async (e) => {
+    const btn = (e.target as Element).closest<HTMLButtonElement>('button[data-copy]');
+    if (!btn) return;
+    const text = btn.dataset.copy ?? '';
+    try {
+      await navigator.clipboard.writeText(text);
+    } catch {
+      // クリップボード API が使えない環境（古いブラウザ・http）では、選択してコピーする
+      const area = document.createElement('textarea');
+      area.value = text;
+      area.style.position = 'fixed';
+      area.style.opacity = '0';
+      document.body.appendChild(area);
+      area.select();
+      document.execCommand('copy');
+      area.remove();
+    }
+    const label = btn.querySelector('span')!;
+    const original = btn.dataset.label ?? label.textContent ?? '';
+    btn.dataset.label = original;
+    label.textContent = btn.dataset.done ?? '';
+    btn.setAttribute('data-copied', '');
+    window.setTimeout(() => {
+      label.textContent = original;
+      btn.removeAttribute('data-copied');
+    }, 1800);
   });
 
   // 再生ボタン：最初のトラックを開く。すでに開いていれば次のトラックへ進む
