@@ -177,12 +177,19 @@ const { kicker, meta, title, cover, accent, number = '01' } = Astro.props;
       transform: none;
     }
   }
+  /* 最初は透明（ジャケットがふわっと出てくる間に、後ろのレコードが透けて見えないように）。
+     動き始めたら、すぐに見えるようになる */
   @keyframes disc-out {
     from {
+      opacity: 0;
       /* ジャケットの後ろに、ほぼ全部隠れている（自分の幅の約 34% 左） */
       transform: translateX(-34%);
     }
+    12% {
+      opacity: 1;
+    }
     to {
+      opacity: 1;
       transform: none;
     }
   }
