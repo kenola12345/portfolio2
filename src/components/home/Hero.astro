@@ -1,0 +1,242 @@
+---
+/**
+ * ヒーロー：見出し・紹介文・「制作実績へ」の丸いリンクと、右側の 3D ターンテーブル。
+ * 3D（Turntable）と再生ボタン（NowPlaying）は React のアイランド。
+ */
+import ArrowIcon from './ArrowIcon.astro';
+import NowPlaying from './NowPlaying';
+import Turntable from './Turntable';
+import { artist } from '../../data/artist';
+import { home } from '../../data/home';
+import { useT } from '../../lib/i18n';
+
+const t = useT(Astro.url);
+const h = home.headline;
+const explore = t(home.explore).split('\n');
+const stamp = t(home.stamp).split('\n');
+---
+
+<section class="hero" id="home">
+  <div class="hero-copy">
+    <p class="eyebrow" data-hero="line"><span>01</span> {t(home.eyebrow)}</p>
+    <h1>
+      <span class="line" data-hero="line">{t(h.line1)}</span>
+      <span class="line outline" data-hero="line">{t(h.line2)}</span>
+      <span class="line" data-hero="line">{t(h.line3)} <i>{t(h.line3Accent)}</i></span>
+    </h1>
+    <p class="intro" data-hero="line">{t(home.intro)}</p>
+    <a class="round-link" href="#work" aria-label={explore.join(' ')} data-hero="pop">
+      <ArrowIcon />
+      <span>{explore[0]}<br />{explore[1]}</span>
+    </a>
+  </div>
+
+  <div class="hero-visual">
+    <Turntable client:only="react" label={t(home.turntableLabel)} />
+    <NowPlaying
+      client:load
+      kicker={t(home.nowSpinning)}
+      title={t(artist.name)}
+      playLabel={t(home.play)}
+      pauseLabel={t(home.pause)}
+    />
+    <div class="edition-stamp" data-hero="pop">{stamp[0]}<br />{stamp[1]}<br /><b>33⅓</b></div>
+  </div>
+
+  <p class="scroll-cue">{t(home.scrollCue)} <span>↓</span></p>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    min-height: 100svh;
+    padding: 145px var(--gutter) 56px;
+    display: grid;
+    grid-template-columns: 52% 48%;
+    overflow: hidden;
+    background:
+      radial-gradient(circle at 75% 45%, #33382b 0%, transparent 27%),
+      linear-gradient(115deg, var(--ink) 0 54%, var(--ink-2) 54%);
+  }
+  /* 薄いノイズ */
+  .hero::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.12;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 120 120' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.35'/%3E%3C/svg%3E");
+  }
+  .hero-copy {
+    position: relative;
+    z-index: 2;
+  }
+  .eyebrow {
+    display: flex;
+    gap: 18px;
+    align-items: center;
+    text-transform: uppercase;
+    font-size: 10px;
+    letter-spacing: 0.14em;
+  }
+  .eyebrow span {
+    color: var(--acid);
+  }
+  h1 {
+    margin: 10vh 0 32px;
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: clamp(64px, 8.1vw, 136px);
+    letter-spacing: -0.075em;
+    line-height: 0.82;
+    white-space: nowrap;
+  }
+  .line {
+    display: block;
+  }
+  /* 日本語は 1 文字が大きく、行も詰まると読みにくいので、少し小さくして行間をとる */
+  :global(html[lang='ja']) h1 {
+    font-size: clamp(52px, 6.6vw, 112px);
+    line-height: 1;
+    letter-spacing: -0.04em;
+  }
+  :global(html[lang='ja']) .outline {
+    -webkit-text-stroke-width: 2px;
+  }
+  .outline {
+    color: transparent;
+    -webkit-text-stroke: 1.5px var(--paper);
+    transform: translateX(7vw);
+  }
+  h1 i {
+    color: var(--acid);
+    font-style: normal;
+  }
+  .intro {
+    max-width: 470px;
+    margin-left: 6px;
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.75;
+  }
+  .round-link {
+    position: absolute;
+    z-index: 3;
+    right: 2vw;
+    bottom: -5px;
+    width: 122px;
+    height: 122px;
+    display: grid;
+    place-items: center;
+    border: 1px solid #77766e;
+    border-radius: 50%;
+    font-size: 9px;
+    letter-spacing: 0.08em;
+    transition: 0.4s;
+  }
+  .round-link:hover {
+    background: var(--acid);
+    color: var(--ink);
+    border-color: var(--acid);
+    transform: rotate(8deg);
+  }
+  .round-link svg {
+    width: 25px;
+  }
+  .round-link span {
+    position: absolute;
+    text-align: center;
+    line-height: 1.4;
+  }
+  .hero-visual {
+    position: relative;
+    z-index: 1;
+    min-width: 0;
+  }
+  .edition-stamp {
+    position: absolute;
+    right: 0;
+    top: 5%;
+    width: 90px;
+    height: 90px;
+    display: grid;
+    place-content: center;
+    border: 1px solid #eeeade80;
+    border-radius: 50%;
+    text-align: center;
+    font-size: 7px;
+    line-height: 1.4;
+    transform: rotate(9deg);
+  }
+  .edition-stamp b {
+    color: var(--acid);
+    font: 800 23px var(--font-display);
+  }
+  .scroll-cue {
+    position: absolute;
+    left: var(--gutter);
+    bottom: 26px;
+    font-size: 8px;
+    letter-spacing: 0.14em;
+    color: #79776f;
+  }
+  .scroll-cue span {
+    margin-left: 8px;
+    color: var(--acid);
+  }
+
+  @media (max-width: 900px) {
+    .hero {
+      grid-template-columns: 1fr;
+      min-height: 920px;
+      padding-top: 125px;
+    }
+    .hero-copy {
+      z-index: 3;
+    }
+    h1 {
+      margin-top: 55px;
+      font-size: clamp(56px, 15vw, 100px);
+    }
+    .hero-visual {
+      position: absolute;
+      inset: 48% -10% 0 20%;
+    }
+    .round-link {
+      right: auto;
+      left: 0;
+      bottom: -145px;
+    }
+  }
+  @media (max-width: 620px) {
+    .hero {
+      min-height: 820px;
+      padding-inline: 20px;
+    }
+    h1 {
+      /* 「FULL STACK」が 1 行に収まる大きさ（nowrap のため、大きいとはみ出す） */
+      font-size: 9.6vw;
+      letter-spacing: -0.06em;
+    }
+    :global(html[lang='ja']) h1 {
+      font-size: 11.5vw;
+    }
+    .outline {
+      transform: translateX(3vw);
+    }
+    .intro {
+      width: 82%;
+    }
+    .hero-visual {
+      inset: 46% -31% 0 -5%;
+    }
+    .edition-stamp {
+      display: none;
+    }
+    .round-link {
+      width: 95px;
+      height: 95px;
+      bottom: -115px;
+    }
+  }
+</style>

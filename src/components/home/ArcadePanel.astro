@@ -1,0 +1,149 @@
+---
+/**
+ * アーケード筐体風のパネル（飾り）。「スタートで一緒に作ろう」を押すと連絡先へ移動する。
+ */
+import { home } from '../../data/home';
+import { useT } from '../../lib/i18n';
+
+const t = useT(Astro.url);
+const title = t(home.arcade.title).split('\n');
+---
+
+<div class="arcade-panel" data-reveal>
+  <a class="screen" href="#contact" aria-label={t(home.arcade.start)}>
+    <span class="screen-score">{t(home.arcade.score)}</span>
+    <div class="space-invader" aria-hidden="true">
+      {Array.from({ length: 15 }, () => <i />)}
+    </div>
+    <strong>{title[0]}<br />{title[1]}</strong>
+    <small>{t(home.arcade.start)}</small>
+  </a>
+  <div class="controls" aria-hidden="true"><span></span><b></b><i></i></div>
+</div>
+
+<style>
+  .arcade-panel {
+    z-index: 1;
+    width: min(430px, 90%);
+    height: 580px;
+    margin: 85px auto 0;
+    padding: 34px;
+    background: #ddd8ca;
+    transform: perspective(1000px) rotateY(7deg);
+    box-shadow: -25px 25px 0 #090908;
+  }
+  .screen {
+    position: relative;
+    display: block;
+    height: 370px;
+    padding: 20px;
+    border: 12px solid #2c2c27;
+    background-color: #151c18;
+    background-image: repeating-linear-gradient(0deg, transparent 0 4px, #b8ff3509 5px);
+    box-shadow: inset 0 0 70px #b8ff3512;
+    color: var(--acid);
+    text-align: center;
+  }
+  .screen-score {
+    position: absolute;
+    top: 17px;
+    left: 17px;
+    font-size: 8px;
+    letter-spacing: 0.15em;
+  }
+  .space-invader {
+    width: 120px;
+    height: 85px;
+    margin: 45px auto 0;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 5px;
+  }
+  .space-invader i {
+    background: var(--coral);
+    box-shadow: 0 0 10px var(--coral);
+  }
+  /* インベーダーの形に抜く */
+  .space-invader i:nth-child(1),
+  .space-invader i:nth-child(5),
+  .space-invader i:nth-child(7),
+  .space-invader i:nth-child(9),
+  .space-invader i:nth-child(11),
+  .space-invader i:nth-child(13),
+  .space-invader i:nth-child(15) {
+    opacity: 0;
+  }
+  .screen strong {
+    display: block;
+    margin-top: 28px;
+    font: 800 33px/1 var(--font-display);
+  }
+  .screen small {
+    display: block;
+    margin-top: 25px;
+    font-size: 7px;
+    animation: blink 1s infinite;
+  }
+  .controls {
+    position: relative;
+    height: 120px;
+  }
+  .controls > span {
+    position: absolute;
+    left: 45px;
+    bottom: 0;
+    width: 75px;
+    height: 75px;
+    border-radius: 50%;
+    background: #222;
+    box-shadow: 0 7px 0 #090909;
+  }
+  .controls > span::after {
+    content: '';
+    position: absolute;
+    left: 30px;
+    bottom: 32px;
+    width: 15px;
+    height: 90px;
+    border-radius: 10px;
+    background: #333;
+  }
+  .controls b,
+  .controls i {
+    position: absolute;
+    right: 40px;
+    bottom: 28px;
+    width: 43px;
+    height: 43px;
+    border-radius: 50%;
+    background: var(--coral);
+    box-shadow: 0 6px 0 #9a2e21;
+  }
+  .controls i {
+    right: 100px;
+    bottom: 14px;
+    background: var(--acid);
+    box-shadow: 0 6px 0 #618f14;
+  }
+  @media (max-width: 900px) {
+    .arcade-panel {
+      order: 2;
+    }
+  }
+  @media (max-width: 620px) {
+    .arcade-panel {
+      height: 500px;
+      padding: 24px;
+    }
+    .screen {
+      height: 340px;
+    }
+    .screen strong {
+      margin-top: 22px;
+      font-size: 26px;
+    }
+    .space-invader {
+      margin-top: 34px;
+    }
+  }
+</style>

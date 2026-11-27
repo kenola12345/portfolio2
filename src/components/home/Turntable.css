@@ -1,0 +1,14 @@
+.three-stage {
+  position: absolute;
+  inset: -6% -14% 5% -20%;
+}
+.three-stage canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+@media (max-width: 620px) {
+  .three-stage {
+    inset: 0;
+  }
+}

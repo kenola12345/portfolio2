@@ -1,0 +1,128 @@
+---
+/**
+ * 自己紹介：左にアーケード風のパネル、右に見出し・紹介文・スキルの一覧。
+ * 紹介文はアーティストデータの bio をそのまま使う。
+ */
+import ArcadePanel from './ArcadePanel.astro';
+import SkillRows from './SkillRows.astro';
+import ArrowIcon from './ArrowIcon.astro';
+import { artist } from '../../data/artist';
+import { home } from '../../data/home';
+import { getLang, localePath, useT } from '../../lib/i18n';
+
+const t = useT(Astro.url);
+const lang = getLang(Astro.url);
+---
+
+<section class="about" id="about">
+  <ArcadePanel />
+
+  <div class="about-copy">
+    <p class="eyebrow" data-reveal><span>03</span> {t(home.about.eyebrow)}</p>
+    <h2 data-reveal>{t(home.about.title)}<br /><i>{t(home.about.titleAccent)}</i></h2>
+    <p class="about-lead" data-reveal>{t(artist.bio)}</p>
+    <SkillRows />
+    <a class="full-story" href={localePath('/artist', lang)} data-reveal>
+      {t(home.about.more)} <ArrowIcon />
+    </a>
+  </div>
+</section>
+
+<style>
+  .about {
+    position: relative;
+    min-height: 850px;
+    padding: 120px var(--gutter);
+    display: grid;
+    grid-template-columns: 45% 55%;
+    overflow: hidden;
+    background: var(--ink-2);
+  }
+  .about::before {
+    content: '';
+    position: absolute;
+    left: -280px;
+    top: 100px;
+    width: 600px;
+    height: 600px;
+    border: 1px solid #b8ff3517;
+    border-radius: 50%;
+    box-shadow:
+      0 0 0 100px #b8ff3508,
+      0 0 0 200px #b8ff3505;
+  }
+  .about-copy {
+    z-index: 1;
+    padding-left: 6vw;
+  }
+  .eyebrow {
+    display: flex;
+    gap: 18px;
+    align-items: center;
+    text-transform: uppercase;
+    font-size: 10px;
+    letter-spacing: 0.14em;
+  }
+  .eyebrow span {
+    color: var(--acid);
+  }
+  h2 {
+    margin-top: 35px;
+    font-family: var(--font-display);
+    font-weight: 800;
+    /* 右の列は幅が狭いので、他の見出しより少し小さくして、はみ出さないようにする */
+    font-size: clamp(50px, 6.4vw, 100px);
+    letter-spacing: -0.075em;
+    line-height: 0.82;
+  }
+  h2 i {
+    color: var(--acid);
+    font-style: normal;
+  }
+  .about-lead {
+    max-width: 590px;
+    margin: 50px 0;
+    font-size: 14px;
+    line-height: 1.8;
+    color: #aaa79e;
+  }
+  .full-story {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 40px;
+    padding: 12px 20px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    transition: background 0.25s, color 0.25s, border-color 0.25s;
+  }
+  .full-story :global(svg) {
+    width: 14px;
+  }
+  .full-story:hover {
+    background: var(--acid);
+    border-color: var(--acid);
+    color: var(--ink);
+  }
+  @media (max-width: 900px) {
+    .about {
+      grid-template-columns: 1fr;
+    }
+    .about-copy {
+      padding-left: 0;
+    }
+  }
+  @media (max-width: 620px) {
+    .about {
+      padding: 85px 20px;
+    }
+    h2 {
+      /* 「FEATURED」などの 8 文字が 1 行に収まる大きさ */
+      font-size: 12vw;
+      letter-spacing: -0.06em;
+    }
+  }
+</style>

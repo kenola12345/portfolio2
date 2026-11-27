@@ -1,0 +1,98 @@
+/*
+ * 「SIDE B」デザインの共通スタイル（Figma から起こしたもの）。
+ * 色・フォント・基本のリセットだけを持つ。各セクションの見た目は、それぞれのコンポーネントの <style> にある。
+ * 旧デザイン（globals.css・クリスタル）とは別物なので、このファイルは SideBLayout からだけ読み込む。
+ */
+
+:root {
+  --ink: #11110f;
+  --ink-2: #171714;
+  --paper: #eeeade;
+  --acid: #b8ff35;
+  --coral: #ff5c45;
+  --violet: #7157ff;
+  --muted: #b9b6ac;
+  --line: #eeeade26;
+  --gutter: 4vw;
+  --font-display: 'Syne', 'Noto Sans JP', sans-serif;
+  --font-mono: 'DM Mono', 'Noto Sans JP', monospace;
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  background: var(--ink);
+}
+
+body {
+  margin: 0;
+  background: var(--ink);
+  color: var(--paper);
+  font-family: var(--font-mono);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+p {
+  margin: 0;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  padding: 0;
+  text-align: inherit;
+}
+
+button,
+a {
+  cursor: pointer;
+}
+
+button:focus-visible,
+a:focus-visible {
+  outline: 2px solid var(--acid);
+  outline-offset: 4px;
+}
+
+::selection {
+  background: var(--acid);
+  color: var(--ink);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0.35;
+  }
+}
+
+@keyframes equalize {
+  to {
+    height: 100%;
+  }
+}

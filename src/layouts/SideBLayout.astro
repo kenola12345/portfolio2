@@ -1,0 +1,80 @@
+---
+/**
+ * 「SIDE B」デザインのページ用レイアウト（Figma から起こしたもの）。
+ * head・フォント・OG タグ・解析タグ、ページ切り替えのワイプ、スクロールのアニメーションを持つ。
+ * 旧デザインの AppLayout（3D ステージ・ClientRouter）とは別物。ページ移動は通常の遷移で、ワイプで見せる。
+ */
+import '../styles/side-b.css';
+import Analytics from '@vercel/analytics/astro';
+import SpeedInsights from '@vercel/speed-insights/astro';
+import PageWipe from '../components/home/PageWipe.astro';
+import { artist } from '../data/artist';
+import { alternatePath, getLang, useT } from '../lib/i18n';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const lang = getLang(Astro.url);
+const t = useT(Astro.url);
+const {
+  title = `${t(artist.name)} — ${t(artist.tagline)}`,
+  description = t(artist.tagline),
+} = Astro.props;
+
+// 共有・検索エンジン向けの URL（astro.config の site が決まっているときだけ絶対 URL にできる）
+const site = Astro.site;
+const abs = (path: string) => (site ? new URL(path, site).href : path);
+const ogImage = abs('/og.png');
+const alt = alternatePath(Astro.url);
+const canonical = site ? abs(Astro.url.pathname) : undefined;
+const hrefEn = lang === 'en' ? canonical : site ? abs(alt.href) : undefined;
+const hrefJa = lang === 'ja' ? canonical : site ? abs(alt.href) : undefined;
+---
+
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <link rel="icon" href="/favicon.ico" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={`${t(artist.name)} — ${t(artist.tagline)}`} />
+    <meta property="og:locale" content={lang === 'ja' ? 'ja_JP' : 'en_US'} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+    {canonical && <link rel="canonical" href={canonical} />}
+    {canonical && <meta property="og:url" content={canonical} />}
+    {hrefEn && hrefJa && <link rel="alternate" hreflang="en" href={hrefEn} />}
+    {hrefEn && hrefJa && <link rel="alternate" hreflang="ja" href={hrefJa} />}
+
+    <!-- フォントは表示をブロックしないように読み込む -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Noto+Sans+JP:wght@400;700&family=Syne:wght@400;600;700;800&display=swap"
+    />
+
+    <title>{title}</title>
+  </head>
+  <body>
+    <PageWipe />
+    <slot />
+    <script>
+      import '../scripts/side-b-motion';
+    </script>
+    <Analytics />
+    <SpeedInsights />
+  </body>
+</html>

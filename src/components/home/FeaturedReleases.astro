@@ -1,0 +1,181 @@
+---
+/**
+ * 代表的な制作実績（紙色の背景のセクション）。Projects アルバムの先頭 3 件をレコード風のカードで並べ、
+ * それぞれ該当のトラックへ、下のリンクで残りのアルバム（Work / Skills / Contact）へつなぐ。
+ */
+import ReleaseCard from './ReleaseCard.astro';
+import ArrowIcon from './ArrowIcon.astro';
+import { albums } from '../../data/albums';
+import { home } from '../../data/home';
+import { getLang, localePath, useT } from '../../lib/i18n';
+
+const t = useT(Astro.url);
+const lang = getLang(Astro.url);
+
+const projects = albums.find((a) => a.slug === 'projects');
+const featured = (projects?.tracks ?? []).filter((track) => track.images?.length).slice(0, 3);
+const color = projects?.accent ?? '#ff5c45';
+
+// 残りのアルバムへのリンク
+const others = albums.filter((a) => a.slug !== 'projects');
+---
+
+<section class="work" id="work">
+  <header class="section-header" data-reveal>
+    <div>
+      <p class="eyebrow"><span>02</span> {t(home.work.eyebrow)}</p>
+      <h2>{t(home.work.title)}<br /><i>{t(home.work.titleAccent)}</i></h2>
+    </div>
+    <p class="lead">{t(home.work.lead)}</p>
+  </header>
+
+  <div class="record-grid">
+    {
+      featured.map((track, i) => (
+        <ReleaseCard
+          index={i}
+          title={t(track.title)}
+          type={(track.tags ?? []).slice(0, 3).join(' · ')}
+          cover={track.images![0].src}
+          alt={t(track.images![0].alt)}
+          href={localePath(`/albums/projects#${track.slug}`, lang)}
+          color={color}
+          viewLabel={t(home.work.view)}
+        />
+      ))
+    }
+  </div>
+
+  <nav class="more" aria-label={t(home.pages.title)} data-reveal>
+    <a class="more-link primary" href={localePath('/albums/projects', lang)}>
+      {t(home.work.all)} <ArrowIcon />
+    </a>
+    {
+      others.map((album) => (
+        <a class="more-link" href={localePath(`/albums/${album.slug}`, lang)}>
+          {t(album.title)}
+        </a>
+      ))
+    }
+  </nav>
+</section>
+
+<style>
+  .work {
+    padding: 120px var(--gutter) 140px;
+    background: var(--paper);
+    color: var(--ink);
+    overflow: hidden;
+  }
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    padding-bottom: 55px;
+    border-bottom: 1px solid #aaa69a;
+  }
+  .eyebrow {
+    display: flex;
+    gap: 18px;
+    align-items: center;
+    text-transform: uppercase;
+    font-size: 10px;
+    letter-spacing: 0.14em;
+  }
+  .eyebrow span {
+    color: var(--coral);
+  }
+  h2 {
+    margin-top: 35px;
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: clamp(58px, 8vw, 118px);
+    letter-spacing: -0.075em;
+    line-height: 0.82;
+  }
+  h2 i {
+    color: var(--coral);
+    font-style: normal;
+  }
+  .lead {
+    width: 350px;
+    margin-bottom: 10px;
+    font-size: 11px;
+    line-height: 1.7;
+    color: #5d5b55;
+  }
+  .record-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2.5vw;
+    padding-top: 70px;
+  }
+  .more {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 80px;
+    padding-top: 28px;
+    border-top: 1px solid #aaa69a;
+  }
+  .more-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 20px;
+    border: 1px solid var(--ink);
+    border-radius: 999px;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    transition: background 0.25s, color 0.25s, transform 0.25s;
+  }
+  .more-link :global(svg) {
+    width: 14px;
+  }
+  .more-link:hover {
+    background: var(--ink);
+    color: var(--paper);
+    transform: translateY(-2px);
+  }
+  .more-link.primary {
+    background: var(--ink);
+    color: var(--paper);
+  }
+  .more-link.primary:hover {
+    background: var(--coral);
+    border-color: var(--coral);
+    color: var(--ink);
+  }
+
+  @media (max-width: 900px) {
+    .section-header {
+      align-items: flex-start;
+      gap: 30px;
+    }
+    .record-grid {
+      grid-template-columns: 1fr 1fr;
+      row-gap: 60px;
+    }
+  }
+  @media (max-width: 620px) {
+    .work {
+      padding: 85px 20px;
+    }
+    .section-header {
+      display: block;
+    }
+    .lead {
+      width: auto;
+      margin-top: 35px;
+    }
+    h2 {
+      /* 「FEATURED」などの 8 文字が 1 行に収まる大きさ */
+      font-size: 12vw;
+      letter-spacing: -0.06em;
+    }
+    .record-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
