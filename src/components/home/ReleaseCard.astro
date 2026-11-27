@@ -41,6 +41,33 @@ const { index, title, type, cover, alt, href, color, viewLabel, reveal = true } 
   </a>
 </article>
 
+<script>
+  /**
+   * タッチ端末でカードをタップしたとき：レコードが飛び出してジャケットがずれる動きを見せてから、ページを移る。
+   * スクロールやスライダーのドラッグ（click が打ち消される）では動かない。戻ってきたとき（キャッシュ復元）は元に戻す。
+   */
+  const isTouch = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
+  if (isTouch && !(window as unknown as { __cardTap?: boolean }).__cardTap) {
+    (window as unknown as { __cardTap?: boolean }).__cardTap = true;
+    document.addEventListener('click', (e) => {
+      if (e.defaultPrevented) return; // ドラッグのあとの click は、スライダーが打ち消している
+      const link = (e.target as Element).closest<HTMLAnchorElement>('.project > .card-link');
+      if (!link || link.dataset.go) return;
+      e.preventDefault();
+      link.closest('.project')?.setAttribute('data-tapped', '');
+      window.setTimeout(() => {
+        link.dataset.go = '1';
+        link.click(); // 2 回目の click は、ふつうのリンクとして（ページ移動のワイプへ）進む
+      }, 520);
+    });
+    window.addEventListener('pageshow', (e) => {
+      if (!e.persisted) return;
+      document.querySelectorAll('.project[data-tapped]').forEach((el) => el.removeAttribute('data-tapped'));
+      document.querySelectorAll<HTMLAnchorElement>('.card-link[data-go]').forEach((a) => delete a.dataset.go);
+    });
+  }
+</script>
+
 <style>
   .card-link {
     display: block;
@@ -96,6 +123,18 @@ const { index, title, type, cover, alt, href, color, viewLabel, reveal = true } 
     .card-link:focus-visible .vinyl-disc {
       transform: translateX(17%) rotate(80deg);
     }
+  }
+  /* タッチ端末：スクロールやスライダーのドラッグでは動かさず、カードを「タップ」したときだけ、同じ動きをする
+     （data-tapped は下のスクリプトが付ける。ページを移る前に見せて、戻ってきたら外れる） */
+  .project[data-tapped] .project-sleeve {
+    transform: translateX(-13%);
+  }
+  .project[data-tapped] .vinyl-disc {
+    transform: translateX(17%) rotate(80deg);
+  }
+  .project[data-tapped] .go {
+    background: var(--acid);
+    transform: rotate(10deg);
   }
   .go {
     position: absolute;
