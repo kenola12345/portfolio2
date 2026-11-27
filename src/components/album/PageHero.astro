@@ -58,6 +58,7 @@ const { kicker, meta, title, cover, accent, number = '01' } = Astro.props;
     position: relative;
     z-index: 2;
     min-width: 0;
+    container-type: inline-size;
   }
   .eyebrow {
     display: flex;
@@ -75,7 +76,8 @@ const { kicker, meta, title, cover, accent, number = '01' } = Astro.props;
     margin: 6vh 0 28px;
     font-family: var(--font-display);
     font-weight: 800;
-    font-size: clamp(40px, 5.2vw, 96px);
+    /* 文字の大きさは、左の列の幅に合わせる（最長の単語 "EXPERIENCE"（約 10.5em）が 1 行に収まる大きさ）。画面幅だと列の幅とずれて、途中で折り返してしまう */
+    font-size: clamp(32px, 9cqi, 96px);
     letter-spacing: -0.07em;
     line-height: 0.86;
     text-transform: uppercase;
@@ -174,7 +176,6 @@ const { kicker, meta, title, cover, accent, number = '01' } = Astro.props;
       padding-inline: 20px;
     }
     h1 {
-      font-size: 11vw;
       letter-spacing: -0.06em;
     }
     :global(html[lang='ja']) h1 {

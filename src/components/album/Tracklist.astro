@@ -240,16 +240,15 @@ const isExternal = (href: string) => /^https?:\/\//.test(href);
   }
 
   .body {
-    padding: 4px 8px 36px 68px;
+    padding: 4px 56px 36px 68px;
   }
   .desc {
-    max-width: 62ch;
+    /* カードの幅いっぱいに広げる（右側が空かないように） */
     font-size: 13px;
     line-height: 1.8;
     color: var(--muted);
   }
   .bullets {
-    max-width: 62ch;
     margin: 14px 0 0;
     padding-left: 18px;
     font-size: 13px;
