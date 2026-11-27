@@ -82,9 +82,17 @@ const lang = getLang(Astro.url);
     object-position: 50% 35%;
     box-shadow: 14px 14px 0 var(--acid);
   }
-  .profile h2,
-  .discography h2 {
+  .profile h2 {
     font: 800 clamp(48px, 7vw, 108px) / 0.86 var(--font-display);
+    letter-spacing: -0.07em;
+    text-transform: uppercase;
+  }
+  /* "DISCOGRAPHY" は長い 1 語（約 11.5em）なので、見出しの幅に合わせた大きさにして、はみ出さないようにする */
+  .discography header {
+    container-type: inline-size;
+  }
+  .discography h2 {
+    font: 800 clamp(24px, 8cqi, 108px) / 0.86 var(--font-display);
     letter-spacing: -0.07em;
     text-transform: uppercase;
   }
@@ -162,8 +170,7 @@ const lang = getLang(Astro.url);
     .discography {
       padding: 80px 20px;
     }
-    .profile h2,
-    .discography h2 {
+    .profile h2 {
       font-size: 14vw;
     }
     dl {
