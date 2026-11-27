@@ -4,14 +4,15 @@ import type { Artist } from './types';
 export const artist: Artist = {
   name: { en: 'Kentaro Oshimoto', ja: '押本 健太郎' },
   tagline: {
-    en: 'Full Stack Engineer · Tokyo, Japan',
-    ja: 'フルスタックエンジニア · 東京',
+    en: 'Frontend Engineer · Tokyo, Japan',
+    ja: 'フロントエンドエンジニア · 東京',
   },
   // 履歴書の Professional Summary をもとにした紹介文（電話番号などの連絡先は載せない）
   bio: {
-    en: 'Bilingual English–Japanese engineer born in the United States and based in Tokyo. After 3+ years building production web applications at a Japanese web agency, I now work as a Full Stack Engineer, expanding into backend development (Node.js, REST APIs, relational databases, Docker) with AI-driven workflows. I have led end-to-end development on 10+ client projects across real estate, hospitality, healthcare and consumer brands, and mentored junior developers along the way.',
-    ja: 'アメリカ生まれ、東京在住の日英バイリンガルエンジニアです。日本のウェブ制作会社で 3 年以上、本番環境のウェブアプリケーションを開発してきました。現在はフルスタックエンジニアとして、AI を活用した開発ワークフローのもと、バックエンド（Node.js、REST API、リレーショナルデータベース、Docker）へと領域を広げています。不動産、ホスピタリティ、ヘルスケア、コンシューマーブランドなど 10 件以上の案件を企画から公開まで一貫して担当し、後輩の育成にも携わってきました。',
+    en: "Bilingual English–Japanese frontend engineer born in the United States and based in Tokyo. After 3+ years building production web applications with React, Next.js and TypeScript at a Japanese web agency, I'm now expanding into full-stack development as a Full Stack Engineer (Node.js, REST APIs, relational databases, Docker) with AI-driven workflows. I have led end-to-end development on 10+ client projects across real estate, hospitality, healthcare and consumer brands, with a focus on user experience, performance and accessibility, and mentored junior developers along the way.",
+    ja: 'アメリカ生まれ、東京在住の日英バイリンガルのフロントエンドエンジニアです。日本のウェブ制作会社で 3 年以上、React・Next.js・TypeScript を使った本番環境のウェブアプリケーションを開発してきました。現在はフルスタックエンジニアとして、AI を活用した開発ワークフローのもと、バックエンド（Node.js、REST API、リレーショナルデータベース、Docker）へと領域を広げています。不動産、ホスピタリティ、ヘルスケア、コンシューマーブランドなど 10 件以上の案件を、ユーザー体験・パフォーマンス・アクセシビリティを重視しながら企画から公開まで一貫して担当し、後輩の育成にも携わってきました。',
   },
+
   shelfBlurb: {
     en: 'About me: who I am, where I\'m from and what I do.',
     ja: '自己紹介：どんな人で、どこの出身で、何をしているか。',
