@@ -24,6 +24,14 @@
     transition: transform 0.45s cubic-bezier(0.7, 0, 0.3, 1);
     pointer-events: none;
     will-change: transform;
+    /* 普段は完全に隠す。iOS は画面の端にある固定要素の色をツールバーに映すので、画面の外に置いてあるだけだと、
+       赤いワイプの色が上下のバーに出たり、スクロール中に見えてしまう */
+    visibility: hidden;
+  }
+  .page-wipe:global(.active),
+  .page-wipe:global(.leaving),
+  :global(html[data-wipe-arrive]) .page-wipe {
+    visibility: visible;
   }
   .page-wipe:global(.active) {
     transform: translateY(0);

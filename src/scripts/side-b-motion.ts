@@ -89,7 +89,9 @@ function pageWipe() {
   // 戻る・進むでキャッシュから復元されたとき、閉じたままにならないようにする
   window.addEventListener('pageshow', (e) => {
     if (!e.persisted) return;
-    wipe.classList.remove('active');
+    // 戻ってきたときは、ワイプを完全に元の（隠れた）状態へ戻す
+    wipe.classList.remove('active', 'leaving');
+    wipe.style.transition = '';
     root.removeAttribute('data-wipe-arrive');
   });
 

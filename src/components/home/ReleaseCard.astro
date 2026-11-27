@@ -86,13 +86,16 @@ const { index, title, type, cover, alt, href, color, viewLabel, reveal = true } 
     background: var(--label);
     border: 6px solid var(--ink);
   }
-  .card-link:hover .project-sleeve,
-  .card-link:focus-visible .project-sleeve {
-    transform: translateX(-13%);
-  }
-  .card-link:hover .vinyl-disc,
-  .card-link:focus-visible .vinyl-disc {
-    transform: translateX(17%) rotate(80deg);
+  /* ホバーの動きは、マウスのある端末だけ（タッチ端末では、触れたあとも :hover が残り続けて、勝手にずれたままになるため） */
+  @media (hover: hover) {
+    .card-link:hover .project-sleeve,
+    .card-link:focus-visible .project-sleeve {
+      transform: translateX(-13%);
+    }
+    .card-link:hover .vinyl-disc,
+    .card-link:focus-visible .vinyl-disc {
+      transform: translateX(17%) rotate(80deg);
+    }
   }
   .go {
     position: absolute;
