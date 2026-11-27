@@ -17,6 +17,20 @@
   --font-display: 'Syne', 'Noto Sans JP', sans-serif;
   --font-mono: 'DM Mono', 'Noto Sans JP', monospace;
   --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+  /* 長さの基準（1 単位）。スマホ・タブレット（900px 以下）では 1px のまま。
+     PC では、デザインの幅 1440px に対する画面幅の割合になる（calc(50 * var(--u)) = calc(50 / 1440 * 100vw)）。
+     つまり、1440px の画面ではデザインどおりの大きさで、画面が広がる・狭まると、要素も同じ割合で大きく・小さくなる */
+  --u: 1px;
+}
+
+@media (min-width: 901px) {
+  :root {
+    --u: calc(100vw / 1440);
+  }
+  /* 文字は rem で指定する。PC では、1rem = 16px（1440px の画面で）を、画面幅に合わせて拡大・縮小する */
+  html {
+    font-size: calc(16 / 1440 * 100vw);
+  }
 }
 
 *,

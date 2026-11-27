@@ -4,28 +4,28 @@
   left: 1vw;
   bottom: 2.5vh;
   z-index: 2;
-  width: 340px;
-  height: 66px;
+  width: calc(340 * var(--u));
+  height: calc(66 * var(--u));
 }
 .now-playing {
   position: absolute;
   inset: 0;
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 11px 14px 11px 11px;
+  gap: calc(12 * var(--u));
+  padding: calc(11 * var(--u)) calc(14 * var(--u)) calc(11 * var(--u)) calc(11 * var(--u));
   background: var(--paper);
   color: var(--ink);
-  box-shadow: 7px 7px 0 var(--coral);
+  box-shadow: calc(7 * var(--u)) calc(7 * var(--u)) 0 var(--coral);
 }
 /* 画面から外れたら右下に固定。下からふわっと出てくる */
 .now-playing.docked {
   position: fixed;
-  inset: auto 16px 16px auto;
+  inset: auto calc(16 * var(--u)) calc(16 * var(--u)) auto;
   /* ワイプ（100）の下、ほかのどのセクションより上 */
   z-index: 90;
-  width: min(340px, calc(100vw - 32px));
-  height: 66px;
+  width: min(calc(340 * var(--u)), calc(100vw - calc(32 * var(--u))));
+  height: calc(66 * var(--u));
   animation: dock-in 0.45s var(--ease-out);
 }
 /* スクロール中は、下へ沈みながら消える（止まったら戻る） */
@@ -34,13 +34,13 @@
 }
 .now-playing.docked.hidden-while-scrolling {
   opacity: 0;
-  transform: translateY(20px);
+  transform: translateY(calc(20 * var(--u)));
   pointer-events: none;
 }
 @keyframes dock-in {
   from {
     opacity: 0;
-    transform: translateY(24px);
+    transform: translateY(calc(24 * var(--u)));
   }
 }
 .play-button,
@@ -48,18 +48,18 @@
   flex: none;
   display: grid;
   place-items: center;
-  width: 38px;
-  height: 38px;
+  width: calc(38 * var(--u));
+  height: calc(38 * var(--u));
   border: 1px solid var(--ink);
   border-radius: 50%;
-  font-size: 12px;
+  font-size: 0.75rem;
   text-align: center;
   transition: background 0.2s, color 0.2s;
 }
 .next-button {
-  width: 30px;
-  height: 30px;
-  font-size: 11px;
+  width: calc(30 * var(--u));
+  height: calc(30 * var(--u));
+  font-size: 0.6875rem;
   border-color: #11110f55;
 }
 .play-button:hover,
@@ -73,34 +73,34 @@
 }
 .now-playing__text span {
   display: block;
-  margin-bottom: 4px;
-  font-size: 7px;
+  margin-bottom: calc(4 * var(--u));
+  font-size: 0.4375rem;
   letter-spacing: 0.16em;
   color: #6c6b64;
 }
 .now-playing__text strong {
   display: block;
-  font: 700 11px var(--font-display);
+  font: 700 0.6875rem var(--font-display);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 .now-playing__text em {
   display: block;
-  margin-top: 2px;
+  margin-top: calc(2 * var(--u));
   font-style: normal;
-  font-size: 8px;
+  font-size: 0.5rem;
   color: #6c6b64;
 }
 .equalizer {
-  height: 24px;
+  height: calc(24 * var(--u));
   display: flex;
-  gap: 2px;
+  gap: calc(2 * var(--u));
   align-items: end;
 }
 .equalizer i {
   display: block;
-  width: 2px;
+  width: calc(2 * var(--u));
   height: 20%;
   background: var(--ink);
 }
@@ -124,12 +124,12 @@
 }
 @media (max-width: 620px) {
   .np-slot {
-    width: 300px;
+    width: calc(300 * var(--u));
     left: 8%;
   }
   .now-playing {
-    gap: 9px;
-    padding-right: 10px;
+    gap: calc(9 * var(--u));
+    padding-right: calc(10 * var(--u));
   }
   .equalizer {
     display: none;

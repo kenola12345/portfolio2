@@ -171,7 +171,7 @@ const others = albums.filter((a) => a.slug !== 'projects');
 <style>
   .work {
     --work-pad: var(--gutter);
-    padding: 120px var(--work-pad) 140px;
+    padding: calc(120 * var(--u)) var(--work-pad) calc(140 * var(--u));
     background: var(--paper);
     color: var(--ink);
     overflow: hidden;
@@ -180,25 +180,25 @@ const others = albums.filter((a) => a.slug !== 'projects');
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
-    padding-bottom: 55px;
+    padding-bottom: calc(55 * var(--u));
     border-bottom: 1px solid #aaa69a;
   }
   .eyebrow {
     display: flex;
-    gap: 18px;
+    gap: calc(18 * var(--u));
     align-items: center;
     text-transform: uppercase;
-    font-size: 10px;
+    font-size: 0.625rem;
     letter-spacing: 0.14em;
   }
   .eyebrow span {
     color: var(--coral);
   }
   h2 {
-    margin-top: 35px;
+    margin-top: calc(35 * var(--u));
     font-family: var(--font-display);
     font-weight: 800;
-    font-size: clamp(58px, 8vw, 118px);
+    font-size: clamp(3.625rem, 8vw, 7.375rem);
     letter-spacing: -0.075em;
     line-height: 0.82;
   }
@@ -207,19 +207,19 @@ const others = albums.filter((a) => a.slug !== 'projects');
     font-style: normal;
   }
   .lead {
-    width: 350px;
-    margin-bottom: 10px;
-    font-size: 11px;
+    width: calc(350 * var(--u));
+    margin-bottom: calc(10 * var(--u));
+    font-size: 0.6875rem;
     line-height: 1.7;
     color: #5d5b55;
   }
   /* 流れるレール：画面の端まで広げる。1 組ぶん（-50%）動いたら最初に戻るので、切れ目が見えない */
   .marquee {
-    --card-w: clamp(280px, 30vw, 520px);
+    --card-w: clamp(calc(280 * var(--u)), 30vw, calc(520 * var(--u)));
     --gap: 2.5vw;
-    margin: 70px calc(var(--work-pad) * -1) 0;
+    margin: calc(70 * var(--u)) calc(var(--work-pad) * -1) 0;
     overflow: hidden;
-    padding: 0 0 6px;
+    padding: 0 0 calc(6 * var(--u));
   }
   .track {
     display: flex;
@@ -258,30 +258,30 @@ const others = albums.filter((a) => a.slug !== 'projects');
   .more {
     display: flex;
     flex-wrap: wrap;
-    gap: 12px;
-    margin-top: 80px;
-    padding-top: 28px;
+    gap: calc(12 * var(--u));
+    margin-top: calc(80 * var(--u));
+    padding-top: calc(28 * var(--u));
     border-top: 1px solid #aaa69a;
   }
   .more-link {
     display: inline-flex;
     align-items: center;
-    gap: 10px;
-    padding: 12px 20px;
+    gap: calc(10 * var(--u));
+    padding: calc(12 * var(--u)) calc(20 * var(--u));
     border: 1px solid var(--ink);
-    border-radius: 999px;
-    font-size: 10px;
+    border-radius: calc(999 * var(--u));
+    font-size: 0.625rem;
     letter-spacing: 0.12em;
     text-transform: uppercase;
     transition: background 0.25s, color 0.25s, transform 0.25s;
   }
   .more-link :global(svg) {
-    width: 14px;
+    width: calc(14 * var(--u));
   }
   .more-link:hover {
     background: var(--ink);
     color: var(--paper);
-    transform: translateY(-2px);
+    transform: translateY(calc(-2 * var(--u)));
   }
   .more-link.primary {
     background: var(--ink);
@@ -296,28 +296,28 @@ const others = albums.filter((a) => a.slug !== 'projects');
   @media (max-width: 900px) {
     .section-header {
       align-items: flex-start;
-      gap: 30px;
+      gap: calc(30 * var(--u));
     }
   }
   @media (max-width: 620px) {
     .work {
-      --work-pad: 20px;
-      padding: 85px var(--work-pad);
+      --work-pad: calc(20 * var(--u));
+      padding: calc(85 * var(--u)) var(--work-pad);
     }
     .marquee {
       --card-w: 78vw;
-      --gap: 18px;
+      --gap: calc(18 * var(--u));
     }
     .section-header {
       display: block;
     }
     .lead {
       width: auto;
-      margin-top: 35px;
+      margin-top: calc(35 * var(--u));
     }
     h2 {
       /* 「FEATURED」（約 8.9em）が 1 行に収まる大きさ：画面幅から左右の余白（20px × 2）を引いて割る */
-      font-size: calc((100vw - 40px) / 9.3);
+      font-size: calc((100vw - 2.5rem) / 9.3);
       letter-spacing: -0.06em;
     }
   }

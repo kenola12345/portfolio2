@@ -31,8 +31,8 @@ const lang = getLang(Astro.url);
 <style>
   .about {
     position: relative;
-    min-height: 850px;
-    padding: 120px var(--gutter);
+    min-height: calc(850 * var(--u));
+    padding: calc(120 * var(--u)) var(--gutter);
     display: grid;
     grid-template-columns: 45% 55%;
     overflow: hidden;
@@ -41,15 +41,15 @@ const lang = getLang(Astro.url);
   .about::before {
     content: '';
     position: absolute;
-    left: -280px;
-    top: 100px;
-    width: 600px;
-    height: 600px;
+    left: calc(-280 * var(--u));
+    top: calc(100 * var(--u));
+    width: calc(600 * var(--u));
+    height: calc(600 * var(--u));
     border: 1px solid #b8ff3517;
     border-radius: 50%;
     box-shadow:
-      0 0 0 100px #b8ff3508,
-      0 0 0 200px #b8ff3505;
+      0 0 0 calc(100 * var(--u)) #b8ff3508,
+      0 0 0 calc(200 * var(--u)) #b8ff3505;
   }
   .about-copy {
     z-index: 1;
@@ -57,21 +57,21 @@ const lang = getLang(Astro.url);
   }
   .eyebrow {
     display: flex;
-    gap: 18px;
+    gap: calc(18 * var(--u));
     align-items: center;
     text-transform: uppercase;
-    font-size: 10px;
+    font-size: 0.625rem;
     letter-spacing: 0.14em;
   }
   .eyebrow span {
     color: var(--acid);
   }
   h2 {
-    margin-top: 35px;
+    margin-top: calc(35 * var(--u));
     font-family: var(--font-display);
     font-weight: 800;
     /* 右の列は幅が狭いので、他の見出しより少し小さくして、はみ出さないようにする */
-    font-size: clamp(50px, 6.4vw, 100px);
+    font-size: clamp(3.125rem, 6.4vw, 6.25rem);
     letter-spacing: -0.075em;
     line-height: 0.82;
   }
@@ -80,27 +80,27 @@ const lang = getLang(Astro.url);
     font-style: normal;
   }
   .about-lead {
-    max-width: 590px;
-    margin: 50px 0;
-    font-size: 14px;
+    max-width: calc(590 * var(--u));
+    margin: calc(50 * var(--u)) 0;
+    font-size: 0.875rem;
     line-height: 1.8;
     color: #aaa79e;
   }
   .full-story {
     display: inline-flex;
     align-items: center;
-    gap: 10px;
-    margin-top: 40px;
-    padding: 12px 20px;
+    gap: calc(10 * var(--u));
+    margin-top: calc(40 * var(--u));
+    padding: calc(12 * var(--u)) calc(20 * var(--u));
     border: 1px solid var(--line);
-    border-radius: 999px;
-    font-size: 10px;
+    border-radius: calc(999 * var(--u));
+    font-size: 0.625rem;
     letter-spacing: 0.12em;
     text-transform: uppercase;
     transition: background 0.25s, color 0.25s, border-color 0.25s;
   }
   .full-story :global(svg) {
-    width: 14px;
+    width: calc(14 * var(--u));
   }
   .full-story:hover {
     background: var(--acid);
@@ -117,7 +117,7 @@ const lang = getLang(Astro.url);
   }
   @media (max-width: 620px) {
     .about {
-      padding: 85px 20px;
+      padding: calc(85 * var(--u)) calc(20 * var(--u));
     }
     h2 {
       /* 「FEATURED」などの 8 文字が 1 行に収まる大きさ */
