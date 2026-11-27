@@ -65,9 +65,9 @@ const year = new Date().getFullYear();
     stroke-width: 0.7;
     transition: transform 0.7s var(--ease-out);
   }
-  /* 右上へ動きながら、縦の軸まわりに立体的に 1 回転する */
+  /* 右上へ動きながら、矢印の軸（斜めの線）そのものを中心に立体的に 1 回転する */
   .big:hover :global(svg) {
-    transform: perspective(calc(400 * var(--u))) translate(calc(10 * var(--u)), calc(-10 * var(--u))) rotateY(360deg);
+    transform: perspective(calc(400 * var(--u))) translate(calc(10 * var(--u)), calc(-10 * var(--u))) rotate(-45deg) rotateX(360deg) rotate(45deg);
   }
   .footer-bottom {
     display: flex;

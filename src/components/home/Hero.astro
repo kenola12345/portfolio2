@@ -153,9 +153,10 @@ const explore = t(home.explore).split('\n');
     height: calc(24 * var(--u));
     transition: transform 0.7s var(--ease-out);
   }
-  /* ホバーで、矢印が右上へ動きながら、縦の軸まわりに立体的に 1 回転（コインを回すように）する。円を描くようには回らない */
+  /* ホバーで、矢印が右上へ動きながら、矢印の軸（斜めの線）そのものを中心に立体的に 1 回転する。
+     右から順に：45° 回して斜めの線を横軸に合わせ → 横軸（X）まわりに回し → 元の向きへ戻す */
   .round-link:hover :global(svg) {
-    transform: perspective(calc(120 * var(--u))) translate(calc(3 * var(--u)), calc(-3 * var(--u))) rotateY(360deg);
+    transform: perspective(calc(120 * var(--u))) translate(calc(3 * var(--u)), calc(-3 * var(--u))) rotate(-45deg) rotateX(360deg) rotate(45deg);
   }
   .round-link span {
     text-align: center;
