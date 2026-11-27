@@ -413,6 +413,9 @@ export function createGame(canvas: HTMLCanvasElement, events: GameEvents): Game 
       else if (r < 0.65) h[away] = true;
     }
     if (p.y < c.y - 34 && rand() < 0.35 * o.aggr) h.jump = true;
+    // 空中の足場に乗っていて、相手が下にいるときは、「下」を押して足場から降りる（ときどき、理由なく降りることもある）
+    const onSoft = c.onGround && Math.abs(c.y - SOFT.y) < 1;
+    if (onSoft && ((p.y > c.y + 20 && rand() < 0.5 + o.aggr * 0.5) || rand() < 0.05)) h.down = true;
     // 場の端から落ちない
     if ((h.right && edgeRight) || (h.left && edgeLeft)) {
       h.right = false;
