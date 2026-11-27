@@ -151,10 +151,11 @@ const explore = t(home.explore).split('\n');
   .round-link :global(svg) {
     width: calc(24 * var(--u));
     height: calc(24 * var(--u));
-    transition: transform 0.4s var(--ease-out);
+    transition: transform 0.7s var(--ease-out);
   }
+  /* ホバーで、矢印が右上へ動きながら、縦の軸まわりに立体的に 1 回転（コインを回すように）する。円を描くようには回らない */
   .round-link:hover :global(svg) {
-    transform: translate(calc(3 * var(--u)), calc(-3 * var(--u)));
+    transform: perspective(calc(120 * var(--u))) translate(calc(3 * var(--u)), calc(-3 * var(--u))) rotateY(360deg);
   }
   .round-link span {
     text-align: center;
