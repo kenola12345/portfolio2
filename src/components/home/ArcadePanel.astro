@@ -76,6 +76,9 @@ const title = t(home.arcade.title).split('\n');
       d: 'right',
       D: 'right',
       ArrowUp: 'jump',
+      ArrowDown: 'down',
+      s: 'down',
+      S: 'down',
       w: 'jump',
       W: 'jump',
       ' ': 'jump',
@@ -88,7 +91,7 @@ const title = t(home.arcade.title).split('\n');
       x: 'heavy',
       X: 'heavy',
     };
-    const ALL_KEYS: InputKey[] = ['left', 'right', 'jump', 'light', 'heavy'];
+    const ALL_KEYS: InputKey[] = ['left', 'right', 'jump', 'down', 'light', 'heavy'];
 
     let game: Game | null = null;
     let playing = false;
@@ -198,11 +201,12 @@ const title = t(home.arcade.title).split('\n');
         game?.setInput('left', dx < -dead);
         game?.setInput('right', dx > dead);
         game?.setInput('jump', dy < -r.height * 0.28);
+        game?.setInput('down', dy > r.height * 0.28);
         const tilt = Math.max(-1, Math.min(1, dx / (r.width / 2))) * 28;
         stick.style.setProperty('--tilt', `${tilt}deg`);
       };
       const release = () => {
-        (['left', 'right', 'jump'] as const).forEach((k) => game?.setInput(k, false));
+        (['left', 'right', 'jump', 'down'] as const).forEach((k) => game?.setInput(k, false));
         stick.style.setProperty('--tilt', '0deg');
       };
       stick.addEventListener('pointerdown', (e) => {
