@@ -30,11 +30,14 @@ const year = new Date().getFullYear();
     <span>© {year} {t(artist.name).toUpperCase()}</span>
     <a class="top" href="#home">{t(home.contact.top)}</a>
   </div>
+  <!-- このサイトの技術スタック -->
+  <p class="stack">{t(home.contact.stack)}</p>
 </footer>
 
 <style>
   footer {
-    padding: 70px var(--gutter) 28px;
+    /* 下に余白を多めにとる：右下に固定されるミュージックプレイヤーが、文字に重ならないように */
+    padding: 70px var(--gutter) 108px;
     background: var(--acid);
     color: var(--ink);
   }
@@ -74,12 +77,19 @@ const year = new Date().getFullYear();
     font-size: 8px;
     letter-spacing: 0.1em;
   }
+  .stack {
+    margin-top: 14px;
+    font-size: 8px;
+    letter-spacing: 0.1em;
+    line-height: 1.8;
+    opacity: 0.75;
+  }
   .footer-bottom a:hover {
     text-decoration: underline;
   }
   @media (max-width: 620px) {
     footer {
-      padding: 60px 20px 25px;
+      padding: 60px 20px 108px;
     }
     .big {
       margin: 60px 0 80px;
