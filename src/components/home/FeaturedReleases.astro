@@ -118,15 +118,13 @@ const others = albums.filter((a) => a.slug !== 'projects');
     line-height: 1.7;
     color: #5d5b55;
   }
-  /* 流れるレール：画面の端まで広げ、両端はふわっと消す。1 組ぶん（-50%）動いたら最初に戻るので、切れ目が見えない */
+  /* 流れるレール：画面の端まで広げる。1 組ぶん（-50%）動いたら最初に戻るので、切れ目が見えない */
   .marquee {
     --card-w: clamp(280px, 30vw, 520px);
     --gap: 2.5vw;
     margin: 70px calc(var(--work-pad) * -1) 0;
     overflow: hidden;
     padding: 0 0 6px;
-    -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 6%, #000 94%, transparent 100%);
-    mask-image: linear-gradient(90deg, transparent 0, #000 6%, #000 94%, transparent 100%);
   }
   .track {
     display: flex;
