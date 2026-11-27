@@ -316,8 +316,8 @@ const others = albums.filter((a) => a.slug !== 'projects');
       margin-top: 35px;
     }
     h2 {
-      /* 「FEATURED」などの 8 文字が 1 行に収まる大きさ */
-      font-size: 12vw;
+      /* 「FEATURED」（約 8.9em）が 1 行に収まる大きさ：画面幅から左右の余白（20px × 2）を引いて割る */
+      font-size: calc((100vw - 40px) / 9.3);
       letter-spacing: -0.06em;
     }
   }
