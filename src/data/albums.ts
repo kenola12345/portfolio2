@@ -215,8 +215,28 @@ export const albums: Album[] = [
             ja: '2〜3 名の若手開発者に、コードレビューとベストプラクティスの勉強会でオンボーディングと育成を実施。',
           },
           {
-            en: 'Improved page load speed by up to 30%, set up SEO (meta, canonical, OGP) across client sites, and turned Figma, Photoshop and Adobe XD mockups into mobile-first pages.',
-            ja: 'ページ読み込み速度を最大 30% 改善し、クライアントサイト全体の SEO 設定（meta・canonical・OGP）を担当。Figma・Photoshop・Adobe XD のデザインをモバイルファーストのページに実装。',
+            en: 'Improved page load speed by up to 30%, set up SEO (meta, canonical, OGP) and accessibility (WCAG best practices) across client sites, and turned Figma, Photoshop and Adobe XD mockups into mobile-first pages.',
+            ja: 'ページ読み込み速度を最大 30% 改善し、クライアントサイト全体の SEO 設定（meta・canonical・OGP）とアクセシビリティ（WCAG のベストプラクティス）に対応。Figma・Photoshop・Adobe XD のデザインをモバイルファーストのページに実装。',
+          },
+        ],
+      },
+      {
+        slug: 'freelance',
+        title: { en: 'Freelance Web Engineer', ja: 'フリーランス（Web エンジニア）' },
+        meta: { en: 'Jan 2023 — May 2023', ja: '2023年1月 — 2023年5月' },
+        tags: ['React', 'TypeScript', 'Node.js', 'PostgreSQL', 'Firebase'],
+        description: {
+          en: 'Tokyo, Japan. Contract development of an e-commerce site and a restaurant website.',
+          ja: '東京。EC サイトとレストラン公式サイトの受託開発。',
+        },
+        bullets: [
+          {
+            en: 'E-commerce site for a jade jewelry store (team of 3 engineers and 1 designer): built product detail pages with React and TypeScript, and an add-to-cart API with Node.js and PostgreSQL connected through to checkout.',
+            ja: '翡翠ジュエリー EC サイト（エンジニア 3 名・デザイナー 1 名）。React・TypeScript で商品詳細ページを実装し、Node.js・PostgreSQL でカート追加 API を作成して、チェックアウトまでつなげました。',
+          },
+          {
+            en: 'Restaurant website renewal (solo): rebuilt a WordPress site in React, and built a reservation system with Node.js and Firebase, including an admin function for the owner to block out dates.',
+            ja: 'レストラン公式サイトのリニューアル（1 名で担当）。WordPress のサイトを React で作り直し、Node.js・Firebase で予約システムと、オーナーが予約不可日を設定できる管理機能を作りました。',
           },
         ],
       },

@@ -41,9 +41,9 @@ interface HomeCopy {
  * TODO(owner): 見出し（headline）は仮です。好きな言葉に変えてください。
  */
 export const home: HomeCopy = {
-  eyebrow: { en: 'Full Stack Engineer · Tokyo, Japan', ja: 'フルスタックエンジニア · 東京' },
+  eyebrow: { en: 'Frontend Engineer · Tokyo, Japan', ja: 'フロントエンドエンジニア · 東京' },
   headline: {
-    line1: { en: 'FULL STACK', ja: 'フルスタック' },
+    line1: { en: 'FRONTEND', ja: 'フロントエンド' },
     line2: { en: 'ENGINEER', ja: 'エンジニア' },
     line3: { en: 'IN', ja: '東京で' },
     line3Accent: { en: 'TOKYO', ja: '開発。' },
