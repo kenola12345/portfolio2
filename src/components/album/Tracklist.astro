@@ -342,11 +342,12 @@ const isExternal = (href: string) => /^https?:\/\//.test(href);
     }
   }
   @media (max-width: 620px) {
+    /* 開いた行の背景が付くので、文字やボタンが縁に張り付かないよう、左右に余白をとる（スマホの標準の余白 16px） */
     summary {
-      padding: 22px 0;
+      padding: 22px 16px;
     }
     .body {
-      padding: 0 0 30px;
+      padding: 0 16px 30px;
     }
     .shot {
       box-shadow: 6px 6px 0 var(--coral);

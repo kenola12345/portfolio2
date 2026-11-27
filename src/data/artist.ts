@@ -28,7 +28,7 @@ export const artist: Artist = {
     },
     {
       label: { en: 'Hobbies', ja: '趣味' },
-      value: { en: 'Breakdancing · Bouldering · Video games · Reading', ja: 'ブレイクダンス · ボルダリング · ゲーム · 読書' },
+      value: { en: 'Breakdancing · Bouldering · Video games · Reading', ja: 'ブレイクダンス · ボルダリング · ビデオゲーム · 読書' },
     },
     {
       label: { en: 'Education', ja: '学歴' },

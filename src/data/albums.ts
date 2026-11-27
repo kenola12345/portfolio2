@@ -24,7 +24,7 @@ export const albums: Album[] = [
         tags: ['Astro', 'React', 'Tailwind CSS', 'GSAP'],
         description: {
           en: 'Portfolio website for Ryuichi Oshimoto, a professional photographer. I designed and built a responsive, easy-to-browse site with themed photo galleries, an about page and a contact form, using smooth scrolling and GSAP animations to let the photographs take centre stage.',
-          ja: 'プロカメラマン・押本隆一さんのポートフォリオサイト。デザインから開発までを担当し、テーマ別のフォトギャラリー、プロフィールページ、お問い合わせフォームを備えたレスポンシブなサイトに仕上げました。スムーズなスクロールと GSAP のアニメーションで、写真が主役になるように見せています。',
+          ja: 'プロカメラマン・押本隆一さんのポートフォリオサイトです。テーマ別のフォトギャラリー、プロフィールページ、お問い合わせフォームを備えた、見やすいレスポンシブサイトを設計・開発しました。スムーズなスクロールと GSAP のアニメーションで、写真が引き立つように仕上げています。',
         },
         images: [
           {
@@ -43,7 +43,7 @@ export const albums: Album[] = [
         tags: ['React', 'Tailwind CSS', 'Firebase'],
         description: {
           en: 'Official website for HAYAMA Setatei, a French restaurant in Hayama, Japan. I designed and built the site in Japanese and English, and added a Firebase backend and an email system for reservation inquiries, which increased the number of reservations.',
-          ja: '葉山のフレンチレストラン「HAYAMA せた亭」の公式サイト。日本語・英語の 2 言語でデザインから開発までを担当し、Firebase のバックエンドと、予約のお問い合わせをメールで受け付ける仕組みを導入して、予約数の増加につなげました。',
+          ja: '葉山のフレンチレストラン「HAYAMA せた亭」の公式サイトです。日本語・英語の 2 言語でサイトを設計・開発し、Firebase のバックエンドと、予約のお問い合わせをメールで受け付ける仕組みを追加しました。その結果、予約数が増えました。',
         },
         images: [
           {
@@ -62,7 +62,7 @@ export const albums: Album[] = [
         tags: ['Next.js','TypeScript','React Three Fiber','GSAP','Framer Motion','Jest'],
         description: {
           en: 'Official brand site for INITIA, the housing brand of a major real estate developer: new condominiums, new detached houses and renovation, with property search, renovation and case-study pages, listings from external APIs, and motion and 3D effects.',
-          ja: '大手不動産デベロッパーの住まいブランド「INITIA」の公式ブランドサイト。新築マンション・新築一戸建・リノベーションを紹介し、物件検索やリノベーション・事例ページ、外部 API の物件情報連携、モーションや 3D 表現を実装しました。',
+          ja: '大手不動産デベロッパーの住まいブランド「INITIA」の公式ブランドサイトです。新築マンション、新築一戸建て、リノベーションを紹介しており、物件検索、リノベーション・事例ページ、外部 API との物件情報連携、モーションや 3D 表現を実装しました。',
         },
         images: [
           {
@@ -81,7 +81,7 @@ export const albums: Album[] = [
         tags: ['Astro','TypeScript','Tailwind CSS','GitHub Actions','reCAPTCHA'],
         description: {
           en: 'Official website for INFINITO HOTEL & SPA in Nanki-Shirahama: hot spring, rooms, cuisine and sightseeing. Available in seven languages, with reCAPTCHA-protected forms and automated staging and production deploys.',
-          ja: '南紀白浜の「INFINITO HOTEL & SPA」の公式サイト。温泉・客室・食事・観光を紹介します。7 言語に対応し、reCAPTCHA 付きのフォームと、ステージング／本番への自動デプロイを備えています。',
+          ja: '南紀白浜の「INFINITO HOTEL & SPA」の公式サイトです。温泉、客室、お食事、観光情報を紹介しています。7 言語に対応し、reCAPTCHA を導入したフォームや、ステージング環境・本番環境への自動デプロイを備えています。',
         },
         images: [
           {
@@ -100,7 +100,7 @@ export const albums: Album[] = [
         tags: ['Astro','Swiper','Panzoom','Vitest'],
         description: {
           en: 'Site for INITIA LOUNGE Mita, a housing gallery by Mita Station in Tokyo: the concept room, the visit flow, events and the property lineup, with an event slider and modals and zoomable floor plans.',
-          ja: '三田駅すぐの住まいのギャラリー「イニシアラウンジ三田」のサイト。コンセプトルーム、ご案内の流れ、イベント、ラインアップを紹介し、イベントスライダーとモーダル、拡大できる間取り図を実装しました。',
+          ja: '三田駅近くの住まいのギャラリー「イニシアラウンジ三田」のサイトです。コンセプトルーム、ご来場の流れ、イベント、物件ラインアップを紹介し、イベントスライダーやモーダル、拡大して見られる間取り図を実装しました。',
         },
         images: [
           {
@@ -119,7 +119,7 @@ export const albums: Album[] = [
         tags: ['EJS','SCSS','Barba.js','Google Maps'],
         description: {
           en: 'Brand site for ONE ROOF, a line of luxury rental residences in Tokyo and Osaka: more than 20 property pages, a Google Maps property map, page transitions, and Japanese and English versions.',
-          ja: '東京・大阪の高級賃貸レジデンス「ONE ROOF」のブランドサイト。20 ページ以上の物件ページ、Google Maps の物件マップ、ページ遷移の演出、日本語・英語の 2 言語に対応しています。',
+          ja: '東京・大阪の高級賃貸レジデンス「ONE ROOF」のブランドサイトです。20 ページ以上の物件ページ、Google Maps を使った物件マップ、ページ遷移の演出を実装し、日本語・英語の 2 言語に対応しています。',
         },
         images: [
           {
@@ -139,7 +139,7 @@ export const albums: Album[] = [
     title: { en: 'Work Experience', ja: '職歴' },
     blurb: {
       en: "Where I've worked and what I did there: AXR, Holon Inc., DIGITAL Hearts and Willworks, plus my education.",
-      ja: 'これまでの職歴と担当した仕事（AXR、Holon Inc.、DIGITAL Hearts、Willworks）と学歴。',
+      ja: '職歴と学歴。AXR、Holon Inc.、DIGITAL Hearts、Willworks での仕事内容を紹介します。',
     },
     // 最新の在籍年
     year: 2026,
@@ -159,28 +159,28 @@ export const albums: Album[] = [
         tags: ['Node.js', 'REST API', 'SQL', 'Docker', 'Claude Code'],
         description: {
           en: 'Tokyo, Japan. Joining a team that builds with AI-driven workflows, and growing from frontend into backend engineering.',
-          ja: '東京。AI 駆動の開発ワークフローで開発するチームに加わり、フロントエンドからバックエンド開発へ領域を広げています。',
+          ja: '東京勤務。AI を活用した開発ワークフローのチームに加わり、フロントエンドからバックエンド開発へと領域を広げています。',
         },
         bullets: [
           {
             en: 'Onboarding into AI-driven development with Claude Code and other AI-assisted tools to speed up development and code analysis.',
-            ja: 'Claude Code などの AI 開発支援ツールを使い、開発やコード解析を速める AI 駆動開発のオンボーディングに参加。',
+            ja: 'Claude Code などの AI 開発支援ツールを使って、開発やコード解析を効率化する AI 駆動開発を学んでいます。',
           },
           {
             en: 'Hands-on backend work with Node.js, REST API architecture, database design and Docker-based development environments.',
-            ja: 'Node.js、REST API の設計、データベース設計、Docker による開発環境で、バックエンド開発を実践。',
+            ja: 'Node.js による REST API の設計、データベース設計、Docker を使った開発環境の構築など、バックエンド開発を実践しています。',
           },
           {
             en: 'Tracing API request lifecycles across routes, controllers, services and database layers to understand architecture, business logic and data flow of existing codebases.',
-            ja: 'ルート、コントローラー、サービス、データベース層をまたいで API リクエストの流れを追い、既存コードのアーキテクチャ・業務ロジック・データフローを把握。',
+            ja: 'ルート、コントローラー、サービス、データベース層をたどって API リクエストの流れを追い、既存コードのアーキテクチャ、業務ロジック、データの流れを理解しています。',
           },
           {
             en: 'Relational database fundamentals: schema design, table relationships, foreign keys, SQL, indexing and transactions (ACID).',
-            ja: 'リレーショナルデータベースの基礎（スキーマ設計、テーブル関係、外部キー、SQL、インデックス、トランザクション/ACID）。',
+            ja: 'リレーショナルデータベースの基礎を学習しました。スキーマ設計、テーブル間のリレーション、外部キー、SQL、インデックス、トランザクション（ACID）などです。',
           },
           {
             en: 'Backend system design: asynchronous operations, error handling, input validation, authentication and database connection management.',
-            ja: 'バックエンドのシステム設計（非同期処理、エラーハンドリング、入力検証、認証、DB 接続管理）。',
+            ja: 'バックエンドのシステム設計として、非同期処理、エラーハンドリング、入力値の検証、認証、データベース接続の管理に取り組んでいます。',
           },
         ],
       },
@@ -191,32 +191,32 @@ export const albums: Album[] = [
         tags: ['Next.js', 'Astro', 'TypeScript', 'React Three Fiber', 'GSAP', 'Tailwind CSS', 'Playwright'],
         description: {
           en: 'Tokyo, Japan. A web development agency building client-facing web applications for real estate, hospitality and e-commerce. Led end-to-end development on 10+ client projects.',
-          ja: '東京。不動産・ホスピタリティ・EC 向けにクライアントのウェブアプリを制作する Web 制作会社。10 件以上の案件を企画から公開まで一貫して担当。',
+          ja: '東京のウェブ制作会社で、不動産・ホスピタリティ・EC 向けのウェブアプリケーションを制作。10 件以上の案件で、企画から公開までを一貫して担当しました。',
         },
         bullets: [
           {
             en: 'Housing brand site for a major real estate developer: Next.js (SSG) and TypeScript with property search, renovation and case-study pages; external APIs for listings, rankings and open houses; 3D and motion with React Three Fiber, GSAP and Framer Motion; Jest tests.',
-            ja: '大手不動産デベロッパーの住宅ブランドサイト。Next.js（SSG）と TypeScript で物件検索・リノベーション・事例ページを構築し、物件情報やランキング等の外部 API を連携。React Three Fiber・GSAP・Framer Motion で 3D とモーションを実装し、Jest でテスト。',
+            ja: '大手不動産デベロッパーの住まいブランドサイト。Next.js（SSG）と TypeScript で、物件検索・リノベーション・事例ページを構築し、物件情報、ランキング、オープンハウスなどの外部 API と連携しました。React Three Fiber、GSAP、Framer Motion で 3D 表現とモーションを実装し、Jest でテストを書きました。',
           },
           {
             en: 'Resort hotel official site in 7 languages (Japanese, English, Simplified and Traditional Chinese, Korean, Spanish, French): Astro, TypeScript and Tailwind CSS, reCAPTCHA and form validation, GTM migrated off Universal Analytics, staging and production deploys automated with GitHub Actions.',
-            ja: 'リゾートホテル公式サイト（日・英・中国語簡体/繁体・韓・西・仏の 7 言語）。Astro・TypeScript・Tailwind CSS で構築し、reCAPTCHA とフォーム検証、GTM のユニバーサルアナリティクスからの移行、GitHub Actions によるステージング/本番デプロイの自動化を担当。',
+            ja: 'リゾートホテルの公式サイト（日本語、英語、中国語の簡体字・繁体字、韓国語、スペイン語、フランス語の 7 言語）。Astro、TypeScript、Tailwind CSS で構築し、reCAPTCHA とフォーム検証を導入しました。あわせて、GTM をユニバーサルアナリティクスから移行し、GitHub Actions でステージング・本番へのデプロイを自動化しました。',
           },
           {
             en: 'Condominium and rental property sites: scroll-linked animation with GSAP and Lenis, Barba.js page transitions, Google Maps property maps, 20+ property pages, an Astro event slider and Vitest tests.',
-            ja: '分譲マンション・賃貸物件サイト。GSAP と Lenis によるスクロール連動アニメーション、Barba.js のページ遷移、Google Maps の物件マップ、20 ページ以上の物件ページ、Astro のイベントスライダー、Vitest のテスト。',
+            ja: '分譲マンション・賃貸物件のサイト。GSAP と Lenis によるスクロール連動アニメーション、Barba.js によるページ遷移、Google Maps の物件マップ、20 ページ以上の物件ページ、Astro 製のイベントスライダーを実装し、Vitest でテストを書きました。',
           },
           {
             en: 'Landing pages for a clinic, a cosmetics brand and a shopping-center app: Astro, EJS, GSAP, Playwright and Netlify; per-clinic pricing generated statically from URL parameters.',
-            ja: 'クリニック・化粧品・ショッピングセンターアプリのランディングページ。Astro・EJS・GSAP・Playwright・Netlify で構築し、URL パラメータからクリニックごとの料金を静的に生成。',
+            ja: 'クリニック、化粧品ブランド、ショッピングセンターアプリのランディングページ。Astro、EJS、GSAP、Playwright、Netlify を使い、クリニックごとの料金を URL パラメータから静的に生成しました。',
           },
           {
             en: 'Mentored and onboarded 2–3 junior developers through code reviews and best-practice workshops.',
-            ja: '2〜3 名の若手開発者に、コードレビューとベストプラクティスの勉強会でオンボーディングと育成を実施。',
+            ja: '2〜3 名の若手開発者を、コードレビューやベストプラクティスの勉強会を通じてオンボーディングし、育成しました。',
           },
           {
             en: 'Improved page load speed by up to 30%, set up SEO (meta, canonical, OGP) and accessibility (WCAG best practices) across client sites, and turned Figma, Photoshop and Adobe XD mockups into mobile-first pages.',
-            ja: 'ページ読み込み速度を最大 30% 改善し、クライアントサイト全体の SEO 設定（meta・canonical・OGP）とアクセシビリティ（WCAG のベストプラクティス）に対応。Figma・Photoshop・Adobe XD のデザインをモバイルファーストのページに実装。',
+            ja: 'ページの読み込み速度を最大 30% 改善。クライアントサイト全体で SEO 設定（meta、canonical、OGP）とアクセシビリティ（WCAG のベストプラクティス）に対応し、Figma、Photoshop、Adobe XD のデザインをモバイルファーストのページに実装しました。',
           },
         ],
       },
@@ -246,20 +246,20 @@ export const albums: Album[] = [
         meta: { en: 'Jan 2021 — Apr 2023', ja: '2021年1月 — 2023年4月' },
         description: {
           en: 'Tokyo, Japan. Part-time.',
-          ja: '東京。パートタイム。',
+          ja: '東京勤務（パートタイム）。',
         },
         bullets: [
           {
             en: 'Tested the linguistics of multiple video game and trading card game titles at various offices in Tokyo.',
-            ja: '東京のさまざまなオフィスで、複数のビデオゲーム／トレーディングカードゲームのタイトルについて、言語面のテストを担当。',
+            ja: '東京の複数のオフィスで、ビデオゲームやトレーディングカードゲームの複数タイトルについて、言語面のテストを担当しました。',
           },
           {
             en: 'Found and logged mistakes in grammar, consistency, nuance and more in the UI and dialogue, and reported them to clients in Excel, in Japanese or English depending on the client.',
-            ja: 'UI やセリフに含まれる文法・表記の一貫性・ニュアンスなどの誤りを洗い出し、クライアントの希望に応じて日本語または英語で、Excel にまとめて報告。',
+            ja: 'UI やセリフにある文法、表記の揺れ、ニュアンスなどの誤りを見つけて記録し、クライアントに合わせて日本語または英語で、Excel にまとめて報告しました。',
           },
           {
             en: 'Translated untranslated or mistranslated text, mainly from Japanese to English.',
-            ja: '未翻訳・誤訳のテキストを、主に日本語から英語へ翻訳。',
+            ja: '未翻訳や誤訳のテキストを、主に日本語から英語へ翻訳しました。',
           },
         ],
       },
@@ -269,24 +269,24 @@ export const albums: Album[] = [
         meta: { en: 'Jan 2020 — Apr 2020', ja: '2020年1月 — 2020年4月' },
         description: {
           en: 'Greater Tokyo Area. Internship.',
-          ja: '東京近郊。インターンシップ。',
+          ja: '東京近郊（インターンシップ）。',
         },
         bullets: [
           {
             en: 'Managed job descriptions and candidates for job openings at various Japanese and foreign companies.',
-            ja: '日本企業・外資系企業のさまざまな求人について、求人票（ジョブディスクリプション）と候補者を管理。',
+            ja: '日系・外資系のさまざまな企業の求人について、求人票（ジョブディスクリプション）と候補者を管理しました。',
           },
           {
             en: "Created the company's pages on LinkedIn and Gaijin-Pot, which required translating company information from Japanese to English.",
-            ja: '会社の LinkedIn と Gaijin-Pot のページを作成。会社情報を日本語から英語へ翻訳しました。',
+            ja: '会社の LinkedIn と Gaijin-Pot のページを作成し、そのために会社情報を日本語から英語へ翻訳しました。',
           },
           {
             en: 'Analyzed data from Porters HR (Business Cloud) using Excel and R to design a better approach to HR and recruiting, and presented the findings in Japanese to other employees, including the president.',
-            ja: 'Porters HR（Business Cloud）のデータを Excel と R で分析し、採用・人事の進め方を最適化する案をまとめ、社長を含む社員に日本語でプレゼンテーション。',
+            ja: 'Porters HR（Business Cloud）のデータを Excel と R で分析し、採用・人事のより良い進め方を考案。その結果を、社長を含む社員の前で日本語で発表しました。',
           },
           {
             en: 'Translated job descriptions and company details from English to Japanese and from Japanese to English.',
-            ja: '求人票や会社情報を、英語から日本語、日本語から英語へ翻訳。',
+            ja: '求人票や会社情報を、英語から日本語、日本語から英語へ翻訳しました。',
           },
         ],
       },
@@ -297,7 +297,7 @@ export const albums: Album[] = [
         meta: { en: '2017 — 2020', ja: '2017年 — 2020年' },
         description: {
           en: 'Bachelor of Arts in Economics, studying behavioral economics and econometrics. GPA 4.0.',
-          ja: '経済学士。行動経済学・計量経済学を専攻。GPA 4.0。',
+          ja: '経済学士（BA）。行動経済学と計量経済学を学びました。GPA 4.0。',
         },
       },
       {
@@ -419,7 +419,7 @@ export const albums: Album[] = [
         meta: { en: 'kenola12345', ja: 'kenola12345' },
         description: {
           en: 'My code and side projects.',
-          ja: 'コードや個人開発のプロジェクトはこちら。',
+          ja: 'コードや個人開発のプロジェクトは、こちらでご覧いただけます。',
         },
         links: [{ label: { en: 'GitHub', ja: 'GitHub' }, href: 'https://github.com/kenola12345' }],
       },
@@ -429,7 +429,7 @@ export const albums: Album[] = [
         meta: { en: 'kentaro-oshimoto', ja: 'kentaro-oshimoto' },
         description: {
           en: 'My professional profile and work history.',
-          ja: '職務経歴などのプロフィールはこちら。',
+          ja: '職務経歴などのプロフィールは、こちらでご覧いただけます。',
         },
         links: [{ label: { en: 'LinkedIn', ja: 'LinkedIn' }, href: 'https://www.linkedin.com/in/kentaro-oshimoto/' }],
       },

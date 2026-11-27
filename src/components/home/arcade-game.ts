@@ -33,7 +33,7 @@ const C = {
 
 export type GameState = 'ready' | 'playing' | 'won' | 'over';
 export type SoundName = 'jump' | 'light' | 'heavy' | 'hit' | 'smash' | 'ko' | 'round' | 'win' | 'over';
-export type InputKey = 'left' | 'right' | 'jump' | 'light' | 'heavy';
+export type InputKey = 'left' | 'right' | 'jump' | 'down' | 'light' | 'heavy';
 
 export interface GameEvents {
   onSound?: (name: SoundName) => void;
@@ -70,10 +70,11 @@ interface Input {
   left: boolean;
   right: boolean;
   jump: boolean;
+  down: boolean;
   light: boolean;
   heavy: boolean;
 }
-const noInput = (): Input => ({ left: false, right: false, jump: false, light: false, heavy: false });
+const noInput = (): Input => ({ left: false, right: false, jump: false, down: false, light: false, heavy: false });
 
 /** 攻撃 2 種。startup = 発生まで / active = 持続 / recovery = 硬直（フレーム）。reach = 届く距離（px） */
 const MOVES = {
@@ -97,6 +98,8 @@ interface Fighter {
   stocks: number;
   hitstun: number;
   invuln: number;
+  /** 下を押して、空中の足場をすり抜けている残りフレーム数 */
+  drop: number;
   /** やられて、復活を待っているフレーム数（0 = 生きている） */
   respawn: number;
   out: boolean;
@@ -184,6 +187,7 @@ export function createGame(canvas: HTMLCanvasElement, events: GameEvents): Game 
       stocks: 3,
       hitstun: 0,
       invuln: 0,
+      drop: 0,
       respawn: 0,
       out: false,
       atk: null,
@@ -296,6 +300,12 @@ export function createGame(canvas: HTMLCanvasElement, events: GameEvents): Game 
         f.vx = Math.max(-max, Math.min(max, f.vx));
         f.face = dir > 0 ? 1 : -1;
       }
+      // 空中の足場の上で「下」を押すと、足場をすり抜けて降りる
+      if (inp.down && f.onGround && f.y <= SOFT.y + 0.5 && f.y >= SOFT.y - 0.5 && f.x > SOFT.x0 && f.x < SOFT.x1) {
+        f.drop = 14;
+        f.onGround = false;
+        f.vy = Math.max(f.vy, 1);
+      }
       if (pressed('jump') && f.jumps > 0) {
         f.vy = f.onGround ? -4.7 : -4.2;
         f.jumps--;
@@ -312,6 +322,7 @@ export function createGame(canvas: HTMLCanvasElement, events: GameEvents): Game 
   function physics(f: Fighter) {
     if (f.respawn > 0 || f.out) return;
     if (f.invuln > 0) f.invuln--;
+    if (f.drop > 0) f.drop--;
     if (f.flash > 0) f.flash--;
 
     // 攻撃中は、地上ではその場でほぼ止まる
@@ -337,6 +348,7 @@ export function createGame(canvas: HTMLCanvasElement, events: GameEvents): Game 
     f.onGround = false;
     if (f.vy >= 0) {
       for (const p of [STAGE, SOFT]) {
+        if (p === SOFT && f.drop > 0) continue; // すり抜け中
         const over = f.x + f.w / 2 > p.x0 && f.x - f.w / 2 < p.x1;
         if (over && prevY <= p.y + 0.5 && f.y >= p.y) {
           f.y = p.y;
@@ -656,6 +668,8 @@ export function createGame(canvas: HTMLCanvasElement, events: GameEvents): Game 
         tick();
       }
     }
+    // ゲームオーバー・クリア後は、揺れを止める（揺れの減衰は tick の中で行うので、止まった画面では減らないため）
+    if (state !== 'playing' || phase === 'over' || phase === 'won') shake = 0;
     if (player) draw();
   }
 
