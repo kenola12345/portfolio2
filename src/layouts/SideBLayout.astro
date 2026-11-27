@@ -67,6 +67,19 @@ const hrefJa = lang === 'ja' ? canonical : site ? abs(alt.href) : undefined;
     />
 
     <title>{title}</title>
+    <!-- ワイプで移動してきたとき、最初から画面を覆った状態にする（描画前に付けないと、ちらつく）。
+         万一スクリプトが動かなくても、3 秒で外す -->
+    <script is:inline>
+      try {
+        if (sessionStorage.getItem('side-b-wipe')) {
+          sessionStorage.removeItem('side-b-wipe');
+          document.documentElement.setAttribute('data-wipe-arrive', '');
+          setTimeout(function () {
+            document.documentElement.removeAttribute('data-wipe-arrive');
+          }, 3000);
+        }
+      } catch (e) {}
+    </script>
   </head>
   <body>
     <PageWipe />

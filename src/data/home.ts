@@ -14,7 +14,21 @@ interface HomeCopy {
   work: { eyebrow: L10n; title: L10n; titleAccent: L10n; lead: L10n; all: L10n; view: L10n };
   pages: { title: L10n };
   about: { eyebrow: L10n; title: L10n; titleAccent: L10n; skillsTitle: L10n; more: L10n };
-  arcade: { score: L10n; title: L10n; start: L10n };
+  arcade: {
+    score: L10n;
+    title: L10n;
+    start: L10n;
+    play: L10n;
+    exit: L10n;
+    controls: L10n;
+    win: L10n;
+    over: L10n;
+    again: L10n;
+    lives: L10n;
+    left: L10n;
+    right: L10n;
+    jump: L10n;
+  };
   contact: { kicker: L10n; cta: L10n; ctaAccent: L10n; top: L10n };
   nav: { work: L10n; about: L10n; contact: L10n; menu: L10n; sayHello: L10n };
 }
@@ -69,6 +83,16 @@ export const home: HomeCopy = {
     score: { en: 'SCORE 001337', ja: 'スコア 001337' },
     title: { en: 'READY\nPLAYER ONE?', ja: '準備は\nいいですか？' },
     start: { en: 'PRESS START TO COLLABORATE', ja: 'スタートで一緒に作ろう' },
+    play: { en: 'CLICK TO PLAY', ja: 'クリックでプレイ' },
+    exit: { en: 'Exit game', ja: 'ゲームを終了' },
+    controls: { en: '← → MOVE   SPACE JUMP', ja: '← → 移動   SPACE ジャンプ' },
+    win: { en: 'YOU WIN!', ja: 'クリア！' },
+    over: { en: 'GAME OVER', ja: 'ゲームオーバー' },
+    again: { en: 'PLAY AGAIN', ja: 'もう一度' },
+    lives: { en: 'LIVES', ja: 'ライフ' },
+    left: { en: 'Move left', ja: '左へ移動' },
+    right: { en: 'Move right', ja: '右へ移動' },
+    jump: { en: 'Jump', ja: 'ジャンプ' },
   },
   contact: {
     kicker: { en: 'GOT A PROJECT\nIN MIND?', ja: 'お仕事の\nご相談は？' },

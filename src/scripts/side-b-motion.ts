@@ -11,8 +11,13 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
 
+/** ワイプで移動してきたか（このあとワイプが上へ抜けるので、文字の登場を少し待つ） */
+const arrivedByWipe = document.documentElement.hasAttribute('data-wipe-arrive');
+const introDelay = arrivedByWipe ? 0.45 : 0;
+
 function heroIntro() {
   gsap.from('[data-hero="line"]', {
+    delay: introDelay,
     y: 60,
     opacity: 0,
     duration: 0.9,
@@ -25,11 +30,11 @@ function heroIntro() {
     opacity: 0,
     duration: 0.8,
     ease: 'back.out(1.8)',
-    delay: 0.5,
+    delay: 0.5 + introDelay,
     stagger: 0.12,
     clearProps: 'transform,opacity',
   });
-  gsap.from('[data-reveal-nav]', { y: -24, opacity: 0, duration: 0.7, ease: 'power2.out', clearProps: 'transform,opacity' });
+  gsap.from('[data-reveal-nav]', { delay: introDelay, y: -24, opacity: 0, duration: 0.7, ease: 'power2.out', clearProps: 'transform,opacity' });
 }
 
 function scrollReveals() {
@@ -56,9 +61,37 @@ function scrollReveals() {
 function pageWipe() {
   const wipe = document.querySelector<HTMLElement>('.page-wipe');
   if (!wipe) return;
+  const root = document.documentElement;
+
+  /** 移動してきた直後：覆った状態から、上へ抜けていく */
+  function reveal() {
+    if (!root.hasAttribute('data-wipe-arrive')) return;
+    wipe!.classList.add('leaving');
+    root.removeAttribute('data-wipe-arrive');
+    const done = (e: TransitionEvent) => {
+      // 子（文字）の transitionend は無視して、ワイプ本体のものだけ受ける
+      if (e.target !== wipe || e.propertyName !== 'transform') return;
+      wipe!.removeEventListener('transitionend', done);
+      // 画面の外（上）から下へ戻すときに、画面を横切って見えないよう、動きなしで戻す
+      wipe!.style.transition = 'none';
+      wipe!.classList.remove('leaving');
+      void wipe!.offsetHeight;
+      wipe!.style.transition = '';
+    };
+    wipe!.addEventListener('transitionend', done);
+  }
+  if (root.hasAttribute('data-wipe-arrive')) {
+    // フォントの読み込みを少し待ってから開く（ただし待ちすぎない）
+    const ready = Promise.race([document.fonts.ready, new Promise((r) => window.setTimeout(r, 900))]);
+    void ready.then(() => requestAnimationFrame(reveal));
+  }
 
   // 戻る・進むでキャッシュから復元されたとき、閉じたままにならないようにする
-  window.addEventListener('pageshow', () => wipe.classList.remove('active'));
+  window.addEventListener('pageshow', (e) => {
+    if (!e.persisted) return;
+    wipe.classList.remove('active');
+    root.removeAttribute('data-wipe-arrive');
+  });
 
   document.addEventListener('click', (event) => {
     if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
@@ -71,10 +104,15 @@ function pageWipe() {
     if (url.pathname === location.pathname && url.hash) return;
 
     event.preventDefault();
+    try {
+      sessionStorage.setItem('side-b-wipe', '1');
+    } catch {
+      /* 保存できなくても、移動はできる（開くときのワイプが出ないだけ） */
+    }
     wipe.classList.add('active');
     window.setTimeout(() => {
       location.href = url.href;
-    }, 380);
+    }, 470);
   });
 }
 

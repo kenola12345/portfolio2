@@ -9,17 +9,167 @@ const t = useT(Astro.url);
 const title = t(home.arcade.title).split('\n');
 ---
 
-<div class="arcade-panel" data-reveal>
-  <a class="screen" href="#contact" aria-label={t(home.arcade.start)}>
-    <span class="screen-score">{t(home.arcade.score)}</span>
-    <div class="space-invader" aria-hidden="true">
-      {Array.from({ length: 15 }, () => <i />)}
+<div
+  class="arcade-panel"
+  data-reveal
+  data-lives={t(home.arcade.lives)}
+  data-win={t(home.arcade.win)}
+  data-over={t(home.arcade.over)}
+>
+  <!-- 画面をクリック（または Enter）でゲーム開始 -->
+  <div class="screen" role="button" tabindex="0" aria-label={t(home.arcade.play)} data-arcade-screen>
+    <div class="attract" data-attract>
+      <span class="screen-score">{t(home.arcade.score)}</span>
+      <div class="space-invader" aria-hidden="true">
+        {Array.from({ length: 15 }, () => <i />)}
+      </div>
+      <strong>{title[0]}<br />{title[1]}</strong>
+      <small>{t(home.arcade.play)}</small>
     </div>
-    <strong>{title[0]}<br />{title[1]}</strong>
-    <small>{t(home.arcade.start)}</small>
-  </a>
+
+    <div class="stage" data-stage hidden>
+      <canvas data-canvas aria-label="Platformer game"></canvas>
+      <p class="hud"><span data-hud-score>SCORE 000000</span><span data-hud-lives></span></p>
+      <p class="hint">{t(home.arcade.controls)}</p>
+      <button type="button" class="exit" data-exit aria-label={t(home.arcade.exit)}>✕</button>
+
+      <!-- スマホ用のボタン -->
+      <div class="touch" aria-hidden="false">
+        <button type="button" data-key="left" aria-label={t(home.arcade.left)}>◀</button>
+        <button type="button" data-key="right" aria-label={t(home.arcade.right)}>▶</button>
+        <button type="button" data-key="jump" class="jump" aria-label={t(home.arcade.jump)}>▲</button>
+      </div>
+
+      <!-- クリア・ゲームオーバーの表示 -->
+      <div class="result" data-result hidden>
+        <strong data-result-title></strong>
+        <span data-result-score></span>
+        <button type="button" data-again>{t(home.arcade.again)}</button>
+        <a href="#contact" data-collab>{t(home.arcade.start)} ↗</a>
+      </div>
+    </div>
+  </div>
   <div class="controls" aria-hidden="true"><span></span><b></b><i></i></div>
 </div>
+
+<script>
+  import { createGame, type Game } from './arcade-game';
+
+  const panel = document.querySelector<HTMLElement>('.arcade-panel');
+  const screen = panel?.querySelector<HTMLElement>('[data-arcade-screen]');
+  const attract = panel?.querySelector<HTMLElement>('[data-attract]');
+  const stage = panel?.querySelector<HTMLElement>('[data-stage]');
+  const canvas = panel?.querySelector<HTMLCanvasElement>('[data-canvas]');
+  const result = panel?.querySelector<HTMLElement>('[data-result]');
+
+  if (panel && screen && attract && stage && canvas && result) {
+    const hudScore = panel.querySelector<HTMLElement>('[data-hud-score]')!;
+    const hudLives = panel.querySelector<HTMLElement>('[data-hud-lives]')!;
+    const resultTitle = panel.querySelector<HTMLElement>('[data-result-title]')!;
+    const resultScore = panel.querySelector<HTMLElement>('[data-result-score]')!;
+    const KEYS: Record<string, 'left' | 'right' | 'jump'> = {
+      ArrowLeft: 'left',
+      a: 'left',
+      A: 'left',
+      ArrowRight: 'right',
+      d: 'right',
+      D: 'right',
+      ArrowUp: 'jump',
+      w: 'jump',
+      W: 'jump',
+      ' ': 'jump',
+    };
+
+    let game: Game | null = null;
+    let playing = false;
+
+    const pad = (n: number) => String(n).padStart(6, '0');
+    const setHud = (score: number, lives: number) => {
+      hudScore.textContent = `SCORE ${pad(score)}`;
+      hudLives.textContent = `${panel.dataset.lives} ${'♥'.repeat(Math.max(lives, 0))}`;
+    };
+
+    function begin() {
+      game ??= createGame(canvas!, {
+        onHud: setHud,
+        onEnd: (kind, score) => {
+          resultTitle.textContent = kind === 'won' ? panel!.dataset.win! : panel!.dataset.over!;
+          resultScore.textContent = `SCORE ${pad(score)}`;
+          result!.hidden = false;
+          panel!.querySelector<HTMLElement>('[data-again]')?.focus();
+        },
+      });
+      result!.hidden = true;
+      attract!.hidden = true;
+      stage!.hidden = false;
+      screen!.removeAttribute('role');
+      playing = true;
+      game.start();
+    }
+
+    function end() {
+      game?.stop();
+      playing = false;
+      stage!.hidden = true;
+      result!.hidden = true;
+      attract!.hidden = false;
+      screen!.setAttribute('role', 'button');
+      screen!.focus({ preventScroll: true });
+    }
+
+    // 画面をクリック／Enter で開始（ゲーム中のクリックは何もしない）
+    screen.addEventListener('click', (e) => {
+      if (playing) return;
+      e.preventDefault();
+      begin();
+    });
+    screen.addEventListener('keydown', (e) => {
+      if (!playing && (e.key === 'Enter' || e.key === ' ') && e.target === screen) {
+        e.preventDefault();
+        begin();
+      }
+    });
+    panel.querySelector('[data-exit]')?.addEventListener('click', end);
+    panel.querySelector('[data-again]')?.addEventListener('click', begin);
+    // 「一緒に作ろう」のリンクを押したら、ゲームは終わらせて連絡先へ
+    panel.querySelector('[data-collab]')?.addEventListener('click', end);
+
+    // キーボード：ゲーム中だけ。矢印・スペースでページがスクロールしないようにする
+    const onKey = (down: boolean) => (e: KeyboardEvent) => {
+      if (!playing) return;
+      if (e.key === 'Escape' && down) {
+        end();
+        return;
+      }
+      const key = KEYS[e.key];
+      if (!key) return;
+      e.preventDefault();
+      game?.setInput(key, down);
+    };
+    window.addEventListener('keydown', onKey(true));
+    window.addEventListener('keyup', onKey(false));
+    window.addEventListener('blur', () => (['left', 'right', 'jump'] as const).forEach((k) => game?.setInput(k, false)));
+
+    // タッチのボタン
+    panel.querySelectorAll<HTMLElement>('[data-key]').forEach((btn) => {
+      const key = btn.dataset.key as 'left' | 'right' | 'jump';
+      const set = (down: boolean) => (e: Event) => {
+        e.preventDefault();
+        game?.setInput(key, down);
+      };
+      btn.addEventListener('pointerdown', set(true));
+      btn.addEventListener('pointerup', set(false));
+      btn.addEventListener('pointercancel', set(false));
+      btn.addEventListener('pointerleave', set(false));
+      btn.addEventListener('contextmenu', (e) => e.preventDefault());
+    });
+
+    // 画面から外れたり、タブが隠れたら一時停止
+    const pause = (p: boolean) => playing && game?.setPaused(p);
+    new IntersectionObserver(([entry]) => pause(!entry.isIntersecting), { threshold: 0.2 }).observe(screen);
+    document.addEventListener('visibilitychange', () => pause(document.hidden));
+  }
+</script>
 
 <style>
   .arcade-panel {
@@ -35,6 +185,8 @@ const title = t(home.arcade.title).split('\n');
   .screen {
     position: relative;
     display: block;
+    cursor: pointer;
+    overflow: hidden;
     height: 370px;
     padding: 20px;
     border: 12px solid #2c2c27;
@@ -43,6 +195,15 @@ const title = t(home.arcade.title).split('\n');
     box-shadow: inset 0 0 70px #b8ff3512;
     color: var(--acid);
     text-align: center;
+  }
+  .screen:focus-visible {
+    outline: 2px solid var(--acid);
+    outline-offset: 4px;
+  }
+  .attract[hidden],
+  .stage[hidden],
+  .result[hidden] {
+    display: none;
   }
   .screen-score {
     position: absolute;
@@ -83,6 +244,118 @@ const title = t(home.arcade.title).split('\n');
     margin-top: 25px;
     font-size: 7px;
     animation: blink 1s infinite;
+  }
+  /* ゲーム中の画面：canvas は正方形（240×240）をドットのまま拡大する */
+  .stage {
+    position: absolute;
+    inset: 0;
+    cursor: default;
+    touch-action: none;
+  }
+  canvas {
+    display: block;
+    height: 100%;
+    aspect-ratio: 1;
+    margin: 0 auto;
+    image-rendering: pixelated;
+  }
+  .hud {
+    position: absolute;
+    top: 8px;
+    left: 10px;
+    right: 40px;
+    display: flex;
+    justify-content: space-between;
+    font-size: 8px;
+    letter-spacing: 0.12em;
+  }
+  .hint {
+    position: absolute;
+    bottom: 8px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-size: 7px;
+    letter-spacing: 0.1em;
+    opacity: 0.7;
+  }
+  .exit {
+    position: absolute;
+    top: 4px;
+    right: 6px;
+    width: 26px;
+    height: 26px;
+    color: var(--acid);
+    font-size: 12px;
+    text-align: center;
+  }
+  .exit:hover {
+    color: var(--coral);
+  }
+  /* スマホ用ボタン：マウスのある端末では出さない */
+  .touch {
+    display: none;
+  }
+  @media (hover: none) and (pointer: coarse) {
+    .hint {
+      display: none;
+    }
+    .touch {
+      position: absolute;
+      left: 8px;
+      right: 8px;
+      bottom: 4px;
+      display: flex;
+      gap: 8px;
+    }
+    .touch button {
+      width: 46px;
+      height: 32px;
+      border: 1px solid #b8ff3566;
+      background: #b8ff3514;
+      color: var(--acid);
+      font-size: 14px;
+      text-align: center;
+      touch-action: none;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    .touch .jump {
+      margin-left: auto;
+      width: 64px;
+    }
+  }
+  .result {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    background: #0f1512e6;
+    text-align: center;
+  }
+  .result strong {
+    font: 800 30px/1 var(--font-display);
+  }
+  .result span {
+    font-size: 9px;
+    letter-spacing: 0.15em;
+  }
+  .result button,
+  .result a {
+    padding: 9px 16px;
+    border: 1px solid var(--acid);
+    font-size: 8px;
+    letter-spacing: 0.14em;
+    transition: background 0.2s, color 0.2s;
+  }
+  .result button:hover,
+  .result a:hover {
+    background: var(--acid);
+    color: var(--ink);
   }
   .controls {
     position: relative;
