@@ -656,6 +656,8 @@ export function createGame(canvas: HTMLCanvasElement, events: GameEvents): Game 
         tick();
       }
     }
+    // ゲームオーバー・クリア後は、揺れを止める（揺れの減衰は tick の中で行うので、止まった画面では減らないため）
+    if (state !== 'playing' || phase === 'over' || phase === 'won') shake = 0;
     if (player) draw();
   }
 
