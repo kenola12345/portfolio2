@@ -1,0 +1,184 @@
+---
+/**
+ * サブページ（アルバム・自己紹介）の先頭：大きなタイトル、紹介の 1 行、そして右側に
+ * ジャケットと、その後ろから出てきて回り続けるレコード（中央のラベルは同じ画像）。
+ * 色はページごとの accent。ボタンなどは slot に入れる。
+ */
+interface Props {
+  /** 「ALBUM」「ARTIST」などの種別 */
+  kicker: string;
+  /** 「4 tracks」などの補足 */
+  meta?: string;
+  title: string;
+  cover: string;
+  accent: string;
+  /** 見出しの番号（"01" など） */
+  number?: string;
+}
+
+const { kicker, meta, title, cover, accent, number = '01' } = Astro.props;
+---
+
+<section class="page-hero" id="home" style={`--accent: ${accent}`}>
+  <div class="copy">
+    <p class="eyebrow" data-hero="line"><span>{number}</span> {kicker}{meta && ` / ${meta}`}</p>
+    <h1 data-hero="line">{title}</h1>
+    <div class="byline" data-hero="line"><slot name="byline" /></div>
+    <div class="actions" data-hero="line"><slot /></div>
+  </div>
+
+  <div class="visual" aria-hidden="true">
+    <div class="vinyl-disc" style={`--cover: url(${cover})`}><span></span></div>
+    <div class="sleeve"><img src={cover} alt="" width="768" height="768" /></div>
+  </div>
+</section>
+
+<style>
+  .page-hero {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    align-items: center;
+    gap: 4vw;
+    padding: 80px var(--gutter) 90px;
+    overflow: hidden;
+    background:
+      radial-gradient(circle at 78% 50%, color-mix(in srgb, var(--accent) 34%, transparent) 0%, transparent 38%),
+      linear-gradient(115deg, var(--ink) 0 56%, var(--ink-2) 56%);
+  }
+  .page-hero::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.12;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 120 120' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.35'/%3E%3C/svg%3E");
+  }
+  .copy {
+    position: relative;
+    z-index: 2;
+    min-width: 0;
+  }
+  .eyebrow {
+    display: flex;
+    gap: 18px;
+    align-items: center;
+    text-transform: uppercase;
+    font-size: 10px;
+    letter-spacing: 0.14em;
+  }
+  .eyebrow span {
+    color: var(--accent);
+    filter: brightness(1.4);
+  }
+  h1 {
+    margin: 6vh 0 28px;
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: clamp(40px, 5.2vw, 96px);
+    letter-spacing: -0.07em;
+    line-height: 0.86;
+    text-transform: uppercase;
+    overflow-wrap: break-word;
+  }
+  :global(html[lang='ja']) h1 {
+    letter-spacing: -0.03em;
+    line-height: 1.05;
+  }
+  .byline {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 12px;
+    color: var(--muted);
+    font-size: 12px;
+    letter-spacing: 0.04em;
+  }
+  .byline :global(img) {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  .byline :global(a) {
+    color: var(--paper);
+  }
+  .byline :global(a:hover) {
+    color: var(--acid);
+  }
+  .actions {
+    margin-top: 36px;
+  }
+
+  .visual {
+    position: relative;
+    z-index: 1;
+    width: min(100%, 440px);
+    aspect-ratio: 1;
+    justify-self: center;
+  }
+  .sleeve {
+    position: absolute;
+    inset: 0 26% 0 0;
+    z-index: 2;
+    overflow: hidden;
+    background: #1a1a17;
+    box-shadow: 14px 14px 0 var(--accent);
+  }
+  .sleeve img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .vinyl-disc {
+    position: absolute;
+    top: 6%;
+    right: -4%;
+    width: 90%;
+    aspect-ratio: 1;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: repeating-radial-gradient(circle, #161614 0 2px, #292925 3px, #111 5px);
+    box-shadow: 0 15px 30px #0006;
+    animation: disc-spin 9s linear infinite;
+  }
+  .vinyl-disc span {
+    width: 34%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: var(--cover) center / cover;
+    border: 5px solid var(--ink);
+  }
+  @keyframes disc-spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  @media (max-width: 900px) {
+    .page-hero {
+      grid-template-columns: 1fr;
+      padding: 56px var(--gutter) 70px;
+      gap: 56px;
+    }
+    h1 {
+      margin-top: 40px;
+    }
+    .visual {
+      width: min(86%, 380px);
+    }
+  }
+  @media (max-width: 620px) {
+    .page-hero {
+      padding-inline: 20px;
+    }
+    h1 {
+      font-size: 11vw;
+      letter-spacing: -0.06em;
+    }
+    :global(html[lang='ja']) h1 {
+      font-size: 11vw;
+    }
+  }
+</style>

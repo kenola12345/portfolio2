@@ -13,21 +13,34 @@ const alt = alternatePath(Astro.url);
 const email = artist.socials.find((s) => s.kind === 'email');
 const [first = '', ...rest] = t(artist.name).split(/\s+/);
 
-const links = [
+interface NavLink {
+  href: string;
+  label: string;
+  /** いま見ているページ（色を変える） */
+  current?: boolean;
+}
+interface Props {
+  /** 省略するとホームのセクション（#work / #about / #contact）へのリンク */
+  links?: NavLink[];
+  /** true（既定）のときは画面の上端に重ねる。サブページでは false にして、普通に上に置く */
+  overlay?: boolean;
+}
+
+const { links = [
   { href: '#work', label: t(home.nav.work) },
   { href: '#about', label: t(home.nav.about) },
   { href: '#contact', label: t(home.nav.contact) },
-];
+], overlay = true } = Astro.props;
 ---
 
-<nav class="site-nav" data-reveal-nav>
+<nav class:list={['site-nav', { flow: !overlay }]} data-reveal-nav>
   <a class="brand" href={localePath('/', lang)} aria-label={t(artist.name)}>
     <span class="brand-mark">KO</span>
     <span>{first}<br />{rest.join(' ')}</span>
   </a>
 
   <div class="nav-links" id="nav-links">
-    {links.map((l) => <a href={l.href}>{l.label}</a>)}
+    {links.map((l) => <a href={l.href} aria-current={l.current ? 'page' : undefined}>{l.label}</a>)}
   </div>
 
   <div class="nav-end">
@@ -76,15 +89,20 @@ const links = [
     font-weight: 800;
     letter-spacing: -0.1em;
   }
+  .site-nav.flow {
+    position: relative;
+    background: var(--ink);
+  }
   .nav-links {
     display: flex;
-    gap: 40px;
+    gap: clamp(16px, 2.6vw, 40px);
     text-transform: uppercase;
   }
   .nav-links a {
     transition: color 0.2s;
   }
-  .nav-links a:hover {
+  .nav-links a:hover,
+  .nav-links a[aria-current='page'] {
     color: var(--acid);
   }
   .nav-end {

@@ -1,82 +1,208 @@
 ---
 /**
- * アーティストページ（= About me）。音楽アプリのアーティストプロフィール風。
- * 自分のレコード（ポートレート）が左上で回る。
+ * アーティストページ（= 自己紹介、SIDE B デザイン）。ヒーロー、プロフィール（写真・紹介文・基本情報・SNS）、
+ * 各アルバムへのカード一覧。
  */
-import AppLayout from '../layouts/AppLayout.astro';
-import PageHeader from '../components/album/PageHeader.astro';
-import SiteFooter from '../components/ui/SiteFooter.astro';
-import SocialLinks from '../components/ui/SocialLinks.astro';
+import SubpageLayout from '../layouts/SubpageLayout.astro';
+import PageHero from '../components/album/PageHero.astro';
+import ReleaseCard from '../components/home/ReleaseCard.astro';
 import { albums } from '../data/albums';
 import { artist } from '../data/artist';
 import { ui } from '../data/ui';
-import { albumTypeLabels, getLang, localePath, useT } from '../lib/i18n';
+import { albumTypeLabels, getLang, localePath, trackCount, useT } from '../lib/i18n';
 
 const t = useT(Astro.url);
 const lang = getLang(Astro.url);
 ---
 
-<AppLayout title={`${t(artist.name)} — ${t(ui.artistLabel)}`} accent={artist.accent} glow>
-  <main class="relative z-10 wrap pb-8">
-    <PageHeader slug="artist" cover={artist.portrait} label={t(ui.artistLabel)} title={t(artist.name)}>
-      <p class="mt-3 text-sm md:mt-5 md:text-base">
-        <span class="menu-text">✓ {t(ui.verifiedArtist)}</span>
-        <span class="text-muted"> · {t(artist.tagline)}</span>
-      </p>
-    </PageHeader>
+<SubpageLayout title={`${t(artist.name)} — ${t(ui.artistLabel)}`} description={t(artist.tagline)} current="artist">
+  <PageHero kicker={t(ui.artistLabel)} title={t(artist.name)} cover={artist.portrait} accent={artist.accent} number="01">
+    <Fragment slot="byline">
+      <span class="verified">✓ {t(ui.verifiedArtist)}</span>
+      <span>· {t(artist.tagline)}</span>
+    </Fragment>
+  </PageHero>
 
-    <section class="enter mt-12" style="--i:2">
-      <h2 class="menu-text text-xl md:text-2xl">{t(ui.about)}</h2>
-      <div class="crystal mt-4 grid overflow-hidden md:grid-cols-[minmax(0,360px)_1fr]" style="--crystal-radius: 22px">
-        <img
-          class="aspect-[4/3] w-full object-cover object-[50%_78%] md:aspect-auto md:h-full md:object-top"
-          src={artist.banner}
-          alt={t(artist.name)}
-          loading="lazy"
-          width="844"
-          height="1500"
-        />
-        <div class="p-5 md:p-8">
-          <p class="max-w-2xl text-base leading-relaxed md:text-lg">{t(artist.bio)}</p>
-          <dl class="mt-6 grid max-w-2xl gap-x-6 gap-y-3 text-sm md:grid-cols-[auto_1fr] md:text-base">
-            {
-              artist.facts.map((fact) => (
-                <>
-                  <dt class="menu-text text-muted">{t(fact.label)}</dt>
-                  <dd>{t(fact.value)}</dd>
-                </>
-              ))
-            }
-          </dl>
-          <SocialLinks class="mt-6" />
-        </div>
-      </div>
-    </section>
-
-    <section class="enter mt-14" style="--i:3">
-      <h2 class="menu-text text-xl md:text-2xl">{t(ui.discography)}</h2>
-      <ul class="mt-4 grid grid-cols-2 gap-4 md:grid-cols-4 md:gap-6">
+  <section class="profile">
+    <img class="portrait" src={artist.banner} alt={t(artist.name)} width="844" height="1500" loading="lazy" data-reveal />
+    <div class="profile-copy">
+      <h2 data-reveal>{t(ui.about)}</h2>
+      <p class="bio" data-reveal>{t(artist.bio)}</p>
+      <dl data-reveal>
         {
-          albums.map((album) => (
-            <li>
-              <a href={localePath(`/albums/${album.slug}`, lang)} class="block">
-                <img
-                  class="crystal aspect-square w-full object-cover"
-                  style="--crystal-radius: 14px"
-                  src={album.cover}
-                  alt=""
-                  width="768"
-                  height="768"
-                  loading="lazy"
-                />
-                <span class="menu-text mt-3 block">{t(album.title)}</span>
-                <span class="text-xs text-muted md:text-sm">{t(albumTypeLabels[album.type])}</span>
-              </a>
-            </li>
+          artist.facts.map((fact) => (
+            <>
+              <dt>{t(fact.label)}</dt>
+              <dd>{t(fact.value)}</dd>
+            </>
           ))
         }
-      </ul>
-    </section>
-  </main>
-  <SiteFooter />
-</AppLayout>
+      </dl>
+      <p class="socials" data-reveal>
+        {
+          artist.socials.map((s) => (
+            <a href={s.href} target={s.href.startsWith('http') ? '_blank' : undefined} rel="noreferrer">
+              {t(s.label)} ↗
+            </a>
+          ))
+        }
+      </p>
+    </div>
+  </section>
+
+  <section class="discography">
+    <header data-reveal>
+      <p class="eyebrow"><span>02</span> {t(ui.discography)}</p>
+      <h2>{t(ui.discography)}</h2>
+    </header>
+    <div class="grid">
+      {
+        albums.map((album, i) => (
+          <ReleaseCard
+            index={i}
+            title={t(album.title)}
+            type={`${t(albumTypeLabels[album.type])} · ${trackCount(album.tracks.length, lang)}`}
+            cover={album.cover}
+            alt={t(album.title)}
+            href={localePath(`/albums/${album.slug}`, lang)}
+            color={album.accent}
+            viewLabel={t(album.title)}
+          />
+        ))
+      }
+    </div>
+  </section>
+</SubpageLayout>
+
+<style>
+  .verified {
+    color: var(--acid);
+  }
+  .profile {
+    display: grid;
+    grid-template-columns: minmax(0, 380px) 1fr;
+    gap: 6vw;
+    padding: 110px var(--gutter);
+    background: var(--ink-2);
+  }
+  .portrait {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    object-position: 50% 70%;
+    box-shadow: 14px 14px 0 var(--acid);
+  }
+  .profile h2,
+  .discography h2 {
+    font: 800 clamp(48px, 7vw, 108px) / 0.86 var(--font-display);
+    letter-spacing: -0.07em;
+    text-transform: uppercase;
+  }
+  .bio {
+    max-width: 640px;
+    margin: 40px 0;
+    font-size: 14px;
+    line-height: 1.85;
+    color: #aaa79e;
+  }
+  dl {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 14px 28px;
+    max-width: 640px;
+    margin: 0;
+    font-size: 12px;
+    line-height: 1.7;
+  }
+  dt {
+    color: var(--acid);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  dd {
+    margin: 0;
+  }
+  .socials {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 40px;
+  }
+  .socials a {
+    padding: 12px 20px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    transition: background 0.25s, color 0.25s, border-color 0.25s;
+  }
+  .socials a:hover {
+    background: var(--acid);
+    border-color: var(--acid);
+    color: var(--ink);
+  }
+
+  .discography {
+    padding: 110px var(--gutter) 130px;
+    background: var(--paper);
+    color: var(--ink);
+    overflow: hidden;
+  }
+  .discography header {
+    padding-bottom: 50px;
+    border-bottom: 1px solid #aaa69a;
+  }
+  .eyebrow {
+    display: flex;
+    gap: 18px;
+    margin-bottom: 30px;
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+  .eyebrow span {
+    color: var(--coral);
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2.5vw;
+    padding-top: 70px;
+  }
+
+  @media (max-width: 900px) {
+    .profile {
+      grid-template-columns: 1fr;
+      gap: 60px;
+    }
+    .portrait {
+      max-width: 420px;
+    }
+    .grid {
+      grid-template-columns: 1fr 1fr;
+      row-gap: 60px;
+    }
+  }
+  @media (max-width: 620px) {
+    .profile,
+    .discography {
+      padding: 80px 20px;
+    }
+    .profile h2,
+    .discography h2 {
+      font-size: 14vw;
+    }
+    dl {
+      grid-template-columns: 1fr;
+      gap: 4px;
+    }
+    dd {
+      margin-bottom: 14px;
+    }
+    .grid {
+      gap: 24px;
+    }
+  }
+</style>
