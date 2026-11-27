@@ -10,6 +10,7 @@ interface HomeCopy {
   stamp: L10n;
   play: L10n;
   pause: L10n;
+  next: L10n;
   turntableLabel: L10n;
   work: { eyebrow: L10n; title: L10n; titleAccent: L10n; lead: L10n; all: L10n; view: L10n };
   pages: { title: L10n };
@@ -55,8 +56,9 @@ export const home: HomeCopy = {
   nowSpinning: { en: 'NOW SPINNING', ja: '再生中' },
   scrollCue: { en: 'SCROLL TO FLIP THE RECORD', ja: 'スクロールでレコードを回す' },
   stamp: { en: 'PORTFOLIO\nEDITION', ja: 'ポート\nフォリオ' },
-  play: { en: 'Play animation', ja: 'アニメーションを再生' },
-  pause: { en: 'Pause animation', ja: 'アニメーションを一時停止' },
+  play: { en: 'Play music', ja: '音楽を再生' },
+  pause: { en: 'Pause music', ja: '音楽を一時停止' },
+  next: { en: 'Next track', ja: '次の曲' },
   turntableLabel: { en: 'Interactive 3D turntable', ja: '操作できる 3D ターンテーブル' },
 
   work: {

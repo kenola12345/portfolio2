@@ -9,7 +9,7 @@ interface Props {
 
 /**
  * ヒーローのターンテーブル（three.js。モデルのファイルは使わず、すべてコードで組み立てている）。
- * - レコードは常にゆっくり回る。再生ボタン（NowPlaying）で止めたり再開したりできる
+ * - レコードは常にゆっくり回り、音楽を再生（NowPlaying）すると速く回る
  * - ポインターに合わせて台がわずかに傾く
  * - スクロールすると、スクロールした分だけレコードが速く回る（"SCROLL TO FLIP THE RECORD"）
  */
@@ -149,7 +149,7 @@ export default function Turntable({ label }: Props) {
     };
     window.addEventListener('scroll', onScroll, { passive: true });
 
-    let playing = true;
+    let playing = false;
     const onPlaying = (event: Event) => {
       playing = (event as CustomEvent<boolean>).detail;
     };
@@ -177,7 +177,7 @@ export default function Turntable({ label }: Props) {
       const dt = Math.min((now - last) / 1000, 0.05);
       last = now;
       time += dt;
-      speed += ((playing ? 0.7 : 0) - speed) * Math.min(1, dt * 4);
+      speed += ((playing ? 1.4 : 0.35) - speed) * Math.min(1, dt * 4);
       scrollSpin *= Math.exp(-dt * 3);
       spin += speed * dt + scrollSpin;
       record.rotation.y = spin;

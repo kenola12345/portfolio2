@@ -6,7 +6,7 @@
 import ArrowIcon from './ArrowIcon.astro';
 import NowPlaying from './NowPlaying';
 import Turntable from './Turntable';
-import { artist } from '../../data/artist';
+import { music } from '../../data/music';
 import { home } from '../../data/home';
 import { useT } from '../../lib/i18n';
 
@@ -36,9 +36,10 @@ const stamp = t(home.stamp).split('\n');
     <NowPlaying
       client:load
       kicker={t(home.nowSpinning)}
-      title={t(artist.name)}
+      tracks={music}
       playLabel={t(home.play)}
       pauseLabel={t(home.pause)}
+      nextLabel={t(home.next)}
     />
     <div class="edition-stamp" data-hero="pop">{stamp[0]}<br />{stamp[1]}<br /><b>33⅓</b></div>
   </div>

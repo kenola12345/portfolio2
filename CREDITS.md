@@ -22,6 +22,13 @@ Last reviewed: 2026-11-25. This is a summary written from the public pages of ea
 - **Project screenshots** (`public/projects/*`): pages of sites built for clients (INITIA, INFINITO HOTEL & SPA, INITIA LOUNGE Mita, ONE ROOF, seta-tei.jp) and Kentaro's own sites. Confirm the clients are happy for the screenshots to be shown.
 - **Artist photo** (`public/covers/artist.webp`, `public/images/artist-banner.webp`, `public/og.png`): Kentaro's own photo.
 
+## Music (home "Now spinning" player)
+- `public/audio/stylish-hip-hop.mp3` — "Stylish Hip Hop" by blesksound
+- `public/audio/chill-hip-hop.mp3` — "Chill Hip Hop" by velariomusic
+- `public/audio/oldschool-hip-hop.mp3` — "Oldschool Hip Hop" by sub_clair
+- These look like Pixabay downloads (the file names end in Pixabay-style ids). **Please confirm the source and that its license allows use on a public site** (Pixabay's content license normally does, without credit). The artist names are shown in the player.
+- Sound effects in the arcade game are synthesised in the browser (no files).
+
 ## Fonts
 - Montserrat, Inter and Noto Sans JP via Google Fonts (SIL Open Font License).
 - Futura (a system font on the machine that built the models) was used only to draw the name into the player's texture image.
