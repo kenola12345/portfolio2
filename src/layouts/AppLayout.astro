@@ -5,6 +5,7 @@
  */
 import '../styles/globals.css';
 import Analytics from '@vercel/analytics/astro';
+import SpeedInsights from '@vercel/speed-insights/astro';
 import { ClientRouter } from 'astro:transitions';
 import RecordStage from '../components/stage/RecordStage';
 import { albums } from '../data/albums';
@@ -152,5 +153,6 @@ const records = [
     <RecordStage client:only="react" transition:persist="record-stage" records={records} />
     <slot />
     <Analytics />
+    <SpeedInsights />
   </body>
 </html>
