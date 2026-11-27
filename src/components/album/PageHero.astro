@@ -28,7 +28,8 @@ const { kicker, meta, title, cover, accent, number = '01' } = Astro.props;
   </div>
 
   <div class="visual" aria-hidden="true">
-    <div class="vinyl-disc" style={`--cover: url(${cover})`}><span></span></div>
+    <!-- レコードは、位置とスライド（vinyl-slide）と、回転（vinyl-disc）を、別の要素で動かす -->
+    <div class="vinyl-slide"><div class="vinyl-disc" style={`--cover: url(${cover})`}><span></span></div></div>
     <div class="sleeve"><img src={cover} alt="" width="768" height="768" /></div>
   </div>
 </section>
@@ -131,20 +132,29 @@ const { kicker, meta, title, cover, accent, number = '01' } = Astro.props;
     overflow: hidden;
     background: #1a1a17;
     box-shadow: calc(14 * var(--u)) calc(14 * var(--u)) 0 var(--accent);
+    /* 傾いた状態から、まっすぐに回って収まる */
+    transform-origin: 20% 90%;
+    animation: sleeve-in 0.85s cubic-bezier(0.2, 0.9, 0.25, 1) both;
   }
   .sleeve img {
     width: 100%;
     height: 100%;
     object-fit: cover;
   }
-  .vinyl-disc {
+  .vinyl-slide {
     position: absolute;
     top: 1.5%;
     left: 25%;
     width: 73%;
     aspect-ratio: 1;
+    /* ジャケットが傾きから戻り終わるころに、レコードがジャケットの後ろから滑り出てくる。終わりの位置が、いつもの表示 */
+    animation: disc-out 0.95s var(--ease-out) 0.75s both;
+  }
+  .vinyl-disc {
     display: grid;
     place-items: center;
+    width: 100%;
+    height: 100%;
     border-radius: 50%;
     background: repeating-radial-gradient(circle, #161614 0 2px, #292925 3px, #111 5px);
     box-shadow: 0 calc(15 * var(--u)) calc(30 * var(--u)) #0006;
@@ -156,6 +166,32 @@ const { kicker, meta, title, cover, accent, number = '01' } = Astro.props;
     border-radius: 50%;
     background: var(--cover) center / cover;
     border: 5px solid var(--ink);
+  }
+  @keyframes sleeve-in {
+    from {
+      opacity: 0;
+      transform: rotate(-16deg) translateY(calc(28 * var(--u))) scale(0.94);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @keyframes disc-out {
+    from {
+      /* ジャケットの後ろに、ほぼ全部隠れている（自分の幅の約 34% 左） */
+      transform: translateX(-34%);
+    }
+    to {
+      transform: none;
+    }
+  }
+  /* ワイプで移動してきたときは、ワイプが上へ抜けてから始める */
+  :global(html[data-wipe-arrive]) .sleeve {
+    animation-delay: 0.45s;
+  }
+  :global(html[data-wipe-arrive]) .vinyl-slide {
+    animation-delay: 1.2s;
   }
   @keyframes disc-spin {
     to {
