@@ -1,7 +1,7 @@
 /*
  * 「SIDE B」デザインの共通スタイル（Figma から起こしたもの）。
  * 色・フォント・基本のリセットだけを持つ。各セクションの見た目は、それぞれのコンポーネントの <style> にある。
- * 旧デザイン（globals.css・クリスタル）とは別物なので、このファイルは SideBLayout からだけ読み込む。
+ * このサイトのスタイルの土台。SideBLayout から読み込む（旧デザインの globals.css は削除済み）。
  */
 
 :root {
@@ -12,6 +12,10 @@
   --coral: #ff5c45;
   --violet: #7157ff;
   --muted: #b9b6ac;
+  /* 小さな補足の文字の色（コントラスト比 4.5:1 以上）。暗い背景用 / 紙色の背景用 */
+  --muted-dim: #908e85;
+  --muted-on-paper: #5f5d56;
+  --coral-on-paper: #b8341f;
   --line: #eeeade26;
   --gutter: 4vw;
   --font-display: 'Syne', 'Noto Sans JP', sans-serif;

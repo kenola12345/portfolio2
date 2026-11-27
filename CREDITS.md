@@ -4,17 +4,8 @@ Last reviewed: 2026-11-25. This is a summary written from the public pages of ea
 
 ## 3D models
 
-### Record player — by Temmie_Dola
-- Source: https://sketchfab.com/3d-models/record-player-65200511d04f4b4dba0742186ee754b5
-- License: **CC BY 4.0** (https://creativecommons.org/licenses/by/4.0/)
-- Used in: `public/models/record_player.glb` (home page turntable)
-- Changes made (CC BY asks for these to be stated): removed the sleeves, vinyl disc and animation that were baked into the file; resized and re-encoded the textures; erased the logo; printed the name and title on the platter (`scripts/optimize-record-player.mjs`)
-- Attribution: shown in the footer of every page (`src/components/ui/SiteFooter.astro`). **Keep it.**
-
-### The vinyl records — made for this project
-- Built in code (`src/components/stage/Record.tsx`, `labelTexture.ts`): a cylinder with a drawn groove texture and the album cover as the label. No third-party model, so nothing to credit or license.
-- An earlier version used Sketchfab's "Vinyl Record" by liamo123 (Sketchfab Standard license). It was removed because that license restricts serving the file for download; `vinyl_record.glb` is no longer in the repo or on the site.
-- The record player's Sketchfab page carries a **"NoAI"** notice (not to be used to train or feed generative AI). This project does not do that.
+None. The record player and the vinyl records from the earlier design were removed (the record player was a CC BY 4.0 model by Temmie_Dola on Sketchfab, and `public/models/` and its credit are gone with it). The turntable on the home page is built in code (`src/components/home/Turntable.tsx`).
+- The old Sketchfab models carried a "NoAI" notice (not to be used to train or feed generative AI). This project does not do that.
 
 ## Images — please confirm you have the right to use them
 - **Contact cover** (`public/covers/contact.webp`): the "news coo" bird illustration supplied by Kentaro. Artist and rights not recorded here.
