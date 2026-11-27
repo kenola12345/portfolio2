@@ -69,10 +69,9 @@ export default function NowPlaying({ kicker, tracks, playLabel, pauseLabel, next
     return () => observer.disconnect();
   }, []);
 
-  // タッチ端末（iOS など）では、スクロールしているあいだは固定のプレイヤーを隠し、止まったらまた出す
+  // どの端末でも、スクロールしているあいだは固定のプレイヤーを隠し、止まったらまた出す
   // （指で操作している最中に、画面の端に居座って邪魔にならないように）
   useEffect(() => {
-    if (!window.matchMedia('(hover: none) and (pointer: coarse)').matches) return;
     let timer = 0;
     const onScroll = () => {
       setScrolling(true);
