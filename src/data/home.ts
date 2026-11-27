@@ -48,8 +48,8 @@ export const home: HomeCopy = {
     line3Accent: { en: 'TOKYO.', ja: '開発。' },
   },
   intro: {
-    en: 'Bilingual English–Japanese engineer in Tokyo, building websites where great design and smooth animation come first.',
-    ja: '東京を拠点とする日英バイリンガルのエンジニア。美しいデザインと、なめらかなアニメーションにこだわったウェブサイトを作っています。',
+    en: 'Bilingual English–Japanese engineer in Tokyo, building websites with great design and smooth animation, all in service of a better user experience.',
+    ja: '東京を拠点とする日英バイリンガルのエンジニア。使いやすさを第一に、美しいデザインとなめらかなアニメーションで体験を磨いたウェブサイトを作っています。',
   },
 
   explore: { en: 'EXPLORE\nTHE WORK', ja: '制作実績\nを見る' },
