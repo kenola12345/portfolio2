@@ -20,14 +20,15 @@ interface HomeCopy {
     start: L10n;
     play: L10n;
     exit: L10n;
-    controls: L10n;
+    controlsKeys: L10n;
+    controlsTouch: L10n;
     win: L10n;
     over: L10n;
     again: L10n;
     lives: L10n;
-    left: L10n;
-    right: L10n;
-    jump: L10n;
+    stick: L10n;
+    light: L10n;
+    heavy: L10n;
     sound: L10n;
   };
   contact: { kicker: L10n; cta: L10n; ctaAccent: L10n; top: L10n; stack: L10n };
@@ -87,14 +88,15 @@ export const home: HomeCopy = {
     start: { en: 'PRESS START TO COLLABORATE', ja: 'スタートで一緒に作ろう' },
     play: { en: 'CLICK TO PLAY', ja: 'クリックでプレイ' },
     exit: { en: 'Exit game', ja: 'ゲームを終了' },
-    controls: { en: '← → MOVE   SPACE JUMP', ja: '← → 移動   SPACE ジャンプ' },
+    controlsKeys: { en: '← → MOVE  ↑ JUMP  J LIGHT  K HEAVY', ja: '← → 移動  ↑ ジャンプ  J 弱  K 強' },
+    controlsTouch: { en: 'USE THE STICK AND BUTTONS BELOW', ja: '下のスティックとボタンで操作' },
     win: { en: 'YOU WIN!', ja: 'クリア！' },
     over: { en: 'GAME OVER', ja: 'ゲームオーバー' },
     again: { en: 'PLAY AGAIN', ja: 'もう一度' },
     lives: { en: 'LIVES', ja: 'ライフ' },
-    left: { en: 'Move left', ja: '左へ移動' },
-    right: { en: 'Move right', ja: '右へ移動' },
-    jump: { en: 'Jump', ja: 'ジャンプ' },
+    stick: { en: 'Stick: move and jump', ja: 'スティック：移動・ジャンプ' },
+    light: { en: 'Light attack', ja: '弱攻撃' },
+    heavy: { en: 'Heavy attack', ja: '強攻撃' },
     sound: { en: 'Sound on/off', ja: '効果音のオン・オフ' },
   },
   contact: {

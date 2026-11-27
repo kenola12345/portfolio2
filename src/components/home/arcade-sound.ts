@@ -3,7 +3,7 @@
  * ブラウザは「ユーザーの操作のあと」でしか音を出せないので、AudioContext はゲーム開始のクリックで作る。
  */
 
-export type Sfx = 'jump' | 'coin' | 'stomp' | 'hurt' | 'win' | 'over';
+export type Sfx = 'jump' | 'light' | 'heavy' | 'hit' | 'smash' | 'ko' | 'round' | 'win' | 'over';
 
 const MUTE_KEY = 'arcade-muted';
 
@@ -58,17 +58,29 @@ export function play(name: Sfx) {
   if (muted || !ctx || ctx.state !== 'running') return;
   switch (name) {
     case 'jump':
-      tone('square', 280, 620, 0, 0.14);
+      tone('square', 280, 560, 0, 0.1, 0.04);
       break;
-    case 'coin':
-      tone('square', 988, 988, 0, 0.07);
-      tone('square', 1319, 1319, 0.07, 0.16);
+    case 'light': // 弱攻撃：短くて軽い
+      tone('square', 520, 300, 0, 0.06, 0.04);
       break;
-    case 'stomp':
-      tone('triangle', 220, 70, 0, 0.16, 0.12);
+    case 'heavy': // 強攻撃：低くて重い
+      tone('sawtooth', 240, 90, 0, 0.14, 0.06);
       break;
-    case 'hurt':
-      tone('sawtooth', 420, 60, 0, 0.45, 0.08);
+    case 'hit':
+      tone('triangle', 200, 80, 0, 0.1, 0.12);
+      tone('square', 900, 400, 0, 0.04, 0.04);
+      break;
+    case 'smash': // 大きく吹き飛ばしたとき
+      tone('triangle', 160, 40, 0, 0.3, 0.18);
+      tone('sawtooth', 700, 120, 0, 0.18, 0.06);
+      break;
+    case 'ko':
+      tone('sawtooth', 420, 50, 0, 0.5, 0.08);
+      break;
+    case 'round':
+      tone('square', 392, 392, 0, 0.1);
+      tone('square', 523, 523, 0.12, 0.1);
+      tone('square', 784, 784, 0.24, 0.22);
       break;
     case 'win':
       [523, 659, 784, 1047].forEach((f, i) => tone('square', f, f, i * 0.11, 0.2));
