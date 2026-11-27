@@ -16,6 +16,27 @@ interface Props {
   nextLabel: string;
 }
 
+/**
+ * ボタンのアイコン（SVG）。文字（▶ ⏭）だと、iOS ではカラー絵文字で描かれて、色や大きさが変わってしまうため
+ */
+const PlayIcon = () => (
+  <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true">
+    <path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5z" />
+  </svg>
+);
+const PauseIcon = () => (
+  <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true">
+    <rect x="6" y="5" width="4.2" height="14" rx="1" />
+    <rect x="13.8" y="5" width="4.2" height="14" rx="1" />
+  </svg>
+);
+const NextIcon = () => (
+  <svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor" aria-hidden="true">
+    <path d="M5 5.6v12.8a.9.9 0 0 0 1.4.75l9-6.4a.9.9 0 0 0 0-1.5l-9-6.4A.9.9 0 0 0 5 5.6z" />
+    <rect x="17" y="5" width="2.6" height="14" rx="1" />
+  </svg>
+);
+
 /** ターンテーブルが回っているかを、3D 側（Turntable）に伝えるイベントの名前 */
 export const PLAYING_EVENT = 'side-b:playing';
 
@@ -29,6 +50,7 @@ export default function NowPlaying({ kicker, tracks, playLabel, pauseLabel, next
   const [playing, setPlaying] = useState(false);
   const [index, setIndex] = useState(0);
   const [docked, setDocked] = useState(false);
+  const [scrolling, setScrolling] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);
   const slotRef = useRef<HTMLDivElement>(null);
   const track = tracks[index];
@@ -45,6 +67,23 @@ export default function NowPlaying({ kicker, tracks, playLabel, pauseLabel, next
     const observer = new IntersectionObserver(([entry]) => setDocked(!entry.isIntersecting), { threshold: 0.1 });
     observer.observe(slot);
     return () => observer.disconnect();
+  }, []);
+
+  // タッチ端末（iOS など）では、スクロールしているあいだは固定のプレイヤーを隠し、止まったらまた出す
+  // （指で操作している最中に、画面の端に居座って邪魔にならないように）
+  useEffect(() => {
+    if (!window.matchMedia('(hover: none) and (pointer: coarse)').matches) return;
+    let timer = 0;
+    const onScroll = () => {
+      setScrolling(true);
+      window.clearTimeout(timer);
+      timer = window.setTimeout(() => setScrolling(false), 220);
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      window.clearTimeout(timer);
+    };
   }, []);
 
   // 曲が替わったら、再生中のまま読み込み直す
@@ -76,9 +115,9 @@ export default function NowPlaying({ kicker, tracks, playLabel, pauseLabel, next
   const next = () => setIndex((i) => (i + 1) % tracks.length);
 
   const card = (
-    <div className={`now-playing${docked ? ' docked' : ''}`}>
+    <div className={`now-playing${docked ? ' docked' : ''}${docked && scrolling ? ' hidden-while-scrolling' : ''}`}>
       <button type="button" className="play-button" onClick={toggle} aria-label={playing ? pauseLabel : playLabel}>
-        {playing ? 'Ⅱ' : '▶'}
+        {playing ? <PauseIcon /> : <PlayIcon />}
       </button>
       <div className="now-playing__text">
         <span>{kicker}</span>
@@ -86,7 +125,7 @@ export default function NowPlaying({ kicker, tracks, playLabel, pauseLabel, next
         <em>{track.artist}</em>
       </div>
       <button type="button" className="next-button" onClick={next} aria-label={nextLabel}>
-        ⏭
+        <NextIcon />
       </button>
       <div className={`equalizer${playing ? ' playing' : ''}`} aria-hidden="true">
         {[1, 2, 3, 4, 5].map((bar) => (

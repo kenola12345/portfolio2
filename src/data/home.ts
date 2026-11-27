@@ -20,17 +20,18 @@ interface HomeCopy {
     start: L10n;
     play: L10n;
     exit: L10n;
-    controls: L10n;
+    controlsKeys: L10n;
+    controlsTouch: L10n;
     win: L10n;
     over: L10n;
     again: L10n;
     lives: L10n;
-    left: L10n;
-    right: L10n;
-    jump: L10n;
+    stick: L10n;
+    light: L10n;
+    heavy: L10n;
     sound: L10n;
   };
-  contact: { kicker: L10n; cta: L10n; ctaAccent: L10n; top: L10n };
+  contact: { kicker: L10n; cta: L10n; ctaAccent: L10n; top: L10n; stack: L10n };
   nav: { work: L10n; about: L10n; contact: L10n; menu: L10n; sayHello: L10n };
 }
 
@@ -48,8 +49,8 @@ export const home: HomeCopy = {
     line3Accent: { en: 'TOKYO', ja: '在住' },
   },
   intro: {
-    en: 'Bilingual English–Japanese engineer in Tokyo, building websites with great design and smooth animation, all in service of a better user experience.',
-    ja: '東京を拠点に活動する、日英バイリンガルのエンジニアです。使いやすさを第一に、美しいデザインとなめらかなアニメーションで、心地よい体験のウェブサイトを作っています。',
+    en: 'Bilingual English–Japanese engineer in Tokyo, building websites with great design and smooth animation, all in service of a better user experience and accessibility.',
+    ja: '東京を拠点に活動する、日英バイリンガルのエンジニアです。使いやすさとアクセシビリティを第一に、美しいデザインとなめらかなアニメーションで、心地よい体験のウェブサイトを作っています。',
   },
 
   explore: { en: 'EXPLORE\nTHE WORK', ja: '制作実績を\n見る' },
@@ -87,14 +88,15 @@ export const home: HomeCopy = {
     start: { en: 'PRESS START TO COLLABORATE', ja: 'スタートを押して一緒に作ろう' },
     play: { en: 'CLICK TO PLAY', ja: 'クリックでプレイ' },
     exit: { en: 'Exit game', ja: 'ゲームを終了' },
-    controls: { en: '← → MOVE   SPACE JUMP', ja: '← → 移動   SPACE ジャンプ' },
+    controlsKeys: { en: '← → MOVE  ↑ JUMP  ↓ DROP  J LIGHT  K HEAVY', ja: '← → 移動  ↑ ジャンプ  ↓ 降りる  J 弱  K 強' },
+    controlsTouch: { en: 'USE THE STICK AND BUTTONS BELOW', ja: '下のスティックとボタンで操作' },
     win: { en: 'YOU WIN!', ja: 'クリア！' },
     over: { en: 'GAME OVER', ja: 'ゲームオーバー' },
     again: { en: 'PLAY AGAIN', ja: 'もう一度遊ぶ' },
     lives: { en: 'LIVES', ja: 'ライフ' },
-    left: { en: 'Move left', ja: '左へ移動' },
-    right: { en: 'Move right', ja: '右へ移動' },
-    jump: { en: 'Jump', ja: 'ジャンプ' },
+    stick: { en: 'Stick: move, jump and drop through platforms', ja: 'スティック：移動・ジャンプ・足場から降りる' },
+    light: { en: 'Light attack', ja: '弱攻撃' },
+    heavy: { en: 'Heavy attack', ja: '強攻撃' },
     sound: { en: 'Sound on/off', ja: '効果音のオン・オフ' },
   },
   contact: {
@@ -102,6 +104,10 @@ export const home: HomeCopy = {
     cta: { en: "LET'S MAKE", ja: '一緒に' },
     ctaAccent: { en: 'SOME NOISE', ja: '作ろう' },
     top: { en: 'BACK TO TOP ↑', ja: 'ページの先頭へ ↑' },
+    stack: {
+      en: 'THIS WEBSITE WAS DESIGNED IN FIGMA, BUILT WITH ASTRO, REACT, TYPESCRIPT, THREE.JS AND GSAP, AND HOSTED ON VERCEL.',
+      ja: 'このサイトは、FIGMA でデザインし、ASTRO、REACT、TYPESCRIPT、THREE.JS、GSAP で開発して、VERCEL で公開しています。',
+    },
   },
   nav: {
     work: { en: 'Selected work', ja: '制作実績' },

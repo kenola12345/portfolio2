@@ -19,13 +19,12 @@ const lang = getLang(Astro.url);
 <SubpageLayout title={`${t(artist.name)} — ${t(ui.artistLabel)}`} description={t(artist.tagline)} current="artist">
   <PageHero kicker={t(ui.artistLabel)} title={t(artist.name)} cover={artist.portrait} accent={artist.accent} number="01">
     <Fragment slot="byline">
-      <span class="verified">✓ {t(ui.verifiedArtist)}</span>
-      <span>· {t(artist.tagline)}</span>
+      <span>{t(artist.tagline)}</span>
     </Fragment>
   </PageHero>
 
   <section class="profile">
-    <img class="portrait" src={artist.banner} alt={t(artist.name)} width="844" height="1500" loading="lazy" data-reveal />
+    <img class="portrait" src={artist.banner} alt={t(artist.name)} width="900" height="1200" loading="lazy" data-reveal />
     <div class="profile-copy">
       <h2 data-reveal>{t(ui.about)}</h2>
       <p class="bio" data-reveal>{t(artist.bio)}</p>
@@ -68,9 +67,6 @@ const lang = getLang(Astro.url);
 </SubpageLayout>
 
 <style>
-  .verified {
-    color: var(--acid);
-  }
   .profile {
     display: grid;
     grid-template-columns: minmax(0, 380px) 1fr;
@@ -83,12 +79,20 @@ const lang = getLang(Astro.url);
     height: auto;
     aspect-ratio: 4 / 5;
     object-fit: cover;
-    object-position: 50% 70%;
+    object-position: 50% 35%;
     box-shadow: 14px 14px 0 var(--acid);
   }
-  .profile h2,
-  .discography h2 {
+  .profile h2 {
     font: 800 clamp(48px, 7vw, 108px) / 0.86 var(--font-display);
+    letter-spacing: -0.07em;
+    text-transform: uppercase;
+  }
+  /* "DISCOGRAPHY" は長い 1 語（約 11.5em）なので、見出しの幅に合わせた大きさにして、はみ出さないようにする */
+  .discography header {
+    container-type: inline-size;
+  }
+  .discography h2 {
+    font: 800 clamp(24px, 8cqi, 108px) / 0.86 var(--font-display);
     letter-spacing: -0.07em;
     text-transform: uppercase;
   }
@@ -166,8 +170,7 @@ const lang = getLang(Astro.url);
     .discography {
       padding: 80px 20px;
     }
-    .profile h2,
-    .discography h2 {
+    .profile h2 {
       font-size: 14vw;
     }
     dl {

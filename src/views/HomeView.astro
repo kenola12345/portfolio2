@@ -9,11 +9,12 @@ import Hero from '../components/home/Hero.astro';
 import FeaturedReleases from '../components/home/FeaturedReleases.astro';
 import AboutSection from '../components/home/AboutSection.astro';
 import ContactFooter from '../components/home/ContactFooter.astro';
+import { pageNavLinks } from '../lib/navLinks';
 ---
 
 <SideBLayout>
   <main>
-    <SiteNav />
+    <SiteNav links={pageNavLinks(Astro.url)} />
     <Hero />
     <FeaturedReleases />
     <AboutSection />

@@ -28,6 +28,15 @@
   height: 66px;
   animation: dock-in 0.45s var(--ease-out);
 }
+/* スクロール中は、下へ沈みながら消える（止まったら戻る）。タッチ端末だけで付く */
+.now-playing.docked {
+  transition: opacity 0.22s ease, transform 0.22s ease;
+}
+.now-playing.docked.hidden-while-scrolling {
+  opacity: 0;
+  transform: translateY(20px);
+  pointer-events: none;
+}
 @keyframes dock-in {
   from {
     opacity: 0;
@@ -37,6 +46,8 @@
 .play-button,
 .next-button {
   flex: none;
+  display: grid;
+  place-items: center;
   width: 38px;
   height: 38px;
   border: 1px solid var(--ink);

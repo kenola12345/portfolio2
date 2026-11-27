@@ -89,7 +89,9 @@ function pageWipe() {
   // 戻る・進むでキャッシュから復元されたとき、閉じたままにならないようにする
   window.addEventListener('pageshow', (e) => {
     if (!e.persisted) return;
-    wipe.classList.remove('active');
+    // 戻ってきたときは、ワイプを完全に元の（隠れた）状態へ戻す
+    wipe.classList.remove('active', 'leaving');
+    wipe.style.transition = '';
     root.removeAttribute('data-wipe-arrive');
   });
 
@@ -126,7 +128,17 @@ function navMenu() {
   document.addEventListener('keydown', (e) => e.key === 'Escape' && set(false));
 }
 
+/** 外部サイトへのリンクは、すべて新しいタブで開く（書き忘れがあっても、ここで揃える） */
+function externalLinks() {
+  document.querySelectorAll<HTMLAnchorElement>('a[href^="http"]').forEach((a) => {
+    if (new URL(a.href, location.href).origin === location.origin) return;
+    a.target = '_blank';
+    a.rel = 'noopener noreferrer';
+  });
+}
+
 heroIntro();
+externalLinks();
 scrollReveals();
 pageWipe();
 navMenu();

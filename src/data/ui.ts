@@ -4,7 +4,6 @@ import type { L10n } from './types';
 export const ui = {
   backToMenu: { en: 'Main menu', ja: 'メインメニュー' },
   artistLabel: { en: 'ARTIST', ja: 'アーティスト' },
-  verifiedArtist: { en: 'Verified Artist', ja: '認証済みアーティスト' },
   popular: { en: 'Popular', ja: '人気の曲' },
   discography: { en: 'Discography', ja: 'ディスコグラフィ' },
   about: { en: 'About', ja: '紹介' },
