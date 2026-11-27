@@ -148,7 +148,8 @@ const { kicker, meta, title, cover, accent, number = '01' } = Astro.props;
     width: 73%;
     aspect-ratio: 1;
     /* ジャケットが傾きから戻り終わるころに、レコードがジャケットの後ろから滑り出てくる。終わりの位置が、いつもの表示 */
-    animation: disc-out 0.95s var(--ease-out) 0.75s both;
+    /* 出だしを速く（イージングの最初の傾きを急にして）、そのあとゆっくり止まる */
+    animation: disc-out 0.95s cubic-bezier(0.08, 0.9, 0.15, 1) 0.75s both;
   }
   .vinyl-disc {
     display: grid;
