@@ -95,6 +95,12 @@ const others = albums.filter((a) => a.slug !== 'projects');
     let drag: { id: number; startX: number; startOffset: number; lastX: number; lastT: number; moved: boolean } | null = null;
     let last = performance.now();
 
+    // 位置は画面の 1 ドットに揃えて書く。小数のまま動かすと、iOS で文字と画像の位置が別々にずれて、カードが重なって見えることがあるため
+    const place = () => {
+      const dpr = window.devicePixelRatio || 1;
+      track.style.transform = `translate3d(${Math.round(x * dpr) / dpr}px,0,0)`;
+    };
+
     const speed = () => setW / ((Number(track.style.getPropertyValue('--n')) || 6) * 7); // 1 組を 1 周する速さ（px/秒）
     const wrap = () => {
       if (!setW) return;
@@ -133,7 +139,7 @@ const others = albums.filter((a) => a.slug !== 'projects');
       drag.lastT = now;
       x = drag.startOffset + dx;
       wrap();
-      track.style.transform = `translate3d(${x}px,0,0)`;
+      place();
     });
     const end = (e: PointerEvent) => {
       if (!drag || e.pointerId !== drag.id) return;
@@ -164,7 +170,7 @@ const others = albums.filter((a) => a.slug !== 'projects');
         if (!hover) x -= speed() * dt;
       }
       wrap();
-      track.style.transform = `translate3d(${x}px,0,0)`;
+      place();
     };
     requestAnimationFrame(tick);
   }
@@ -228,6 +234,7 @@ const others = albums.filter((a) => a.slug !== 'projects');
     width: max-content;
     animation: slide calc(var(--n) * 7s) linear infinite;
     will-change: transform;
+    backface-visibility: hidden;
   }
   .marquee:hover .track,
   .marquee:focus-within .track {
@@ -251,6 +258,9 @@ const others = albums.filter((a) => a.slug !== 'projects');
   .slot {
     flex: 0 0 var(--card-w);
     margin-right: var(--gap);
+    /* カードごとに別の層にして、文字と画像がいっしょに動くようにする（iOS で、流れている途中に文字だけ描き直しが遅れて重なるのを防ぐ） */
+    transform: translateZ(0);
+    backface-visibility: hidden;
   }
   @keyframes slide {
     to {
