@@ -43,13 +43,15 @@ export const PLAYING_EVENT = 'side-b:playing';
 /**
  * 「NOW SPINNING」のミュージックプレイヤー。再生・一時停止と次の曲、イコライザー付き。
  * 曲は最後まで流れたら次の曲へ進み、全部終わったら最初に戻る。再生するとターンテーブルの回転が速くなる。
- * ヒーローのカードが画面から外れると、右下に固定されて、スクロールしても止められる。
+ * ヒーローで一度再生すると、そのカードが画面から外れたとき右下に固定されて、スクロールしても止められる（再生前は出ない）。
  * ブラウザは、ユーザーが押すまで音を出せないので、最初は止まった状態から始まる。
  */
 export default function NowPlaying({ kicker, tracks, playLabel, pauseLabel, nextLabel }: Props) {
   const [playing, setPlaying] = useState(false);
   const [index, setIndex] = useState(0);
   const [docked, setDocked] = useState(false);
+  // 一度でも再生したか（固定表示は、ヒーローで再生を押したあとだけ出す。一時停止しても、消さずに残す）
+  const [started, setStarted] = useState(false);
   const [scrolling, setScrolling] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);
   const slotRef = useRef<HTMLDivElement>(null);
@@ -58,6 +60,7 @@ export default function NowPlaying({ kicker, tracks, playLabel, pauseLabel, next
   // 再生状態をターンテーブルへ伝える
   useEffect(() => {
     window.dispatchEvent(new CustomEvent(PLAYING_EVENT, { detail: playing }));
+    if (playing) setStarted(true);
   }, [playing]);
 
   // ヒーローのカードの場所が見えなくなったら、右下に固定する
@@ -139,7 +142,12 @@ export default function NowPlaying({ kicker, tracks, playLabel, pauseLabel, next
    * 閉じ込められて、あとのセクションの下に隠れてしまうため。audio はここ（常に同じ場所）に置くので、
    * カードの出し入れで音が途切れない
    */
-  const place = (node: ReactNode) => (docked && typeof document !== 'undefined' ? createPortal(node, document.body) : node);
+  const place = (node: ReactNode) => {
+    if (!docked) return node;
+    // まだ再生していないなら、固定のプレイヤーは出さない
+    if (!started || typeof document === 'undefined') return null;
+    return createPortal(node, document.body);
+  };
 
   return (
     <div className="np-slot" ref={slotRef}>
